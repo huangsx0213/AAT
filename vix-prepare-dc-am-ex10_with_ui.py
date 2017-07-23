@@ -1,9 +1,6 @@
-import threading
-
+import time, os, configparser, sys,threading
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QWidget, QPushButton, QApplication
-from PyQt5.QtCore import * #要使用quit首先要调用QCoreApplication
-import time,os,configparser,sys
 from datetime import datetime
 from vix import VixHost, VixError, VixJob, VixVM
 
@@ -139,8 +136,8 @@ class AApp(threading.Thread):
             f.close()
             _vm_host.disconnect()
 
-class Exp(QWidget):
 
+class Exp(QWidget):
     def __init__(self):
         super().__init__()
         self.initUI()
@@ -148,7 +145,7 @@ class Exp(QWidget):
     def work(self, qtn=None):
         qtn.setEnabled(False)
         qtn.setText("Running")
-        aapp=AApp()
+        aapp = AApp()
         aapp.start()
 
     def initUI(self):
@@ -157,15 +154,15 @@ class Exp(QWidget):
         qtn.move(10, 10)
         self.setWindowIcon(QIcon('.\images\logo.png'))
         self.resize(300, 50)
-        self.setWindowTitle('ArchiveManager Auto App')
+        self.setWindowTitle('AAT')
         qtn.clicked.connect(lambda: self.work(qtn))
 
 
 if __name__ == '__main__':
-    f=0
-    release_path=0
-    release_package_dirs=0
-    host_os_files_path_for_am=0
+    f = 0
+    release_path = 0
+    release_package_dirs = 0
+    host_os_files_path_for_am = 0
     app = QApplication(sys.argv)
     ex = Exp()
     ex.show()
