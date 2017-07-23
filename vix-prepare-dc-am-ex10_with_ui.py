@@ -5,7 +5,11 @@ from datetime import datetime
 from vix import VixHost, VixError, VixJob, VixVM
 
 
-class AApp(threading.Thread):
+class AATPerform(threading.Thread):
+    def __init__(self,qtn):
+        super().__init__()
+        self.qtn=qtn
+
     def run(self):
         try:
             f = open("./logs/log.txt", 'w+')
@@ -135,6 +139,8 @@ class AApp(threading.Thread):
         finally:
             f.close()
             _vm_host.disconnect()
+            self.qtn.setEnabled(True)
+            self.qtn.setText("Run")
 
 
 class Exp(QWidget):
@@ -145,8 +151,8 @@ class Exp(QWidget):
     def work(self, qtn=None):
         qtn.setEnabled(False)
         qtn.setText("Running")
-        aapp = AApp()
-        aapp.start()
+        aat = AATPerform(qtn)
+        aat.start()
 
     def initUI(self):
         qtn = QPushButton('Run', self)
