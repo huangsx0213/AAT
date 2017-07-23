@@ -1,3 +1,5 @@
+import threading
+
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QWidget, QPushButton, QApplication
 from PyQt5.QtCore import * #要使用quit首先要调用QCoreApplication
@@ -5,13 +7,9 @@ import time,os,configparser,sys
 from datetime import datetime
 from vix import VixHost, VixError, VixJob, VixVM
 
-class Exp(QWidget):
 
-    def __init__(self):
-        super().__init__()
-        self.initUI()
-
-    def prepare_environment(self):
+class AApp(threading.Thread):
+    def run(self):
         try:
             f = open("./logs/log.txt", 'w+')
 
@@ -140,31 +138,36 @@ class Exp(QWidget):
         finally:
             f.close()
             _vm_host.disconnect()
-    def initUI(self):
 
-        #创建一个按钮，qtn是QPushButton类的一个实例，QPushButton的第一个参数是按钮上的文字，第二个参数指明这个按钮的父部件，在这里是Exp
+class Exp(QWidget):
+
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+
+    def work(self, qtn=None):
+        qtn.setEnabled(False)
+        qtn.setText("Running")
+        aapp=AApp()
+        aapp.start()
+
+    def initUI(self):
         qtn = QPushButton('Run', self)
         qtn.resize(qtn.sizeHint())
-
-        # Qt 也好，Pyqt 也好，处理事件的核心机制都是信号槽。当我们按下这个按钮时，就释放了clicked这个信号，
-        # 槽可以是 Qt 或者 Python（只要能调用就行）。QCoreApplication包含了主要的事件循环，它可以处理传递任何事件。
-        # clicked信号连接了quit这个方法，从而结束进程。
-        # 整个过程由两个对象完成，发射器和接收器，按钮是发射器，这个应用是接收器。
-        qtn.clicked.connect(self.prepare_environment)
         qtn.move(10, 10)
-
         self.setWindowIcon(QIcon('.\images\logo.png'))
         self.resize(300, 50)
-
         self.setWindowTitle('ArchiveManager Auto App')
-        self.show()
+        qtn.clicked.connect(lambda: self.work(qtn))
+
 
 if __name__ == '__main__':
     f=0
-    threads=None
     release_path=0
     release_package_dirs=0
     host_os_files_path_for_am=0
     app = QApplication(sys.argv)
     ex = Exp()
+    ex.show()
+
     sys.exit(app.exec_())
