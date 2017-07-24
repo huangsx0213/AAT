@@ -1,6 +1,6 @@
 import time, os, configparser, sys,threading
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QWidget, QPushButton, QApplication
+from PyQt5.QtWidgets import *
 from datetime import datetime
 from vix import VixHost, VixError, VixJob, VixVM
 
@@ -12,33 +12,8 @@ class AATPerform(threading.Thread):
 
     def run(self):
         try:
-            f = open("./logs/log.txt", 'w+')
-
-            # dc_vmx_path = r'D:\Virtual Machines\AM\EX 2010\ITF_Single_Exch2K10_DC\ITF_Single_Exch2K10_DC.vmx'
-            # am_vmx_path = r'D:\Virtual Machines\AM\EX 2010\ITF_Single_Exch2K10_AM\ITF_Single_Exch2K10_AM.vmx'
-            # release_path = r"\\10.30.150.149\buildoutput\Website\release"
-            cp = configparser.RawConfigParser()
-
-            cp.read(r'.\config\myapp.conf')
-
-            dc_vmx_path = str(cp.get('config', 'dc_vmx_path'))
-            print("dc_vmx_path:%s" % (dc_vmx_path))
-
-            am_vmx_path = str(cp.get('config', 'am_vmx_path'))
-            print("dc_vmx_path:%s" % (am_vmx_path))
-
-            release_path = cp.get('config', 'release_path')
-            print("release_path:%s" % (release_path))
-
-            snapshot_name = cp.get('config', 'snapshot')
-            print("snapshot_name:%s" % (snapshot_name))
 
             release_package_dirs = os.listdir(release_path)
-
-            host_os_files_path_for_dc = r".\vix\dc"
-            host_os_files_path_for_am = r".\vix\am"
-            guest_os_files_path = r"C:\vix"
-
             # copy the latest am msi to host machine
             release_package_full_path = os.path.join(
                 '%s\%s\ArchiveManagerInstaller.msi' % (release_path, release_package_dirs[-1]))
@@ -153,22 +128,83 @@ class Exp(QWidget):
         qtn.setText("Running")
         aat = AATPerform(qtn)
         aat.start()
-
+    def save(self,dc_vmx_pathEdit,am_vmx_pathEdit,release_pathEdit,snapshot_pathEdit):
+        cp.set("config","dc_vmx_path",dc_vmx_pathEdit.text())
+        cp.set("config", "am_vmx_path", am_vmx_pathEdit.text())
+        cp.set("config", "release_path", release_pathEdit.text())
+        cp.set("config", "snapshot_name", snapshot_pathEdit.text())
+        cp.write(open(r'.\config\myapp.conf', "w"))
     def initUI(self):
-        qtn = QPushButton('Run', self)
-        qtn.resize(qtn.sizeHint())
-        qtn.move(10, 10)
-        self.setWindowIcon(QIcon('.\images\logo.png'))
-        self.resize(300, 50)
-        self.setWindowTitle('AAT')
-        qtn.clicked.connect(lambda: self.work(qtn))
 
+        self.setWindowIcon(QIcon('.\images\logo.png'))
+        self.resize(600, 100)
+        self.setWindowTitle('AAT')
+
+        dc_vmx_path_label = QLabel('dc_vmx_path:')
+        am_vmx_path_label = QLabel('am_vmx_path:')
+        release_path_label= QLabel('release_path:')
+        snapshot_label = QLabel('snapshot_name:')
+
+        dc_vmx_pathEdit = QLineEdit()
+        dc_vmx_pathEdit.setText(dc_vmx_path)
+        am_vmx_pathEdit = QLineEdit()
+        am_vmx_pathEdit.setText(am_vmx_path)
+        release_pathEdit = QLineEdit()
+        release_pathEdit.setText(release_path)
+        snapshot_pathEdit = QLineEdit()
+        snapshot_pathEdit.setText(snapshot_name)
+        save_button = QPushButton('Save', self)
+        run_button = QPushButton('Run', self)
+
+        grid = QGridLayout()
+        grid.setSpacing(10)
+
+        grid.addWidget(dc_vmx_path_label, 1, 0)
+        grid.addWidget(dc_vmx_pathEdit, 1, 1)
+
+        grid.addWidget(am_vmx_path_label, 2, 0)
+        grid.addWidget(am_vmx_pathEdit, 2, 1)
+
+        grid.addWidget(release_path_label, 3, 0)
+        grid.addWidget(release_pathEdit, 3, 1)
+
+        grid.addWidget(snapshot_label, 4, 0)
+        grid.addWidget(snapshot_pathEdit, 4, 1)
+
+        grid.addWidget(run_button, 5, 1)
+        grid.addWidget(save_button, 5, 0)
+
+        self.setLayout(grid)
+
+        save_button.clicked.connect(lambda: self.save(dc_vmx_pathEdit,am_vmx_pathEdit,release_pathEdit,snapshot_pathEdit))
+        run_button.clicked.connect(lambda: self.work(run_button))
 
 if __name__ == '__main__':
-    f = 0
-    release_path = 0
-    release_package_dirs = 0
-    host_os_files_path_for_am = 0
+
+    f = open("./logs/log.txt", 'w+')
+
+    cp = configparser.ConfigParser()
+
+    cp.read(r'.\config\myapp.conf')
+
+    dc_vmx_path = str(cp.get('config', 'dc_vmx_path'))
+    print("dc_vmx_path:%s" % (dc_vmx_path))
+
+    am_vmx_path = str(cp.get('config', 'am_vmx_path'))
+    print("dc_vmx_path:%s" % (am_vmx_path))
+
+    release_path = cp.get('config', 'release_path')
+    print("release_path:%s" % (release_path))
+
+    snapshot_name = cp.get('config', 'snapshot_name')
+    print("snapshot_name:%s" % (snapshot_name))
+
+
+
+    host_os_files_path_for_dc = r".\vix\dc"
+    host_os_files_path_for_am = r".\vix\am"
+    guest_os_files_path = r"C:\vix"
+
     app = QApplication(sys.argv)
     ex = Exp()
     ex.show()
