@@ -41,7 +41,8 @@ class AATPerform(threading.Thread):
             print(str(datetime.now()) + " Reverted to snapshot Base - Done.")
 
             vm_dc.wait_for_tools()
-            vm_dc.login("dc2k8\\administrator", "Pa$$word", require_interactive=True)
+
+            vm_dc.login(guest_login_name, guest_login_password, require_interactive=True)
             time.sleep(2.0)
 
             print(str(datetime.now()) + " Login to dc guest for guest operation - Done.")
@@ -76,7 +77,7 @@ class AATPerform(threading.Thread):
             # time.sleep(2.0)
             # print(str(datetime.now()) + " Login to am guest for guest operation - Done.")
             vm_am.wait_for_tools()
-            vm_am.login("dc2k8\\administrator", "Pa$$word", require_interactive=True)
+            vm_am.login(guest_login_name, guest_login_password, require_interactive=True)
             time.sleep(2.0)
             print(str(datetime.now()) + " Login to am guest for guest operation - Done.")
 
@@ -128,11 +129,13 @@ class Exp(QWidget):
         qtn.setText("Running")
         aat = AATPerform(qtn)
         aat.start()
-    def save(self,dc_vmx_pathEdit,am_vmx_pathEdit,release_pathEdit,snapshot_pathEdit):
+    def save(self,dc_vmx_pathEdit,am_vmx_pathEdit,release_pathEdit,snapshot_pathEdit,guest_login_nameEdit,guest_login_passwordEdit):
         cp.set("config","dc_vmx_path",dc_vmx_pathEdit.text())
         cp.set("config", "am_vmx_path", am_vmx_pathEdit.text())
         cp.set("config", "release_path", release_pathEdit.text())
         cp.set("config", "snapshot_name", snapshot_pathEdit.text())
+        cp.set("config", "guest_login_name", guest_login_nameEdit.text())
+        cp.set("config", "guest_login_password", guest_login_passwordEdit.text())
         cp.write(open(r'.\config\myapp.conf', "w"))
     def initUI(self):
 
@@ -144,6 +147,8 @@ class Exp(QWidget):
         am_vmx_path_label = QLabel('am_vmx_path:')
         release_path_label= QLabel('release_path:')
         snapshot_label = QLabel('snapshot_name:')
+        guest_login_name_label = QLabel('guest_login_name:')
+        guest_login_password_label = QLabel('guest_login_password:')
 
         dc_vmx_pathEdit = QLineEdit()
         dc_vmx_pathEdit.setText(dc_vmx_path)
@@ -153,6 +158,12 @@ class Exp(QWidget):
         release_pathEdit.setText(release_path)
         snapshot_pathEdit = QLineEdit()
         snapshot_pathEdit.setText(snapshot_name)
+        guest_login_nameEdit = QLineEdit()
+        guest_login_nameEdit.setText(guest_login_name)
+        guest_login_passwordEdit = QLineEdit()
+        guest_login_passwordEdit.setText(guest_login_password)
+        guest_login_passwordEdit.setEchoMode(QLineEdit.Password)
+
         save_button = QPushButton('Save', self)
         run_button = QPushButton('Run', self)
 
@@ -171,12 +182,18 @@ class Exp(QWidget):
         grid.addWidget(snapshot_label, 4, 0)
         grid.addWidget(snapshot_pathEdit, 4, 1,1,6)
 
-        grid.addWidget(save_button, 5, 5)
-        grid.addWidget(run_button, 5, 6)
+        grid.addWidget(guest_login_name_label, 5, 0)
+        grid.addWidget(guest_login_nameEdit, 5, 1, 1, 6)
+
+        grid.addWidget(guest_login_password_label, 6, 0)
+        grid.addWidget(guest_login_passwordEdit, 6, 1, 1, 6)
+
+        grid.addWidget(save_button, 7, 5)
+        grid.addWidget(run_button, 7, 6)
 
         self.setLayout(grid)
 
-        save_button.clicked.connect(lambda: self.save(dc_vmx_pathEdit,am_vmx_pathEdit,release_pathEdit,snapshot_pathEdit))
+        save_button.clicked.connect(lambda: self.save(dc_vmx_pathEdit,am_vmx_pathEdit,release_pathEdit,snapshot_pathEdit,guest_login_nameEdit,guest_login_passwordEdit))
         run_button.clicked.connect(lambda: self.work(run_button))
 
 if __name__ == '__main__':
@@ -199,7 +216,8 @@ if __name__ == '__main__':
     snapshot_name = cp.get('config', 'snapshot_name')
     print("snapshot_name:%s" % (snapshot_name))
 
-
+    guest_login_name = cp.get('config', 'guest_login_name')
+    guest_login_password = cp.get('config', 'guest_login_password')
 
     host_os_files_path_for_dc = r".\vix\dc"
     host_os_files_path_for_am = r".\vix\am"
