@@ -160,19 +160,19 @@ class Exp(QWidget):
         grid.setSpacing(10)
 
         grid.addWidget(dc_vmx_path_label, 1, 0)
-        grid.addWidget(dc_vmx_pathEdit, 1, 1)
+        grid.addWidget(dc_vmx_pathEdit, 1, 1,1,6)
 
         grid.addWidget(am_vmx_path_label, 2, 0)
-        grid.addWidget(am_vmx_pathEdit, 2, 1)
+        grid.addWidget(am_vmx_pathEdit, 2, 1,1,6)
 
         grid.addWidget(release_path_label, 3, 0)
-        grid.addWidget(release_pathEdit, 3, 1)
+        grid.addWidget(release_pathEdit, 3, 1,1,6)
 
         grid.addWidget(snapshot_label, 4, 0)
-        grid.addWidget(snapshot_pathEdit, 4, 1)
+        grid.addWidget(snapshot_pathEdit, 4, 1,1,6)
 
-        grid.addWidget(run_button, 5, 1)
-        grid.addWidget(save_button, 5, 0)
+        grid.addWidget(save_button, 5, 5)
+        grid.addWidget(run_button, 5, 6)
 
         self.setLayout(grid)
 
