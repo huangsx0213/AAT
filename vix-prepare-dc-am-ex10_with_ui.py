@@ -1,18 +1,21 @@
 import time, os, configparser, sys,threading
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QPalette
 from PyQt5.QtWidgets import *
+from PyQt5.QtCore import Qt
 from datetime import datetime
 from vix import VixHost, VixError, VixJob, VixVM
 
 
 class AATPerform(threading.Thread):
-    def __init__(self,qtn):
+    def __init__(self,qtn,aat_prompt_message_label):
         super().__init__()
         self.qtn=qtn
+        self.aat_prompt_message_label=aat_prompt_message_label
+        self.aat_prompt_message_label.setText("")
 
     def run(self):
         try:
-
+            done = 0
             release_package_dirs = os.listdir(release_path)
             # copy the latest am msi to host machine
             release_package_full_path = os.path.join(
@@ -104,11 +107,8 @@ class AATPerform(threading.Thread):
             # logout guest of am
             vm_am.logout()
             print(str(datetime.now()) + " Logout guest of am - Done.")
+            done=1
 
-        except VixError as ex:
-            print(str(datetime.now()) + " VixError,Operatation failed: {0}".format(ex), file=f)
-        except IOError as ex:
-            print(str(datetime.now()) + " IOError,Operatation failed: {0}".format(ex), file=f)
         except Exception as ex:
             print(str(datetime.now()) + " Exception,Operatation failed: {0}".format(ex), file=f)
             print(str(datetime.now()) + " " + ex.__traceback__, file=f)
@@ -117,17 +117,22 @@ class AATPerform(threading.Thread):
             _vm_host.disconnect()
             self.qtn.setEnabled(True)
             self.qtn.setText("Run")
-
+            if done==1:
+                self.aat_prompt_message_label.setText(
+                    "{s}".format(s=release_package_dirs[-1] + " Installed successfully."))
+            else:
+                self.aat_prompt_message_label.setText(
+                    "{s}".format(s=release_package_dirs[-1] + " Install fail."))
 
 class Exp(QWidget):
     def __init__(self):
         super().__init__()
         self.initUI()
 
-    def work(self, qtn=None):
+    def work(self, qtn,aat_prompt_message_label):
         qtn.setEnabled(False)
         qtn.setText("Running")
-        aat = AATPerform(qtn)
+        aat = AATPerform(qtn,aat_prompt_message_label)
         aat.start()
     def save(self,dc_vmx_pathEdit,am_vmx_pathEdit,release_pathEdit,snapshot_pathEdit,guest_login_nameEdit,guest_login_passwordEdit):
         cp.set("config","dc_vmx_path",dc_vmx_pathEdit.text())
@@ -149,6 +154,7 @@ class Exp(QWidget):
         snapshot_label = QLabel('snapshot_name:')
         guest_login_name_label = QLabel('guest_login_name:')
         guest_login_password_label = QLabel('guest_login_password:')
+        aat_prompt_message_label= QLabel("")
 
         dc_vmx_pathEdit = QLineEdit()
         dc_vmx_pathEdit.setText(dc_vmx_path)
@@ -188,13 +194,14 @@ class Exp(QWidget):
         grid.addWidget(guest_login_password_label, 6, 0)
         grid.addWidget(guest_login_passwordEdit, 6, 1, 1, 6)
 
+        grid.addWidget(aat_prompt_message_label, 7, 1,1,5)
         grid.addWidget(save_button, 7, 5)
         grid.addWidget(run_button, 7, 6)
 
         self.setLayout(grid)
 
         save_button.clicked.connect(lambda: self.save(dc_vmx_pathEdit,am_vmx_pathEdit,release_pathEdit,snapshot_pathEdit,guest_login_nameEdit,guest_login_passwordEdit))
-        run_button.clicked.connect(lambda: self.work(run_button))
+        run_button.clicked.connect(lambda: self.work(run_button,aat_prompt_message_label))
 
 if __name__ == '__main__':
 
