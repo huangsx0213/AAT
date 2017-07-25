@@ -118,11 +118,13 @@ class AATPerform(threading.Thread):
             self.qtn.setEnabled(True)
             self.qtn.setText("Run")
             if done==1:
+                self.aat_prompt_message_label.setStyleSheet("QLabel {font-family:Arial;color : green; }")
                 self.aat_prompt_message_label.setText(
-                    "{s}".format(s=release_package_dirs[-1] + " Installed successfully."))
+                    "{s}".format(s=release_package_dirs[-1] + " installed successfully."))
             else:
+                self.aat_prompt_message_label.setStyleSheet("QLabel {font-family:Arial;color : red; }")
                 self.aat_prompt_message_label.setText(
-                    "{s}".format(s=release_package_dirs[-1] + " Install fail."))
+                    "{s}".format(s=release_package_dirs[-1] + " install failed."))
 
 class Exp(QWidget):
     def __init__(self):
@@ -155,6 +157,7 @@ class Exp(QWidget):
         guest_login_name_label = QLabel('guest_login_name:')
         guest_login_password_label = QLabel('guest_login_password:')
         aat_prompt_message_label= QLabel("")
+
 
         dc_vmx_pathEdit = QLineEdit()
         dc_vmx_pathEdit.setText(dc_vmx_path)
