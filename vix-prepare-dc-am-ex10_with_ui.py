@@ -84,16 +84,8 @@ class AATPerform(threading.Thread):
             print(str(datetime.now()) + " Copy vix folder from host to guest for am - Done.")
 
             # run script to install am on am vm
-            vm_am.proc_run(guest_os_files_path + "\Install_AM.bat", None, True)
-            print(str(datetime.now()) + " Run script to install am on am vm - Done.")
-
-            # run script to config CC on am vm
-            vm_am.proc_run(guest_os_files_path + "\ConfigurationConsoleSilent.bat", None, True)
-            print(str(datetime.now()) + " Run script to config CC on am vm - Done.")
-
-            # run script to start am service
-            vm_am.proc_run(guest_os_files_path + "\StartService.bat", None, True)
-            print(str(datetime.now()) + " Run script to start am service - Done.")
+            vm_am.proc_run(guest_os_files_path + r"\am_cmd.bat", None, True)
+            print(str(datetime.now()) + " Run script to install,config am on am vm - Done.")
 
             # run script to install Chrome
             vm_am.proc_run(guest_os_files_path + "\ChromeStandaloneSetupEn 57.0.2987.110.exe", None, True)
