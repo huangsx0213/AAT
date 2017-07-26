@@ -15,7 +15,8 @@ class AATPerform(threading.Thread):
         super().__init__()
         self.qtn = qtn
         self.aat_prompt_message_label = aat_prompt_message_label
-        self.aat_prompt_message_label.setText("")
+        self.aat_prompt_message_label.setStyleSheet("QLabel {font-family:Arial;color : blue; }")
+        self.aat_prompt_message_label.setText("App is running.")
 
     def run(self):
         try:
