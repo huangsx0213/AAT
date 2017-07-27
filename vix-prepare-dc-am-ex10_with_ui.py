@@ -16,11 +16,11 @@ class AATPerform(threading.Thread):
         self.qtn = qtn
         self.aat_prompt_message_label = aat_prompt_message_label
         self.aat_prompt_message_label.setStyleSheet("QLabel {font-family:Arial;color : blue; }")
-        self.aat_prompt_message_label.setText("App is running.")
 
     def run(self):
         try:
             done = 0
+            self.aat_prompt_message_label.setText("Copying the latest build.")
             release_package_dirs = os.listdir(release_path)
             release_package_full_path = os.path.join(
                 '{rp}\{rpd}\ArchiveManagerInstaller.msi'.format(rp=release_path, rpd=release_package_dirs[-1]))
@@ -41,24 +41,30 @@ class AATPerform(threading.Thread):
             _vm_host = VixHost()
 
             # open the dc vm
+            self.aat_prompt_message_label.setText("Opening the dc vm.")
             vm_dc = _vm_host.open_vm(dc_vmx_path)
 
             # revert to a snapshot
+            self.aat_prompt_message_label.setText("Reverting to a snapshot.")
             vm_dc_snapshot = vm_dc.snapshot_get_named(snapshot_name)
             vm_dc.snapshot_revert(snapshot=vm_dc_snapshot, options=VixVM.VIX_VMPOWEROP_LAUNCH_GUI)
             print(str(datetime.now()) + " Reverted to snapshot Base - Done.")
 
             # Login to dc guest for guest operation
+            self.aat_prompt_message_label.setText("Waiting for tools.")
             vm_dc.wait_for_tools()
+            self.aat_prompt_message_label.setText("Login dc guest.")
             vm_dc.login(guest_login_name, guest_login_password, require_interactive=True)
             time.sleep(2.0)
 
             print(str(datetime.now()) + " Login to dc guest for guest operation - Done.")
             # copy vix folder from host to guest for dc
+            self.aat_prompt_message_label.setText("Copying vix folder from host to guest for dc.")
             vm_dc.copy_host_to_guest(host_os_files_path_for_dc, guest_os_files_path)
             print(str(datetime.now()) + " Copied vix folder from host to guest for dc - Done.")
 
             # run script to prepare email data on dc vm
+            self.aat_prompt_message_label.setText("Running script to prepare email data on dc vm.")
             vm_dc.run_script(r"PowerShell.exe -file c:\vix\importPST.ps1", None, False)
             print(str(datetime.now()) + " Run powershell script to prepare email data on dc vm - Done.")
 
@@ -70,25 +76,31 @@ class AATPerform(threading.Thread):
             vm_am = _vm_host.open_vm(am_vmx_path)
 
             # revert to a snapshot
+            self.aat_prompt_message_label.setText("Reverting to a snapshot.")
             vm_am_snapshot = vm_am.snapshot_get_named(snapshot_name)
             vm_am.snapshot_revert(snapshot=vm_am_snapshot, options=VixVM.VIX_VMPOWEROP_LAUNCH_GUI)
             print(str(datetime.now()) + " Reverted to snapshot Base - Done.")
 
             # Login to am guest for guest operation
+            self.aat_prompt_message_label.setText("Waiting for tools.")
             vm_am.wait_for_tools()
+            self.aat_prompt_message_label.setText("Login am guest.")
             vm_am.login(guest_login_name, guest_login_password, require_interactive=True)
             time.sleep(2.0)
             print(str(datetime.now()) + " Login to am guest for guest operation - Done.")
 
             # copy vix folder from host to guest for am
+            self.aat_prompt_message_label.setText("Copying vix folder from host to guest for am.")
             vm_am.copy_host_to_guest(host_os_files_path_for_am, guest_os_files_path)
             print(str(datetime.now()) + " Copy vix folder from host to guest for am - Done.")
 
             # run script to install am on am vm
+            self.aat_prompt_message_label.setText("Running script to install am on am vm.")
             vm_am.proc_run(guest_os_files_path + r"\am_cmd.bat", None, True)
             print(str(datetime.now()) + " Run script to install,config am on am vm - Done.")
 
             # run script to install Chrome
+            self.aat_prompt_message_label.setText("Running script to install am on am vm.")
             vm_am.proc_run(guest_os_files_path + "\ChromeStandaloneSetupEn 57.0.2987.110.exe", None, True)
             print(str(datetime.now()) + " Run script to install Chrome - Done.")
 
@@ -147,6 +159,7 @@ class Exp(QWidget):
         snapshot_label = QLabel('snapshot_name:')
         guest_login_name_label = QLabel('guest_login_name:')
         guest_login_password_label = QLabel('guest_login_password:')
+        run_time_message_label = QLabel("run_time_message:")
         aat_prompt_message_label = QLabel("")
 
         dc_vmx_path_edit = QLineEdit()
@@ -187,9 +200,10 @@ class Exp(QWidget):
         grid.addWidget(guest_login_password_label, 6, 0)
         grid.addWidget(guest_login_password_edit, 6, 1, 1, 6)
 
-        grid.addWidget(aat_prompt_message_label, 7, 1, 1, 5)
-        grid.addWidget(save_button, 7, 5)
-        grid.addWidget(run_button, 7, 6)
+        grid.addWidget(run_time_message_label, 7, 0)
+        grid.addWidget(aat_prompt_message_label, 7, 1, 1, 6)
+        grid.addWidget(save_button, 8, 5)
+        grid.addWidget(run_button, 8, 6)
 
         self.setLayout(grid)
 
