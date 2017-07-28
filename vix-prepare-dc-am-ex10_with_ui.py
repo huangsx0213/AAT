@@ -3,6 +3,8 @@ import os
 import time
 import configparser
 import threading
+from PyQt5 import QtWidgets
+
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import *
 from datetime import datetime
@@ -11,10 +13,10 @@ from win32com.shell import shell, shellcon
 
 
 class AATPerform(threading.Thread):
-    def __init__(self, qtn, aat_prompt_message_label):
+    def __init__(self, main_window):
         super().__init__()
-        self.qtn = qtn
-        self.aat_prompt_message_label = aat_prompt_message_label
+        self.run_button = main_window.run_button
+        self.aat_prompt_message_label = main_window.aat_prompt_message_label
         self.aat_prompt_message_label.setStyleSheet("QLabel {font-family:Arial;color : blue; }")
 
     def run(self):
@@ -115,8 +117,8 @@ class AATPerform(threading.Thread):
         finally:
             log_file.close()
             _vm_host.disconnect()
-            self.qtn.setEnabled(True)
-            self.qtn.setText("Run")
+            self.run_button.setEnabled(True)
+            self.run_button.setText("Run")
             if done == 1:
                 self.aat_prompt_message_label.setStyleSheet("QLabel {font-family:Arial;color : green; }")
                 self.aat_prompt_message_label.setText(
@@ -127,90 +129,93 @@ class AATPerform(threading.Thread):
                     "{s}".format(s=release_package_dirs[-1] + " install failed."))
 
 
-class Exp(QWidget):
+class MainWindow(QTabWidget):
     def __init__(self):
         super().__init__()
         self.initUI()
 
-    def work(self, qtn, aat_prompt_message_label):
-        qtn.setEnabled(False)
-        qtn.setText("Running")
-        aat = AATPerform(qtn, aat_prompt_message_label)
+    def work(self):
+        self.run_button.setEnabled(False)
+        self.run_button.setText("Running")
+        aat = AATPerform(self)
         aat.start()
 
-    def save(self, dc_vmx_path_edit, am_vmx_path_edit, release_path_edit, snapshot_path_edit, guest_login_name_edit,
-             guest_login_passwordEdit):
-        config_parser.set("config", "dc_vmx_path", dc_vmx_path_edit.text())
-        config_parser.set("config", "am_vmx_path", am_vmx_path_edit.text())
-        config_parser.set("config", "release_path", release_path_edit.text())
-        config_parser.set("config", "snapshot_name", snapshot_path_edit.text())
-        config_parser.set("config", "guest_login_name", guest_login_name_edit.text())
-        config_parser.set("config", "guest_login_password", guest_login_passwordEdit.text())
+    def save(self):
+        config_parser.set("config", "dc_vmx_path", self.dc_vmx_path_edit.text())
+        config_parser.set("config", "am_vmx_path", self.am_vmx_path_edit.text())
+        config_parser.set("config", "release_path", self.release_path_edit.text())
+        config_parser.set("config", "snapshot_name", self.snapshot_path_edit.text())
+        config_parser.set("config", "guest_login_name", self.guest_login_name_edit.text())
+        config_parser.set("config", "guest_login_password", self.guest_login_password_edit.text())
         config_parser.write(open(r'.\config\myapp.conf', "w"))
 
     def initUI(self):
         self.setWindowIcon(QIcon('.\images\logo.png'))
-        self.resize(600, 100)
+        self.setFixedWidth(600)
         self.setWindowTitle('AAT')
 
-        dc_vmx_path_label = QLabel('dc_vmx_path:')
-        am_vmx_path_label = QLabel('am_vmx_path:')
-        release_path_label = QLabel('release_path:')
-        snapshot_label = QLabel('snapshot_name:')
-        guest_login_name_label = QLabel('guest_login_name:')
-        guest_login_password_label = QLabel('guest_login_password:')
-        run_time_message_label = QLabel("run_time_message:")
-        aat_prompt_message_label = QLabel("")
+        self.dc_vmx_path_label = QLabel('dc_vmx_path:')
+        self.am_vmx_path_label = QLabel('am_vmx_path:')
+        self.release_path_label = QLabel('release_path:')
+        self.snapshot_label = QLabel('snapshot_name:')
+        self.guest_login_name_label = QLabel('guest_login_name:')
+        self.guest_login_password_label = QLabel('guest_login_password:')
+        self.run_time_message_label = QLabel("run_time_message:")
+        self.aat_prompt_message_label = QLabel("")
 
-        dc_vmx_path_edit = QLineEdit()
-        dc_vmx_path_edit.setText(dc_vmx_path)
-        am_vmx_path_edit = QLineEdit()
-        am_vmx_path_edit.setText(am_vmx_path)
-        release_path_edit = QLineEdit()
-        release_path_edit.setText(release_path)
-        snapshot_path_edit = QLineEdit()
-        snapshot_path_edit.setText(snapshot_name)
-        guest_login_name_edit = QLineEdit()
-        guest_login_name_edit.setText(guest_login_name)
-        guest_login_password_edit = QLineEdit()
-        guest_login_password_edit.setText(guest_login_password)
-        guest_login_password_edit.setEchoMode(QLineEdit.Password)
+        self.dc_vmx_path_edit = QLineEdit()
+        self.dc_vmx_path_edit.setText(dc_vmx_path)
+        self.am_vmx_path_edit = QLineEdit()
+        self.am_vmx_path_edit.setText(am_vmx_path)
+        self.release_path_edit = QLineEdit()
+        self.release_path_edit.setText(release_path)
+        self.snapshot_path_edit = QLineEdit()
+        self.snapshot_path_edit.setText(snapshot_name)
+        self.guest_login_name_edit = QLineEdit()
+        self.guest_login_name_edit.setText(guest_login_name)
+        self.guest_login_password_edit = QLineEdit()
+        self.guest_login_password_edit.setText(guest_login_password)
+        self.guest_login_password_edit.setEchoMode(QLineEdit.Password)
 
-        save_button = QPushButton('Save', self)
-        run_button = QPushButton('Run', self)
+        self.save_button = QPushButton('Save', self)
+        self.run_button = QPushButton('Run', self)
 
-        grid = QGridLayout()
-        grid.setSpacing(10)
+        self.grid = QGridLayout()
+        self.grid.setSpacing(10)
 
-        grid.addWidget(dc_vmx_path_label, 1, 0)
-        grid.addWidget(dc_vmx_path_edit, 1, 1, 1, 6)
+        self.grid.addWidget(self.dc_vmx_path_label, 1, 0)
+        self.grid.addWidget(self.dc_vmx_path_edit, 1, 1, 1, 6)
 
-        grid.addWidget(am_vmx_path_label, 2, 0)
-        grid.addWidget(am_vmx_path_edit, 2, 1, 1, 6)
+        self.grid.addWidget(self.am_vmx_path_label, 2, 0)
+        self.grid.addWidget(self.am_vmx_path_edit, 2, 1, 1, 6)
 
-        grid.addWidget(release_path_label, 3, 0)
-        grid.addWidget(release_path_edit, 3, 1, 1, 6)
+        self.grid.addWidget(self.release_path_label, 3, 0)
+        self.grid.addWidget(self.release_path_edit, 3, 1, 1, 6)
 
-        grid.addWidget(snapshot_label, 4, 0)
-        grid.addWidget(snapshot_path_edit, 4, 1, 1, 6)
+        self.grid.addWidget(self.snapshot_label, 4, 0)
+        self.grid.addWidget(self.snapshot_path_edit, 4, 1, 1, 6)
 
-        grid.addWidget(guest_login_name_label, 5, 0)
-        grid.addWidget(guest_login_name_edit, 5, 1, 1, 6)
+        self.grid.addWidget(self.guest_login_name_label, 5, 0)
+        self.grid.addWidget(self.guest_login_name_edit, 5, 1, 1, 6)
 
-        grid.addWidget(guest_login_password_label, 6, 0)
-        grid.addWidget(guest_login_password_edit, 6, 1, 1, 6)
+        self.grid.addWidget(self.guest_login_password_label, 6, 0)
+        self.grid.addWidget(self.guest_login_password_edit, 6, 1, 1, 6)
 
-        grid.addWidget(run_time_message_label, 7, 0)
-        grid.addWidget(aat_prompt_message_label, 7, 1, 1, 6)
-        grid.addWidget(save_button, 8, 5)
-        grid.addWidget(run_button, 8, 6)
+        self.grid.addWidget(self.run_time_message_label, 7, 0)
+        self.grid.addWidget(self.aat_prompt_message_label, 7, 1, 1, 6)
+        self.grid.addWidget(self.save_button, 8, 5)
+        self.grid.addWidget(self.run_button, 8, 6)
+        self.tab = QtWidgets.QWidget()
+        self.tab.setObjectName("tab")
+        self.addTab(self.tab, " Console")
+        self.tab1 = QtWidgets.QWidget()
+        self.tab1.setObjectName("tab1")
+        self.addTab(self.tab1, "TaskManagement")
+        self.tab1.setLayout(self.grid)
+        self.setCurrentIndex(1)
 
-        self.setLayout(grid)
-
-        save_button.clicked.connect(
-            lambda: self.save(dc_vmx_path_edit, am_vmx_path_edit, release_path_edit, snapshot_path_edit,
-                              guest_login_name_edit, guest_login_password_edit))
-        run_button.clicked.connect(lambda: self.work(run_button, aat_prompt_message_label))
+        self.save_button.clicked.connect(self.save)
+        self.run_button.clicked.connect(lambda: self.work())
 
 
 if __name__ == '__main__':
@@ -240,7 +245,7 @@ if __name__ == '__main__':
     guest_os_files_path = r"C:\vix"
 
     app = QApplication(sys.argv)
-    ex = Exp()
-    ex.show()
+    main_window = MainWindow()
+    main_window.show()
 
     sys.exit(app.exec_())
