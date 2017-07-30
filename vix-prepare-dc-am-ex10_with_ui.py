@@ -151,7 +151,7 @@ class MainWindow(QTabWidget):
 
     def initUI(self):
         self.setWindowIcon(QIcon('.\images\logo.png'))
-        self.setFixedWidth(600)
+        self.resize(600,275)
         self.setWindowTitle('AAT')
 
         self.dc_vmx_path_label = QLabel('dc_vmx_path:')
@@ -182,6 +182,8 @@ class MainWindow(QTabWidget):
 
         self.grid = QGridLayout()
         self.grid.setSpacing(10)
+        self.grid2 = QGridLayout()
+        self.grid2.setSpacing(10)
 
         self.grid.addWidget(self.dc_vmx_path_label, 1, 0)
         self.grid.addWidget(self.dc_vmx_path_edit, 1, 1, 1, 6)
@@ -212,10 +214,15 @@ class MainWindow(QTabWidget):
         self.tab1.setObjectName("tab1")
         self.addTab(self.tab1, "TaskManagement")
         self.tab1.setLayout(self.grid)
+        self.tab.setLayout(self.grid2)
         self.setCurrentIndex(1)
 
         self.save_button.clicked.connect(self.save)
         self.run_button.clicked.connect(lambda: self.work())
+
+        self.console_win = QtWidgets.QTextBrowser()
+        self.grid2.addWidget(self.console_win)
+
 
 
 if __name__ == '__main__':
