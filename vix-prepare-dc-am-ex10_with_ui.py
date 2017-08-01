@@ -252,7 +252,10 @@ class MainWindow(QTabWidget):
         self.run_button.clicked.connect(lambda: self.work())
 
         self.console_win = QtWidgets.QTextBrowser()
-        self.grid2.addWidget(self.console_win)
+        self.grid2.addWidget(self.console_win,1,0,7,7)
+        self.clear_logs_button = QPushButton('Clear', self)
+        self.grid2.addWidget(self.clear_logs_button,8,6)
+        self.clear_logs_button.clicked.connect(self.console_win.clear)
 
 
         self._signal.connect(self.tt)
