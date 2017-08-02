@@ -26,7 +26,7 @@ class AATPerform(threading.Thread):
         try:
             done = 0
             GlobalLogging.getInstance().info('Copying the latest build.')
-            self.aat_prompt_message_label.setText("Copying the latest build.")
+            #self.aat_prompt_message_label.setText("Copying the latest build.")
             release_package_dirs = os.listdir(release_path)
             release_package_full_path = os.path.join(
                 '{rp}\{rpd}\ArchiveManagerInstaller.msi'.format(rp=release_path, rpd=release_package_dirs[-1]))
@@ -48,12 +48,12 @@ class AATPerform(threading.Thread):
 
             # open the dc vm
             GlobalLogging.getInstance().info('Opening the dc vm.')
-            self.aat_prompt_message_label.setText("Opening the dc vm.")
+            #self.aat_prompt_message_label.setText("Opening the dc vm.")
             vm_dc = _vm_host.open_vm(dc_vmx_path)
 
             # revert to a snapshot
             GlobalLogging.getInstance().info('Reverting to a snapshot.')
-            self.aat_prompt_message_label.setText("Reverting to a snapshot.")
+            #self.aat_prompt_message_label.setText("Reverting to a snapshot.")
             vm_dc_snapshot = vm_dc.snapshot_get_named(snapshot_name)
             vm_dc.snapshot_revert(snapshot=vm_dc_snapshot, options=VixVM.VIX_VMPOWEROP_LAUNCH_GUI)
             print(str(datetime.now()) + " Reverted to snapshot Base - Done.")
@@ -61,24 +61,24 @@ class AATPerform(threading.Thread):
 
             # Login to dc guest for guest operation
             GlobalLogging.getInstance().info('Waiting for tools.')
-            self.aat_prompt_message_label.setText("Waiting for tools.")
+            #self.aat_prompt_message_label.setText("Waiting for tools.")
             vm_dc.wait_for_tools()
             GlobalLogging.getInstance().info('Login dc guest.')
-            self.aat_prompt_message_label.setText("Login dc guest.")
+            #self.aat_prompt_message_label.setText("Login dc guest.")
             vm_dc.login(guest_login_name, guest_login_password, require_interactive=True)
             time.sleep(2.0)
 
             print(str(datetime.now()) + " Login to dc guest for guest operation - Done.")
             GlobalLogging.getInstance().info('Login to dc guest for guest operation - Done.')
             # copy vix folder from host to guest for dc
-            self.aat_prompt_message_label.setText("Copying vix folder from host to guest for dc.")
+            #self.aat_prompt_message_label.setText("Copying vix folder from host to guest for dc.")
             GlobalLogging.getInstance().info('Copying vix folder from host to guest for dc.')
             vm_dc.copy_host_to_guest(host_os_files_path_for_dc, guest_os_files_path)
             print(str(datetime.now()) + " Copied vix folder from host to guest for dc - Done.")
             GlobalLogging.getInstance().info('Copied vix folder from host to guest for dc - Done.')
 
             # run script to prepare email data on dc vm
-            self.aat_prompt_message_label.setText("Running script to prepare email data on dc vm.")
+            #self.aat_prompt_message_label.setText("Running script to prepare email data on dc vm.")
             GlobalLogging.getInstance().info('Running script to prepare email data on dc vm.')
             vm_dc.run_script(r"PowerShell.exe -file c:\vix\importPST.ps1", None, False)
             print(str(datetime.now()) + " Run powershell script to prepare email data on dc vm - Done.")
@@ -92,7 +92,7 @@ class AATPerform(threading.Thread):
             vm_am = _vm_host.open_vm(am_vmx_path)
 
             # revert to a snapshot
-            self.aat_prompt_message_label.setText("Reverting to a snapshot.")
+            #self.aat_prompt_message_label.setText("Reverting to a snapshot.")
             GlobalLogging.getInstance().info('Reverting to a snapshot.')
             vm_am_snapshot = vm_am.snapshot_get_named(snapshot_name)
             vm_am.snapshot_revert(snapshot=vm_am_snapshot, options=VixVM.VIX_VMPOWEROP_LAUNCH_GUI)
@@ -100,10 +100,10 @@ class AATPerform(threading.Thread):
             GlobalLogging.getInstance().info('Reverted to snapshot Base - Done.')
 
             # Login to am guest for guest operation
-            self.aat_prompt_message_label.setText("Waiting for tools.")
+            #self.aat_prompt_message_label.setText("Waiting for tools.")
             GlobalLogging.getInstance().info('Waiting for tools.')
             vm_am.wait_for_tools()
-            self.aat_prompt_message_label.setText("Login am guest.")
+            #self.aat_prompt_message_label.setText("Login am guest.")
             GlobalLogging.getInstance().info('Login am guest.')
             vm_am.login(guest_login_name, guest_login_password, require_interactive=True)
             time.sleep(2.0)
@@ -111,21 +111,21 @@ class AATPerform(threading.Thread):
             GlobalLogging.getInstance().info('Login to am guest for guest operation - Done.')
 
             # copy vix folder from host to guest for am
-            self.aat_prompt_message_label.setText("Copying vix folder from host to guest for am.")
+            #self.aat_prompt_message_label.setText("Copying vix folder from host to guest for am.")
             GlobalLogging.getInstance().info('Copying vix folder from host to guest for am.')
             vm_am.copy_host_to_guest(host_os_files_path_for_am, guest_os_files_path)
             print(str(datetime.now()) + " Copy vix folder from host to guest for am - Done.")
             GlobalLogging.getInstance().info('Copy vix folder from host to guest for am - Done.')
 
             # run script to install am on am vm
-            self.aat_prompt_message_label.setText("Running script to install am on am vm.")
+            #self.aat_prompt_message_label.setText("Running script to install am on am vm.")
             GlobalLogging.getInstance().info('Running script to install am on am vm.')
             vm_am.proc_run(guest_os_files_path + r"\am_cmd.bat", None, True)
             print(str(datetime.now()) + " Run script to install,config am on am vm - Done.")
             GlobalLogging.getInstance().info('Run script to install,config am on am vm - Done.')
 
             # run script to install Chrome
-            self.aat_prompt_message_label.setText("Running script to install Chrome.")
+            #self.aat_prompt_message_label.setText("Running script to install Chrome.")
             GlobalLogging.getInstance().info('Running script to install Chrome.')
             vm_am.proc_run(guest_os_files_path + "\ChromeStandaloneSetupEn 57.0.2987.110.exe", None, True)
             print(str(datetime.now()) + " Run script to install Chrome - Done.")
@@ -148,12 +148,14 @@ class AATPerform(threading.Thread):
             self.run_button.setText("Run")
             if done == 1:
                 self.aat_prompt_message_label.setStyleSheet("QLabel {font-family:Arial;color : green; }")
-                self.aat_prompt_message_label.setText(
-                    "{s}".format(s=release_package_dirs[-1] + " installed successfully."))
+                GlobalLogging.getInstance().info(release_package_dirs[-1]+" installed successfully.")
+                #self.aat_prompt_message_label.setText(
+                 #   "{s}".format(s=release_package_dirs[-1] + " installed successfully."))
             else:
                 self.aat_prompt_message_label.setStyleSheet("QLabel {font-family:Arial;color : red; }")
-                self.aat_prompt_message_label.setText(
-                    "{s}".format(s=release_package_dirs[-1] + " install failed."))
+                GlobalLogging.getInstance().info(release_package_dirs[-1] + " install failed.")
+                #self.aat_prompt_message_label.setText(
+                 #   "{s}".format(s=release_package_dirs[-1] + " install failed."))
 
 
 class MainWindow(QTabWidget):
@@ -186,6 +188,8 @@ class MainWindow(QTabWidget):
         self.cursor = self.console_win.textCursor()
         self.cursor.movePosition(QTextCursor.End)
         self.console_win.setTextCursor(self.cursor)
+        self.aat_prompt_message_label.setText(msg)
+
     def initUI(self):
         self.setWindowIcon(QIcon('.\images\logo.png'))
         self.resize(600,275)
