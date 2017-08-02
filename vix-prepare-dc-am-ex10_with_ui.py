@@ -17,9 +17,9 @@ class AATPerform(threading.Thread):
     def __init__(self, main_window):
         super().__init__()
         self.run_button = main_window.run_button
-        self.aat_prompt_message_label = main_window.aat_prompt_message_label
+        self._change_logcolour_signal = main_window._change_logcolour_signal
         self.console_win = main_window.console_win
-        self.aat_prompt_message_label.setStyleSheet("QLabel {font-family:Arial;color : blue; }")
+        self._change_logcolour_signal.emit("blue")
 
 
     def run(self):
@@ -147,19 +147,21 @@ class AATPerform(threading.Thread):
             self.run_button.setEnabled(True)
             self.run_button.setText("Run")
             if done == 1:
-                self.aat_prompt_message_label.setStyleSheet("QLabel {font-family:Arial;color : green; }")
+                #self.aat_prompt_message_label.setStyleSheet("QLabel {font-family:Arial;color : green; }")
+                self._change_logcolour_signal.emit("green")
                 GlobalLogging.getInstance().info(release_package_dirs[-1]+" installed successfully.")
                 #self.aat_prompt_message_label.setText(
                  #   "{s}".format(s=release_package_dirs[-1] + " installed successfully."))
             else:
-                self.aat_prompt_message_label.setStyleSheet("QLabel {font-family:Arial;color : red; }")
+                #self.aat_prompt_message_label.setStyleSheet("QLabel {font-family:Arial;color : red; }")
+                self._change_logcolour_signal.emit("red")
                 GlobalLogging.getInstance().info(release_package_dirs[-1] + " install failed.")
                 #self.aat_prompt_message_label.setText(
                  #   "{s}".format(s=release_package_dirs[-1] + " install failed."))
 
 
 class MainWindow(QTabWidget):
-    _auto_scroll_signal = QtCore.pyqtSignal()
+    _change_logcolour_signal = QtCore.pyqtSignal(str)
     _append_text_signal = QtCore.pyqtSignal(str)
     def __init__(self):
         super().__init__()
@@ -189,7 +191,8 @@ class MainWindow(QTabWidget):
         self.cursor.movePosition(QTextCursor.End)
         self.console_win.setTextCursor(self.cursor)
         self.aat_prompt_message_label.setText(msg)
-
+    def change_logcolour(self,col):
+        self.aat_prompt_message_label.setStyleSheet("QLabel {font-family:Arial;color : "+col+"; }")
     def initUI(self):
         self.setWindowIcon(QIcon('.\images\logo.png'))
         self.resize(600,275)
@@ -268,7 +271,7 @@ class MainWindow(QTabWidget):
         self.clear_logs_button.clicked.connect(self.console_win.clear)
 
 
-        self._auto_scroll_signal.connect(self.auto_scroll)
+        self._change_logcolour_signal.connect(self.change_logcolour)
         self._append_text_signal.connect(self.append_text)
 
 if __name__ == '__main__':
