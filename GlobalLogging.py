@@ -8,9 +8,7 @@ class QTextBrowserHanlder(logging.Handler):
 
     def emit(self, record):
         msg = self.format(record)
-        #self.console_win.append(msg)
         self.main_window._append_text_signal.emit(msg)
-        #self.main_window._auto_scroll_signal.emit()
 
 class NullHandler(logging.Handler):
     def emit(self, record): pass
@@ -30,7 +28,7 @@ class GlobalLogging:
         self.handler = None
         self.level = logging.INFO
         self.logger = logging.getLogger("GlobalLogging")
-        self.formatter = logging.Formatter("%(asctime)s:%(levelname)s:%(message)s")
+        self.formatter = logging.Formatter("[%(asctime)s - %(levelname)s]  %(message)s")
         h = NullHandler()
         self.logger.addHandler(h)
 
@@ -63,7 +61,7 @@ class GlobalLogging:
     def info(self, s):
         self.logger.info(s)
         if not self.handler == None and self.level <= logging.INFO:
-            self.handler( s)
+            self.handler('info:' + s)
 
     def warn(self, s):
         self.logger.warn(s)
