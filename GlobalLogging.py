@@ -84,3 +84,7 @@ class GlobalLogging:
         self.logger.critical(s)
         if not self.handler == None and self.level <= logging.CRITICAL:
             self.handler('critical:' + s)
+    def exception(self, s):
+        self.logger.exception(s)
+        if not self.handler == None and self.level <= logging.ERROR:
+            self.handler('exception:' + s)

@@ -138,9 +138,9 @@ class AATPerform(threading.Thread):
             done = 1
 
         except Exception as ex:
-            print(str(datetime.now()) + " Exception,Operatation failed: {0}".format(ex), file=log_file)
-            print(str(datetime.now()) + " " + ex.__traceback__, file=log_file)
-            GlobalLogging.getInstance().exception("Error:")
+            #print(str(datetime.now()) + " Exception,Operatation failed: {0}".format(ex), file=log_file)
+            #print(str(datetime.now()) + " " + ex.__traceback__, file=log_file)
+            GlobalLogging.getInstance().exception("Catch a exception.")
         finally:
             log_file.close()
             _vm_host.disconnect()
