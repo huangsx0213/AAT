@@ -10,15 +10,12 @@ class QTextBrowserHanlder(logging.Handler):
         super().__init__()
         self.console_win = main_window.console_win
         self.main_window=main_window
-        #self.cursor = self.console_win.textCursor()
-
 
     def emit(self, record):
         msg = self.format(record)
-        self.console_win.append(msg)
-        #self.cursor.movePosition(QTextCursor.End)
-        #self.console_win.setTextCursor(self.cursor)
-        self.main_window._signal.emit()
+        #self.console_win.append(msg)
+        self.main_window._append_text_signal.emit(msg)
+        #self.main_window._auto_scroll_signal.emit()
 
 class NullHandler(logging.Handler):
     def emit(self, record): pass
