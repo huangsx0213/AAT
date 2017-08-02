@@ -157,7 +157,8 @@ class AATPerform(threading.Thread):
 
 
 class MainWindow(QTabWidget):
-    _signal = QtCore.pyqtSignal()
+    _auto_scroll_signal = QtCore.pyqtSignal()
+    _append_text_signal = QtCore.pyqtSignal(str)
     def __init__(self):
         super().__init__()
         self.initUI()
@@ -176,7 +177,12 @@ class MainWindow(QTabWidget):
         config_parser.set("config", "guest_login_name", self.guest_login_name_edit.text())
         config_parser.set("config", "guest_login_password", self.guest_login_password_edit.text())
         config_parser.write(open(r'.\config\myapp.conf', "w"))
-    def tt(self):
+    def auto_scroll(self):
+        self.cursor = self.console_win.textCursor()
+        self.cursor.movePosition(QTextCursor.End)
+        self.console_win.setTextCursor(self.cursor)
+    def append_text(self,msg):
+        self.console_win.append(msg)
         self.cursor = self.console_win.textCursor()
         self.cursor.movePosition(QTextCursor.End)
         self.console_win.setTextCursor(self.cursor)
@@ -258,7 +264,8 @@ class MainWindow(QTabWidget):
         self.clear_logs_button.clicked.connect(self.console_win.clear)
 
 
-        self._signal.connect(self.tt)
+        self._auto_scroll_signal.connect(self.auto_scroll)
+        self._append_text_signal.connect(self.append_text)
 
 if __name__ == '__main__':
     log_file = open("./logs/log.txt", 'w+')
