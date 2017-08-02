@@ -4,7 +4,6 @@ import time
 import configparser
 import threading
 from PyQt5 import QtWidgets, QtCore
-
 from PyQt5.QtGui import QIcon, QTextCursor
 from PyQt5.QtWidgets import *
 from datetime import datetime
@@ -25,8 +24,8 @@ class AATPerform(threading.Thread):
     def run(self):
         try:
             done = 0
-            GlobalLogging.getInstance().info('Copying the latest build.')
-            #self.aat_prompt_message_label.setText("Copying the latest build.")
+            GlobalLogging.getInstance().info('Copying the latest build to host.')
+
             release_package_dirs = os.listdir(release_path)
             release_package_full_path = os.path.join(
                 '{rp}\{rpd}\ArchiveManagerInstaller.msi'.format(rp=release_path, rpd=release_package_dirs[-1]))
@@ -48,98 +47,76 @@ class AATPerform(threading.Thread):
 
             # open the dc vm
             GlobalLogging.getInstance().info('Opening the dc vm.')
-            #self.aat_prompt_message_label.setText("Opening the dc vm.")
             vm_dc = _vm_host.open_vm(dc_vmx_path)
 
             # revert to a snapshot
-            GlobalLogging.getInstance().info('Reverting to a snapshot.')
-            #self.aat_prompt_message_label.setText("Reverting to a snapshot.")
+            GlobalLogging.getInstance().info('Reverting to snapshot.')
             vm_dc_snapshot = vm_dc.snapshot_get_named(snapshot_name)
             vm_dc.snapshot_revert(snapshot=vm_dc_snapshot, options=VixVM.VIX_VMPOWEROP_LAUNCH_GUI)
-            print(str(datetime.now()) + " Reverted to snapshot Base - Done.")
             GlobalLogging.getInstance().info('Reverted to snapshot Base - Done.')
 
             # Login to dc guest for guest operation
             GlobalLogging.getInstance().info('Waiting for tools.')
-            #self.aat_prompt_message_label.setText("Waiting for tools.")
             vm_dc.wait_for_tools()
             GlobalLogging.getInstance().info('Login dc guest.')
-            #self.aat_prompt_message_label.setText("Login dc guest.")
             vm_dc.login(guest_login_name, guest_login_password, require_interactive=True)
             time.sleep(2.0)
-
-            print(str(datetime.now()) + " Login to dc guest for guest operation - Done.")
             GlobalLogging.getInstance().info('Login to dc guest for guest operation - Done.')
+
             # copy vix folder from host to guest for dc
-            #self.aat_prompt_message_label.setText("Copying vix folder from host to guest for dc.")
-            GlobalLogging.getInstance().info('Copying vix folder from host to guest for dc.')
+            GlobalLogging.getInstance().info('Copying vix folder from host to dc guest.')
             vm_dc.copy_host_to_guest(host_os_files_path_for_dc, guest_os_files_path)
-            print(str(datetime.now()) + " Copied vix folder from host to guest for dc - Done.")
-            GlobalLogging.getInstance().info('Copied vix folder from host to guest for dc - Done.')
+            GlobalLogging.getInstance().info('Copied vix folder from host to dc guest - Done.')
 
             # run script to prepare email data on dc vm
-            #self.aat_prompt_message_label.setText("Running script to prepare email data on dc vm.")
-            GlobalLogging.getInstance().info('Running script to prepare email data on dc vm.')
+            GlobalLogging.getInstance().info('Running script to prepare email data on dc.')
             vm_dc.run_script(r"PowerShell.exe -file c:\vix\importPST.ps1", None, False)
-            print(str(datetime.now()) + " Run powershell script to prepare email data on dc vm - Done.")
-            GlobalLogging.getInstance().info('Run powershell script to prepare email data on dc vm - Done.')
+            GlobalLogging.getInstance().info('Run powershell script to prepare email data on dc - Done.')
 
             # logout guest of dc
             vm_dc.logout()
-            print(str(datetime.now()) + " Logout guest of dc - Done.")
-            GlobalLogging.getInstance().info('Logout guest of dc - Done.')
+            GlobalLogging.getInstance().info('Logout dc guest - Done.')
+
             # open the am vm
+            GlobalLogging.getInstance().info('Opening the am vm.')
             vm_am = _vm_host.open_vm(am_vmx_path)
 
             # revert to a snapshot
-            #self.aat_prompt_message_label.setText("Reverting to a snapshot.")
-            GlobalLogging.getInstance().info('Reverting to a snapshot.')
+            GlobalLogging.getInstance().info('Reverting to snapshot.')
             vm_am_snapshot = vm_am.snapshot_get_named(snapshot_name)
             vm_am.snapshot_revert(snapshot=vm_am_snapshot, options=VixVM.VIX_VMPOWEROP_LAUNCH_GUI)
-            print(str(datetime.now()) + " Reverted to snapshot Base - Done.")
             GlobalLogging.getInstance().info('Reverted to snapshot Base - Done.')
 
             # Login to am guest for guest operation
-            #self.aat_prompt_message_label.setText("Waiting for tools.")
             GlobalLogging.getInstance().info('Waiting for tools.')
             vm_am.wait_for_tools()
-            #self.aat_prompt_message_label.setText("Login am guest.")
+
             GlobalLogging.getInstance().info('Login am guest.')
             vm_am.login(guest_login_name, guest_login_password, require_interactive=True)
             time.sleep(2.0)
-            print(str(datetime.now()) + " Login to am guest for guest operation - Done.")
             GlobalLogging.getInstance().info('Login to am guest for guest operation - Done.')
 
             # copy vix folder from host to guest for am
-            #self.aat_prompt_message_label.setText("Copying vix folder from host to guest for am.")
-            GlobalLogging.getInstance().info('Copying vix folder from host to guest for am.')
+            GlobalLogging.getInstance().info('Copying vix folder from host to am guest.')
             vm_am.copy_host_to_guest(host_os_files_path_for_am, guest_os_files_path)
-            print(str(datetime.now()) + " Copy vix folder from host to guest for am - Done.")
-            GlobalLogging.getInstance().info('Copy vix folder from host to guest for am - Done.')
+            GlobalLogging.getInstance().info('Copy vix folder from host to am guest - Done.')
 
             # run script to install am on am vm
-            #self.aat_prompt_message_label.setText("Running script to install am on am vm.")
-            GlobalLogging.getInstance().info('Running script to install am on am vm.')
+            GlobalLogging.getInstance().info('Running script to install am.')
             vm_am.proc_run(guest_os_files_path + r"\am_cmd.bat", None, True)
-            print(str(datetime.now()) + " Run script to install,config am on am vm - Done.")
-            GlobalLogging.getInstance().info('Run script to install,config am on am vm - Done.')
+            GlobalLogging.getInstance().info('Run script to install,config am - Done.')
 
             # run script to install Chrome
-            #self.aat_prompt_message_label.setText("Running script to install Chrome.")
             GlobalLogging.getInstance().info('Running script to install Chrome.')
             vm_am.proc_run(guest_os_files_path + "\ChromeStandaloneSetupEn 57.0.2987.110.exe", None, True)
-            print(str(datetime.now()) + " Run script to install Chrome - Done.")
             GlobalLogging.getInstance().info('Run script to install Chrome - Done.')
 
             # logout guest of am
             vm_am.logout()
-            print(str(datetime.now()) + " Logout guest of am - Done.")
-            GlobalLogging.getInstance().info('Logout guest of am - Done.')
+            GlobalLogging.getInstance().info('Logout am guest - Done.')
             done = 1
 
         except Exception as ex:
-            #print(str(datetime.now()) + " Exception,Operatation failed: {0}".format(ex), file=log_file)
-            #print(str(datetime.now()) + " " + ex.__traceback__, file=log_file)
             GlobalLogging.getInstance().exception("Catch a exception.")
         finally:
             log_file.close()
@@ -147,17 +124,11 @@ class AATPerform(threading.Thread):
             self.run_button.setEnabled(True)
             self.run_button.setText("Run")
             if done == 1:
-                #self.aat_prompt_message_label.setStyleSheet("QLabel {font-family:Arial;color : green; }")
                 self._change_logcolour_signal.emit("green")
                 GlobalLogging.getInstance().info(release_package_dirs[-1]+" installed successfully.")
-                #self.aat_prompt_message_label.setText(
-                 #   "{s}".format(s=release_package_dirs[-1] + " installed successfully."))
             else:
-                #self.aat_prompt_message_label.setStyleSheet("QLabel {font-family:Arial;color : red; }")
                 self._change_logcolour_signal.emit("red")
                 GlobalLogging.getInstance().info(release_package_dirs[-1] + " install failed.")
-                #self.aat_prompt_message_label.setText(
-                 #   "{s}".format(s=release_package_dirs[-1] + " install failed."))
 
 
 class MainWindow(QTabWidget):

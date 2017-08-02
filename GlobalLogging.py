@@ -1,9 +1,4 @@
 import logging
-from PyQt5 import QtCore
-
-from PyQt5.QtGui import QTextCursor
-from PyQt5.QtWidgets import *
-
 
 class QTextBrowserHanlder(logging.Handler):
     def __init__(self, main_window):
@@ -68,12 +63,12 @@ class GlobalLogging:
     def info(self, s):
         self.logger.info(s)
         if not self.handler == None and self.level <= logging.INFO:
-            self.handler('info:' + s)
+            self.handler( s)
 
     def warn(self, s):
         self.logger.warn(s)
         if not self.handler == None and self.level <= logging.WARNING:
-            self.handler('warn:' + s)
+            self.handler( s)
 
     def error(self, s):
         self.logger.error(s)
