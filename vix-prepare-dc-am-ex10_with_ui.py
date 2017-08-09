@@ -164,9 +164,25 @@ class MainWindow(QTabWidget):
         self.aat_prompt_message_label.setText(msg)
     def change_logcolour(self,col):
         self.aat_prompt_message_label.setStyleSheet("QLabel {font-family:Arial;color : "+col+"; }")
+
+    def browse_dc_vmx_dialog(self):
+        file_path = QFileDialog.getOpenFileName(self, 'Open file','','*.vmx')
+        if file_path[0] is not '':
+            self.dc_vmx_path_edit.setText(file_path[0])
+
+    def browse_am_vmx_dialog(self):
+        file_path2 = QFileDialog.getOpenFileName(self, 'Open file', '', '*.vmx')
+        if file_path2[0] is not '':
+            self.am_vmx_path_edit.setText(file_path2[0])
+
+    def browse_release_path_dialog(self):
+        file_path3 = QFileDialog.getExistingDirectory(self, 'Open directory', '' )
+        if file_path3 is not '':
+            self.release_path_edit.setText(file_path3)
+
     def initUI(self):
         self.setWindowIcon(QIcon('.\images\logo.png'))
-        self.resize(600,275)
+        self.resize(700,275)
         self.setWindowTitle('AAT')
 
         self.dc_vmx_path_label = QLabel('dc_vmx_path:')
@@ -194,6 +210,9 @@ class MainWindow(QTabWidget):
 
         self.save_button = QPushButton('Save', self)
         self.run_button = QPushButton('Run', self)
+        self.browse_dc_vmx_button = QPushButton('Browse', self)
+        self.browse_am_vmx_button = QPushButton('Browse', self)
+        self.browse_release_path_button = QPushButton('Browse', self)
 
         self.grid = QGridLayout()
         self.grid.setSpacing(10)
@@ -201,13 +220,16 @@ class MainWindow(QTabWidget):
         self.grid2.setSpacing(10)
 
         self.grid.addWidget(self.dc_vmx_path_label, 1, 0)
-        self.grid.addWidget(self.dc_vmx_path_edit, 1, 1, 1, 6)
+        self.grid.addWidget(self.dc_vmx_path_edit, 1, 1, 1,5)
+        self.grid.addWidget(self.browse_dc_vmx_button, 1, 6)
 
         self.grid.addWidget(self.am_vmx_path_label, 2, 0)
-        self.grid.addWidget(self.am_vmx_path_edit, 2, 1, 1, 6)
+        self.grid.addWidget(self.am_vmx_path_edit, 2, 1, 1, 5)
+        self.grid.addWidget(self.browse_am_vmx_button, 2, 6)
 
         self.grid.addWidget(self.release_path_label, 3, 0)
-        self.grid.addWidget(self.release_path_edit, 3, 1, 1, 6)
+        self.grid.addWidget(self.release_path_edit, 3, 1, 1, 5)
+        self.grid.addWidget(self.browse_release_path_button, 3, 6)
 
         self.grid.addWidget(self.snapshot_label, 4, 0)
         self.grid.addWidget(self.snapshot_path_edit, 4, 1, 1, 6)
@@ -240,7 +262,9 @@ class MainWindow(QTabWidget):
         self.clear_logs_button = QPushButton('Clear', self)
         self.grid2.addWidget(self.clear_logs_button,8,6)
         self.clear_logs_button.clicked.connect(self.console_win.clear)
-
+        self.browse_dc_vmx_button.clicked.connect(self.browse_dc_vmx_dialog)
+        self.browse_am_vmx_button.clicked.connect(self.browse_am_vmx_dialog)
+        self.browse_release_path_button.clicked.connect(self.browse_release_path_dialog)
 
         self._change_logcolour_signal.connect(self.change_logcolour)
         self._append_text_signal.connect(self.append_text)
