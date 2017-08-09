@@ -3,7 +3,7 @@
 block_cipher = None
 
 
-a = Analysis(['vix-prepare-dc-am-ex10_with_ui.py'],
+a = Analysis(['vix-prepare-dc-am.py'],
              pathex=['D:\\Program Files\\Python36\\Lib\\site-packages\\PyQt5\\Qt\\bin', 'C:\\Users\\vhuang1\\PycharmProjects\\AAT'],
              binaries=[],
              datas=[],
@@ -21,7 +21,7 @@ exe = EXE(pyz,
           a.binaries,
           a.zipfiles,
           a.datas,
-          name='vix-prepare-dc-am-ex10_with_ui',
+          name='vix-prepare-dc-am',
           debug=False,
           strip=False,
           upx=True,
