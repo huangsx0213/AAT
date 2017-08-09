@@ -24,6 +24,7 @@ class AATPerform(threading.Thread):
     def run(self):
         try:
             done = 0
+            get_allconfig()
             GlobalLogging.getInstance().info('Copying the latest build to host.')
 
             release_package_dirs = os.listdir(release_path)
@@ -269,6 +270,17 @@ class MainWindow(QTabWidget):
         self._change_logcolour_signal.connect(self.change_logcolour)
         self._append_text_signal.connect(self.append_text)
 
+
+def get_allconfig():
+    global dc_vmx_path, am_vmx_path, release_path, snapshot_name, guest_login_name, guest_login_password
+    dc_vmx_path = str(config_parser.get('config', 'dc_vmx_path'))
+    am_vmx_path = str(config_parser.get('config', 'am_vmx_path'))
+    release_path = config_parser.get('config', 'release_path')
+    snapshot_name = config_parser.get('config', 'snapshot_name')
+    guest_login_name = config_parser.get('config', 'guest_login_name')
+    guest_login_password = config_parser.get('config', 'guest_login_password')
+
+
 if __name__ == '__main__':
     log_file = open("./logs/log.txt", 'w+')
 
@@ -276,20 +288,7 @@ if __name__ == '__main__':
 
     config_parser.read(r'.\config\myapp.conf')
 
-    dc_vmx_path = str(config_parser.get('config', 'dc_vmx_path'))
-    print("dc_vmx_path:%s" % (dc_vmx_path))
-
-    am_vmx_path = str(config_parser.get('config', 'am_vmx_path'))
-    print("dc_vmx_path:%s" % (am_vmx_path))
-
-    release_path = config_parser.get('config', 'release_path')
-    print("release_path:%s" % (release_path))
-
-    snapshot_name = config_parser.get('config', 'snapshot_name')
-    print("snapshot_name:%s" % (snapshot_name))
-
-    guest_login_name = config_parser.get('config', 'guest_login_name')
-    guest_login_password = config_parser.get('config', 'guest_login_password')
+    get_allconfig()
 
     host_os_files_path_for_dc = r".\vix\dc"
     host_os_files_path_for_am = r".\vix\am"
