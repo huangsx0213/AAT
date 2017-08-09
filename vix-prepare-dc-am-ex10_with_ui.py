@@ -68,10 +68,21 @@ class AATPerform(threading.Thread):
             vm_dc.copy_host_to_guest(host_os_files_path_for_dc, guest_os_files_path)
             GlobalLogging.getInstance().info('Copied vix folder from host to dc guest - Done.')
 
-            # run script to prepare email data on dc vm
-            GlobalLogging.getInstance().info('Running script to prepare email data on dc.')
-            vm_dc.run_script(r"PowerShell.exe -file c:\vix\importPST.ps1", None, False)
-            GlobalLogging.getInstance().info('Run powershell script to prepare email data on dc - Done.')
+            # run program on am dc
+            dc_program_name = program_run_on_dc.split(',')
+            for dc_program in dc_program_name:
+                if dc_program is not '':
+                    GlobalLogging.getInstance().info('Running program ' + dc_program + '.')
+                    vm_dc.proc_run(guest_os_files_path + "\\" + dc_program, None, True)
+                    GlobalLogging.getInstance().info('Running program ' + dc_program + ' - Done.')
+
+            # run script on am dc
+            dc_script = script_run_on_dc.split(',')
+            for dc_scr in dc_script:
+                if dc_scr is not '':
+                    GlobalLogging.getInstance().info('Running script ' + dc_scr + '.')
+                    vm_dc.run_script(dc_scr, None, True)
+                    GlobalLogging.getInstance().info('Running script ' + dc_scr + ' - Done.')
 
             # logout guest of dc
             vm_dc.logout()
@@ -101,12 +112,21 @@ class AATPerform(threading.Thread):
             vm_am.copy_host_to_guest(host_os_files_path_for_am, guest_os_files_path)
             GlobalLogging.getInstance().info('Copy vix folder from host to am guest - Done.')
 
-            # run script to install am on am vm
-            program_name = ["am_cmd.bat","ChromeStandaloneSetupEn 57.0.2987.110.exe"]
-            for program in program_name:
-                GlobalLogging.getInstance().info('Running script ' + program + '.')
-                vm_am.proc_run(guest_os_files_path + "\\" + program, None, True)
-                GlobalLogging.getInstance().info('Running script' + program + ' - Done.')
+            # run program on am vm
+            am_program_name = program_run_on_am.split(',')
+            for am_program in am_program_name:
+                if am_program is not '':
+                    GlobalLogging.getInstance().info('Running program ' + am_program + '.')
+                    vm_am.proc_run(guest_os_files_path + "\\" + am_program, None, True)
+                    GlobalLogging.getInstance().info('Running program ' + am_program + ' - Done.')
+
+            # run script on am vm
+            am_script = script_run_on_am.split(',')
+            for am_scr in am_script:
+                if am_scr is not '':
+                    GlobalLogging.getInstance().info('Running script ' + am_scr + '.')
+                    vm_am.run_script(am_scr, None, True)
+                    GlobalLogging.getInstance().info('Running script ' + am_scr + ' - Done.')
 
             # logout guest of am
             vm_am.logout()
@@ -116,7 +136,6 @@ class AATPerform(threading.Thread):
         except Exception as ex:
             GlobalLogging.getInstance().exception("Catch a exception.")
         finally:
-            log_file.close()
             _vm_host.disconnect()
             self.run_button.setEnabled(True)
             self.run_button.setText("Run")
@@ -148,6 +167,10 @@ class MainWindow(QTabWidget):
         config_parser.set("config", "snapshot_name", self.snapshot_path_edit.text())
         config_parser.set("config", "guest_login_name", self.guest_login_name_edit.text())
         config_parser.set("config", "guest_login_password", self.guest_login_password_edit.text())
+        config_parser.set("config", "program_run_on_dc", self.program_run_on_dc_edit.text())
+        config_parser.set("config", "script_run_on_dc", self.script_run_on_dc_edit.text())
+        config_parser.set("config", "program_run_on_am", self.program_run_on_am_edit.text())
+        config_parser.set("config", "script_run_on_am", self.script_run_on_am_edit.text())
         config_parser.write(open(r'.\config\myapp.conf', "w"))
     def auto_scroll(self):
         self.cursor = self.console_win.textCursor()
@@ -179,7 +202,7 @@ class MainWindow(QTabWidget):
 
     def initUI(self):
         self.setWindowIcon(QIcon('.\images\logo.png'))
-        self.resize(700,275)
+        self.resize(700,350)
         self.setWindowTitle('AAT')
 
         self.dc_vmx_path_label = QLabel('dc_vmx_path:')
@@ -189,6 +212,10 @@ class MainWindow(QTabWidget):
         self.guest_login_name_label = QLabel('guest_login_name:')
         self.guest_login_password_label = QLabel('guest_login_password:')
         self.run_time_message_label = QLabel("run_time_message:")
+        self.program_run_on_dc_label = QLabel("program_run_on_dc:")
+        self.program_run_on_am_label = QLabel("program_run_on_am:")
+        self.script_run_on_dc_label = QLabel("script_run_on_dc:")
+        self.script_run_on_am_label = QLabel("script_run_on_am:")
         self.aat_prompt_message_label = QLabel("")
 
         self.dc_vmx_path_edit = QLineEdit()
@@ -204,6 +231,14 @@ class MainWindow(QTabWidget):
         self.guest_login_password_edit = QLineEdit()
         self.guest_login_password_edit.setText(guest_login_password)
         self.guest_login_password_edit.setEchoMode(QLineEdit.Password)
+        self.program_run_on_dc_edit = QLineEdit()
+        self.program_run_on_dc_edit.setText(program_run_on_dc)
+        self.script_run_on_dc_edit = QLineEdit()
+        self.script_run_on_dc_edit.setText(script_run_on_dc)
+        self.program_run_on_am_edit = QLineEdit()
+        self.program_run_on_am_edit.setText(program_run_on_am)
+        self.script_run_on_am_edit = QLineEdit()
+        self.script_run_on_am_edit.setText(script_run_on_am)
 
         self.save_button = QPushButton('Save', self)
         self.run_button = QPushButton('Run', self)
@@ -229,18 +264,29 @@ class MainWindow(QTabWidget):
         self.grid.addWidget(self.browse_release_path_button, 3, 6)
 
         self.grid.addWidget(self.snapshot_label, 4, 0)
-        self.grid.addWidget(self.snapshot_path_edit, 4, 1, 1, 6)
+        self.grid.addWidget(self.snapshot_path_edit, 4, 1)
 
-        self.grid.addWidget(self.guest_login_name_label, 5, 0)
-        self.grid.addWidget(self.guest_login_name_edit, 5, 1, 1, 6)
+        self.grid.addWidget(self.guest_login_name_label, 4,2)
+        self.grid.addWidget(self.guest_login_name_edit, 4,3)
 
-        self.grid.addWidget(self.guest_login_password_label, 6, 0)
-        self.grid.addWidget(self.guest_login_password_edit, 6, 1, 1, 6)
+        self.grid.addWidget(self.guest_login_password_label, 4, 5)
+        self.grid.addWidget(self.guest_login_password_edit,4, 6)
 
-        self.grid.addWidget(self.run_time_message_label, 7, 0)
-        self.grid.addWidget(self.aat_prompt_message_label, 7, 1, 1, 6)
-        self.grid.addWidget(self.save_button, 8, 5)
-        self.grid.addWidget(self.run_button, 8, 6)
+        self.grid.addWidget(self.program_run_on_dc_label, 5, 0)
+        self.grid.addWidget(self.program_run_on_dc_edit, 5, 1, 1, 6)
+        self.grid.addWidget(self.script_run_on_dc_label, 6, 0)
+        self.grid.addWidget(self.script_run_on_dc_edit, 6, 1, 1, 6)
+
+        self.grid.addWidget(self.program_run_on_am_label,7, 0)
+        self.grid.addWidget(self.program_run_on_am_edit, 7,1, 1, 6)
+        self.grid.addWidget(self.script_run_on_am_label, 8, 0)
+        self.grid.addWidget(self.script_run_on_am_edit, 8, 1, 1, 6)
+
+        self.grid.addWidget(self.run_time_message_label, 9, 0)
+        self.grid.addWidget(self.aat_prompt_message_label, 9, 1, 1, 6)
+
+        self.grid.addWidget(self.save_button,10, 5)
+        self.grid.addWidget(self.run_button, 10, 6)
         self.tab = QtWidgets.QWidget()
         self.tab.setObjectName("tab")
         self.addTab(self.tab, " Console")
@@ -268,13 +314,17 @@ class MainWindow(QTabWidget):
 
 
 def get_allconfig():
-    global dc_vmx_path, am_vmx_path, release_path, snapshot_name, guest_login_name, guest_login_password
+    global dc_vmx_path, am_vmx_path, release_path, snapshot_name, guest_login_name, guest_login_password,program_run_on_dc,script_run_on_dc,program_run_on_am,script_run_on_am
     dc_vmx_path = str(config_parser.get('config', 'dc_vmx_path'))
     am_vmx_path = str(config_parser.get('config', 'am_vmx_path'))
     release_path = config_parser.get('config', 'release_path')
     snapshot_name = config_parser.get('config', 'snapshot_name')
     guest_login_name = config_parser.get('config', 'guest_login_name')
     guest_login_password = config_parser.get('config', 'guest_login_password')
+    program_run_on_dc  = config_parser.get('config', 'program_run_on_dc')
+    script_run_on_dc  = config_parser.get('config', 'script_run_on_dc')
+    program_run_on_am  = config_parser.get('config', 'program_run_on_am')
+    script_run_on_am  = config_parser.get('config', 'script_run_on_am')
 
 
 if __name__ == '__main__':
