@@ -37,11 +37,10 @@ class AATPerform(threading.Thread):
                                                      host_os_files_path_for_am,
                                                      shellcon.FOF_NOCONFIRMATION | shellcon.FOF_SILENT, None, None))
                 if copy_return[0] == 0:
-                    print(str(
-                        datetime.now()) + " Copied the latest am msi from " + release_package_full_path + " to " + host_os_files_path_for_am)
+                    GlobalLogging.getInstance().info("Copied the latest am msi from " + release_package_full_path + " to " + host_os_files_path_for_am)
                     break
                 i += 1
-                print(str(datetime.now()) + " Copy error with error code:{error}".format(error=copy_return))
+                GlobalLogging.getInstance().error("Copy error with error code:{error}".format(error=copy_return))
 
             # new a VixHost instance
             _vm_host = VixHost()
@@ -103,14 +102,11 @@ class AATPerform(threading.Thread):
             GlobalLogging.getInstance().info('Copy vix folder from host to am guest - Done.')
 
             # run script to install am on am vm
-            GlobalLogging.getInstance().info('Running script to install am.')
-            vm_am.proc_run(guest_os_files_path + r"\am_cmd.bat", None, True)
-            GlobalLogging.getInstance().info('Run script to install,config am - Done.')
-
-            # run script to install Chrome
-            GlobalLogging.getInstance().info('Running script to install Chrome.')
-            vm_am.proc_run(guest_os_files_path + "\ChromeStandaloneSetupEn 57.0.2987.110.exe", None, True)
-            GlobalLogging.getInstance().info('Run script to install Chrome - Done.')
+            program_name = ["am_cmd.bat","ChromeStandaloneSetupEn 57.0.2987.110.exe"]
+            for program in program_name:
+                GlobalLogging.getInstance().info('Running script ' + program + '.')
+                vm_am.proc_run(guest_os_files_path + "\\" + program, None, True)
+                GlobalLogging.getInstance().info('Running script' + program + ' - Done.')
 
             # logout guest of am
             vm_am.logout()
@@ -211,9 +207,9 @@ class MainWindow(QTabWidget):
 
         self.save_button = QPushButton('Save', self)
         self.run_button = QPushButton('Run', self)
-        self.browse_dc_vmx_button = QPushButton('Browse', self)
-        self.browse_am_vmx_button = QPushButton('Browse', self)
-        self.browse_release_path_button = QPushButton('Browse', self)
+        self.browse_dc_vmx_button = QPushButton('Browse...', self)
+        self.browse_am_vmx_button = QPushButton('Browse...', self)
+        self.browse_release_path_button = QPushButton('Browse...', self)
 
         self.grid = QGridLayout()
         self.grid.setSpacing(10)
@@ -282,7 +278,6 @@ def get_allconfig():
 
 
 if __name__ == '__main__':
-    log_file = open("./logs/log.txt", 'w+')
 
     config_parser = configparser.ConfigParser()
 
@@ -297,7 +292,7 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     main_window = MainWindow()
     main_window.show()
-    GlobalLogging.getInstance().setLoggingToFile(r'./logs/log2.txt')
+    GlobalLogging.getInstance().setLoggingToFile(r'./logs/log.txt')
     GlobalLogging.getInstance().setLoggingToQTextBrowserHanlder(main_window)
     GlobalLogging.getInstance().setLoggingLevel(logging.INFO)
     sys.exit(app.exec_())
