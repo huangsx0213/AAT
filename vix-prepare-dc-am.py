@@ -193,7 +193,6 @@ class MainWindow(QTabWidget):
         self.aat_prompt_message_label.setText(msg)
     def change_logcolour(self,col):
         self.aat_prompt_message_label.setStyleSheet("QLabel {font-family:Arial;color : "+col+"; }")
-
     def browse_dc_vmx_dialog(self):
         file_path = QFileDialog.getOpenFileName(self, 'Open file','','*.vmx')
         if file_path[0] is not '':
@@ -265,8 +264,10 @@ class MainWindow(QTabWidget):
 
         self.grid = QGridLayout()
         self.grid.setSpacing(10)
+
         self.grid2 = QGridLayout()
         self.grid2.setSpacing(10)
+        self.grid2.setContentsMargins(0,0,0,0)
 
         self.grid.addWidget(self.dc_vmx_path_label, 1, 0)
         self.grid.addWidget(self.dc_vmx_path_edit, 1, 1, 1,6)
