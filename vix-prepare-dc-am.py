@@ -157,6 +157,7 @@ class MainWindow(QTabWidget):
     def __init__(self):
         super().__init__()
         self.initUI()
+        self.read_txt_to_help()
 
     def work(self):
         self.run_button.setEnabled(False)
@@ -207,6 +208,12 @@ class MainWindow(QTabWidget):
         file_path3 = QFileDialog.getExistingDirectory(self, 'Open directory', '' )
         if file_path3 is not '':
             self.release_path_edit.setText(file_path3)
+
+    def read_txt_to_help(self):
+        lines = f.readlines()
+        for line in lines:
+            self.help_win.append(line)
+        f.close()
 
     def initUI(self):
         self.setWindowIcon(QIcon('.\images\logo.png'))
@@ -269,6 +276,10 @@ class MainWindow(QTabWidget):
         self.grid2.setSpacing(10)
         self.grid2.setContentsMargins(0,0,0,0)
 
+        self.grid3 = QGridLayout()
+        self.grid3.setSpacing(10)
+        self.grid3.setContentsMargins(0, 0, 0, 0)
+
         self.grid.addWidget(self.dc_vmx_path_label, 1, 0)
         self.grid.addWidget(self.dc_vmx_path_edit, 1, 1, 1,6)
         self.grid.addWidget(self.browse_dc_vmx_button, 1, 7)
@@ -317,8 +328,12 @@ class MainWindow(QTabWidget):
         self.tab1 = QtWidgets.QWidget()
         self.tab1.setObjectName("tab1")
         self.addTab(self.tab1, "TaskManagement")
+        self.tab2 = QtWidgets.QWidget()
+        self.tab2.setObjectName("tab2")
+        self.addTab(self.tab2, "Help")
         self.tab1.setLayout(self.grid)
         self.tab.setLayout(self.grid2)
+        self.tab2.setLayout(self.grid3)
         self.setCurrentIndex(1)
 
         self.save_button.clicked.connect(self.save)
@@ -328,6 +343,10 @@ class MainWindow(QTabWidget):
         self.grid2.addWidget(self.console_win,1,0,7,7)
         self.clear_logs_button = QPushButton('Clear', self)
         self.grid2.addWidget(self.clear_logs_button,8,6)
+
+        self.help_win = QtWidgets.QTextBrowser()
+        self.grid3.addWidget(self.help_win, 1, 0, 7, 7)
+
         self.clear_logs_button.clicked.connect(self.console_win.clear)
         self.browse_dc_vmx_button.clicked.connect(self.browse_dc_vmx_dialog)
         self.browse_am_vmx_button.clicked.connect(self.browse_am_vmx_dialog)
@@ -340,7 +359,7 @@ class MainWindow(QTabWidget):
 def get_allconfig():
     global dc_vmx_path, am_vmx_path, release_path, snapshot_name, guest_login_name, guest_login_password
     global program_run_on_dc,script_run_on_dc,program_run_on_am,script_run_on_am
-    global program_run_on_dc_imme,script_run_on_dc_imme,program_run_on_am_imme,script_run_on_am_imme
+    global program_run_on_dc_imme,script_run_on_dc_imme,program_run_on_am_imme,script_run_on_am_imme,f
     dc_vmx_path = str(config_parser.get('config', 'dc_vmx_path'))
     am_vmx_path = str(config_parser.get('config', 'am_vmx_path'))
     release_path = config_parser.get('config', 'release_path')
@@ -358,7 +377,7 @@ def get_allconfig():
 
 
 if __name__ == '__main__':
-
+    f = open(r'.\config\help.txt', "r")
     config_parser = configparser.ConfigParser()
 
     config_parser.read(r'.\config\myapp.conf')
