@@ -4,9 +4,9 @@ import time
 import configparser
 import threading
 from PyQt5 import QtWidgets, QtCore
+from PyQt5.QtCore import QStringListModel
 from PyQt5.QtGui import QIcon, QTextCursor
 from PyQt5.QtWidgets import *
-from datetime import datetime
 from vix import VixHost, VixError, VixJob, VixVM
 from win32com.shell import shell, shellcon
 from GlobalLogging import GlobalLogging
@@ -25,11 +25,11 @@ class AATPerform(threading.Thread):
         try:
             done = 0
             get_allconfig()
-            GlobalLogging.getInstance().info('Copying the latest build to host.')
+            GlobalLogging.getInstance().info('-'*50)
+            GlobalLogging.getInstance().info('Copying the '+build_number+' build to host.')
 
-            release_package_dirs = os.listdir(release_path)
             release_package_full_path = os.path.join(
-                '{rp}\{rpd}\ArchiveManagerInstaller.msi'.format(rp=release_path, rpd=release_package_dirs[-1]))
+                '{rp}\{rpd}\ArchiveManagerInstaller.msi'.format(rp=release_path, rpd=build_number))
             # Copy the latest mis packet from share path to host，if fail,it will retry 3 times
             i = 0
             while i < 3:
@@ -37,7 +37,7 @@ class AATPerform(threading.Thread):
                                                      host_os_files_path_for_am,
                                                      shellcon.FOF_NOCONFIRMATION | shellcon.FOF_SILENT, None, None))
                 if copy_return[0] == 0:
-                    GlobalLogging.getInstance().info("Copied the latest am msi from " + release_package_full_path + " to " + host_os_files_path_for_am)
+                    GlobalLogging.getInstance().info("Copied the "+ build_number + " build from " + release_package_full_path + " to " + host_os_files_path_for_am)
                     break
                 i += 1
                 GlobalLogging.getInstance().error("Copy error with error code:{error}".format(error=copy_return))
@@ -145,10 +145,10 @@ class AATPerform(threading.Thread):
             self.run_button.setText("Run")
             if done == 1:
                 self._change_logcolour_signal.emit("green")
-                GlobalLogging.getInstance().info(release_package_dirs[-1]+" installed successfully.")
+                GlobalLogging.getInstance().info(build_number+" installed successfully.")
             else:
                 self._change_logcolour_signal.emit("red")
-                GlobalLogging.getInstance().info(release_package_dirs[-1] + " install failed.")
+                GlobalLogging.getInstance().info(build_number + " install failed.")
 
 
 class MainWindow(QTabWidget):
@@ -158,8 +158,10 @@ class MainWindow(QTabWidget):
         super().__init__()
         self.initUI()
         self.read_txt_to_help()
-
+        self.refresh_build_number()
     def work(self):
+        global build_number
+        build_number = self.build_number_combobox.currentText()
         self.run_button.setEnabled(False)
         self.run_button.setText("Running")
         aat = AATPerform(self)
@@ -215,6 +217,12 @@ class MainWindow(QTabWidget):
             self.help_win.append(line)
         f.close()
 
+    def refresh_build_number(self):
+        get_release_package_dirs()
+        M = QStringListModel(release_package_dirs)
+        self.build_number_combobox.setModel(M)
+        self.build_number_combobox.setCurrentIndex(len(release_package_dirs)-1)
+
     def initUI(self):
         self.setWindowIcon(QIcon('.\images\logo.png'))
         self.resize(800,350)
@@ -223,6 +231,7 @@ class MainWindow(QTabWidget):
         self.dc_vmx_path_label = QLabel('dc_vmx_path:')
         self.am_vmx_path_label = QLabel('am_vmx_path:')
         self.release_path_label = QLabel('release_path:')
+        self.build_number_label = QLabel('build_number:')
         self.snapshot_label = QLabel('snapshot_name:')
         self.guest_login_name_label = QLabel('guest_login:')
         self.guest_login_password_label = QLabel('guest_password:')
@@ -239,6 +248,7 @@ class MainWindow(QTabWidget):
         self.am_vmx_path_edit.setText(am_vmx_path)
         self.release_path_edit = QLineEdit()
         self.release_path_edit.setText(release_path)
+        self.build_number_combobox = QComboBox()
         self.snapshot_path_edit = QLineEdit()
         self.snapshot_path_edit.setText(snapshot_name)
         self.guest_login_name_edit = QLineEdit()
@@ -265,6 +275,7 @@ class MainWindow(QTabWidget):
 
         self.save_button = QPushButton('Save', self)
         self.run_button = QPushButton('Run', self)
+        self.refresh_build_number_button = QPushButton('Refresh build no.', self)
         self.browse_dc_vmx_button = QPushButton('Browse...', self)
         self.browse_am_vmx_button = QPushButton('Browse...', self)
         self.browse_release_path_button = QPushButton('Browse...', self)
@@ -289,7 +300,9 @@ class MainWindow(QTabWidget):
         self.grid.addWidget(self.browse_am_vmx_button, 2, 7)
 
         self.grid.addWidget(self.release_path_label, 3, 0)
-        self.grid.addWidget(self.release_path_edit, 3, 1, 1,6)
+        self.grid.addWidget(self.release_path_edit, 3, 1, 1,4)
+        self.grid.addWidget(self.build_number_label, 3, 5)
+        self.grid.addWidget(self.build_number_combobox, 3, 6)
         self.grid.addWidget(self.browse_release_path_button, 3, 7)
 
         self.grid.addWidget(self.snapshot_label, 4, 0)
@@ -300,6 +313,8 @@ class MainWindow(QTabWidget):
 
         self.grid.addWidget(self.guest_login_password_label, 4,5)
         self.grid.addWidget(self.guest_login_password_edit,4,6)
+
+        self.grid.addWidget(self.refresh_build_number_button, 4, 7)
 
         self.grid.addWidget(self.program_run_on_dc_label, 5, 0)
         self.grid.addWidget(self.program_run_on_dc_edit, 5, 1, 1, 6)
@@ -320,6 +335,7 @@ class MainWindow(QTabWidget):
         self.grid.addWidget(self.run_time_message_label, 9, 0)
         self.grid.addWidget(self.aat_prompt_message_label, 9, 1, 1,7)
 
+
         self.grid.addWidget(self.save_button,10,6)
         self.grid.addWidget(self.run_button, 10,7)
         self.tab = QtWidgets.QWidget()
@@ -338,6 +354,7 @@ class MainWindow(QTabWidget):
 
         self.save_button.clicked.connect(self.save)
         self.run_button.clicked.connect(lambda: self.work())
+        self.refresh_build_number_button.clicked.connect(self.refresh_build_number)
 
         self.console_win = QtWidgets.QTextBrowser()
         self.grid2.addWidget(self.console_win,1,0,7,7)
@@ -354,7 +371,6 @@ class MainWindow(QTabWidget):
 
         self._change_logcolour_signal.connect(self.change_logcolour)
         self._append_text_signal.connect(self.append_text)
-
 
 def get_allconfig():
     global dc_vmx_path, am_vmx_path, release_path, snapshot_name, guest_login_name, guest_login_password
@@ -374,6 +390,9 @@ def get_allconfig():
     script_run_on_dc_imme = config_parser.get('config', 'script_run_on_dc_imme')
     program_run_on_am_imme = config_parser.get('config', 'program_run_on_am_imme')
     script_run_on_am_imme = config_parser.get('config', 'script_run_on_am_imme')
+def get_release_package_dirs():
+    global release_package_dirs
+    release_package_dirs = os.listdir(release_path)
 
 
 if __name__ == '__main__':
@@ -383,7 +402,7 @@ if __name__ == '__main__':
     config_parser.read(r'.\config\myapp.conf')
 
     get_allconfig()
-
+    get_release_package_dirs()
     host_os_files_path_for_dc = r".\vix\dc"
     host_os_files_path_for_am = r".\vix\am"
     guest_os_files_path = r"C:\vix"
