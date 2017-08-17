@@ -48,7 +48,9 @@ class AATPerform(threading.Thread):
             # open the dc vm
             GlobalLogging.getInstance().info('Opening the dc vm.')
             vm_dc = _vm_host.open_vm(dc_vmx_path)
-
+            GlobalLogging.getInstance().info('Power on the dc vm.')
+            vm_dc.power_on(launch_gui=True)
+            GlobalLogging.getInstance().info('Power on the dc vm - Done.')
             # revert to a snapshot
             GlobalLogging.getInstance().info('Reverting to snapshot.')
             vm_dc_snapshot = vm_dc.snapshot_get_named(snapshot_name)
@@ -93,7 +95,9 @@ class AATPerform(threading.Thread):
             # open the am vm
             GlobalLogging.getInstance().info('Opening the am vm.')
             vm_am = _vm_host.open_vm(am_vmx_path)
-
+            GlobalLogging.getInstance().info('Power on the am vm.')
+            vm_am.power_on(launch_gui=True)
+            GlobalLogging.getInstance().info('Power on the am vm - Done.')
             # revert to a snapshot
             GlobalLogging.getInstance().info('Reverting to snapshot.')
             vm_am_snapshot = vm_am.snapshot_get_named(snapshot_name)
@@ -392,6 +396,7 @@ def get_allconfig():
     script_run_on_am_imme = config_parser.get('config', 'script_run_on_am_imme')
 def get_release_package_dirs():
     global release_package_dirs
+    release_path = config_parser.get('config', 'release_path')
     release_package_dirs = os.listdir(release_path)
 
 
