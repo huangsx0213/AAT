@@ -230,7 +230,7 @@ class MainWindow(QTabWidget):
     def initUI(self):
         self.setWindowIcon(QIcon('.\images\logo.png'))
         self.resize(800,350)
-        self.setWindowTitle('AAT')
+        self.setWindowTitle('AAT2.0')
 
         self.dc_vmx_path_label = QLabel('dc_vmx_path:')
         self.am_vmx_path_label = QLabel('am_vmx_path:')
