@@ -1,14 +1,15 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import QCoreApplication, QModelIndex
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QGridLayout, QToolBox, QLabel, QGroupBox
-
+from PyQt5.QtGui import QStandardItemModel, QStandardItem
 
 class MainWindow_Ui(object):
     def setupUi(self, MainWindow):
 
         #settings of MainWindow,the QTabWidget.
         self.setWindowIcon(QIcon('.\images\logo.png'))
-        self.resize(800, 600)
+        self.resize(1020, 600)
         self.setWindowTitle('AAT 2.0')
 
         # define the first tab and add it into the QTabWidget.
@@ -35,23 +36,38 @@ class MainWindow_Ui(object):
         self.execution_tab.setLayout(self.execution_tab_layout)
         # define the left groupbox
         # 1. definea groupbox
-        self.left_groupbox = QGroupBox()
-        self.left_groupbox.setFixedWidth(185)
+        self.ex_left_menu_groupbox = QGroupBox()
+        self.ex_left_menu_groupbox.setFixedWidth(185)
         # 2.define a gridlayout
-        self.left_gridlayout = QGridLayout()
-        self.left_gridlayout.setContentsMargins(2, 2, 2, 2)
+        self.ex_left_menu_gridlayout = QGridLayout()
+        self.ex_left_menu_gridlayout.setContentsMargins(2, 2, 2, 2)
         # 3.define a toolbox
-        self.page = QtWidgets.QWidget()
-        self.page.setObjectName("page")
-        self.left_toolbox = QToolBox()
-        self.left_toolbox.addItem(self.page, "Execution")
+        self.ex_left_menu_listview = QtWidgets.QListView()
+        self.ex_left_menu_toolbox = QToolBox()
+        self.ex_left_menu_toolbox.addItem(self.ex_left_menu_listview, "Execution")
 
-        self.left_gridlayout.addWidget(self.left_toolbox)
-        self.left_groupbox.setLayout(self.left_gridlayout)
+        self.ex_left_menu_gridlayout.addWidget(self.ex_left_menu_toolbox)
+        self.ex_left_menu_groupbox.setLayout(self.ex_left_menu_gridlayout)
 
         # define the right groupbox
-        self.left_groupbox2 = QGroupBox()
+        self.ex_right_content_groupbox = QGroupBox()
+        # 2.define a gridlayout
+        self.taba = QtWidgets.QTabWidget()
+        self.taba.setContentsMargins(0, 0, 0, 0)
+        self.tabpage = QtWidgets.QTabWidget()
+        self.tabpage.setObjectName("tab422")
+        self.taba.addTab(self.tabpage, "Execution")
+        self.ex_right_content_gridlayout = QGridLayout()
+        self.ex_right_content_gridlayout.setContentsMargins(2, 2, 2, 2)
+        self.ex_right_content_gridlayout.addWidget(self.taba)
+
+        self.ex_right_content_groupbox.setLayout(self.ex_right_content_gridlayout)
+
+
 
         # add the left groupbox and  right groupbox into execution_tab_layout
-        self.execution_tab_layout.addWidget(self.left_groupbox, 0, 0)
-        self.execution_tab_layout.addWidget(self.left_groupbox2, 0, 1)
+        self.execution_tab_layout.addWidget(self.ex_left_menu_groupbox, 0, 0)
+        self.execution_tab_layout.addWidget(self.ex_right_content_groupbox, 0, 1)
+
+
+

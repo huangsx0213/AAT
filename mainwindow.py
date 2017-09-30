@@ -1,4 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import QStandardItem, QStandardItemModel
+
 from ui_mainwindow import Ui_MainWindow
 from mainwindow_ui import MainWindow_Ui
 class MainWindow2(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -24,3 +26,26 @@ class MainWindow(QtWidgets.QTabWidget, MainWindow_Ui):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
         self.setupUi(self)
+        # List view data and action
+        self.ex_list_view_model = QStandardItemModel()
+        # Load the data to the model
+        self.ex_list_view_model = self.loadModelData(self.ex_list_view_model)
+        # SConnect the model to the listView
+        self.ex_left_menu_listview.setModel(self.ex_list_view_model)
+        self.ex_left_menu_listview.clicked.connect(self.on_clicked)
+
+    def loadModelData(self, model):
+        # Demo data
+        # now a simple list, later database with index field
+        self.listdata = ['Executions', 'Test Sets', 'Variables', 'Machines']
+        for row in self.listdata:
+            item = QStandardItem(row)
+            #Set item AlignCenter
+            #item.setTextAlignment(QtCore.Qt.AlignCenter)
+            model.appendRow(item)
+        return model
+    def on_clicked(self,index):
+        a=index.row()
+        b=self.listdata[a]
+        print("You are selecting row "+str(a))
+        print("You are selecting data " + b)
