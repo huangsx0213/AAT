@@ -1,5 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
+from PyQt5.QtWidgets import QTabBar
 
 from ui_mainwindow import Ui_MainWindow
 from mainwindow_ui import MainWindow_Ui
@@ -7,21 +8,6 @@ class MainWindow2(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super(MainWindow2, self).__init__(parent)
         self.setupUi(self)
-
-    #     self.Title.setText("hello Python")
-    #     self.World.clicked.connect(self.onWorldClicked)
-    #     self.China.clicked.connect(self.onChinaClicked)
-    #     self.lineEdit.textChanged.connect(self.onlineEditTextChanged)
-    #
-    # def onWorldClicked(self, remark):
-    #     print(remark)
-    #     self.Title.setText("Hello World")
-    #
-    # def onChinaClicked(self):
-    #     self.Title.setText("Hello China")
-    #
-    # def onlineEditTextChanged(self,p_str):
-    #     self.Title.setText(p_str)
 class MainWindow(QtWidgets.QTabWidget, MainWindow_Ui):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
@@ -45,7 +31,16 @@ class MainWindow(QtWidgets.QTabWidget, MainWindow_Ui):
             model.appendRow(item)
         return model
     def ex_left_listview_on_clicked(self, index):
-        a=index.row()
-        b=self.listdata[a]
-        print("You are selecting row "+str(a))
-        print("You are selecting data " + b)
+        current_row=index.row()
+        current_listdata=self.listdata[current_row]
+        print("You are selecting row "+str(current_row))
+        self.ex_right_content_tabwidget.removeTab(0)
+        if current_listdata=="Executions":
+            self.ex_right_content_tabwidget.addTab(self.ex_right_content_allex_tab, "All Executions")
+        elif current_listdata=="Test Sets":
+            self.ex_right_content_tabwidget.addTab(self.ex_right_content_allex_tab, "All Test Sets")
+        elif current_listdata == "Variables":
+            self.ex_right_content_tabwidget.addTab(self.ex_right_content_allva_tab, "Variables")
+        elif current_listdata == "Machines":
+            self.ex_right_content_tabwidget.addTab(self.ex_right_content_allma_tab, "Machines")
+        QTabBar.setTabButton(self.ex_right_content_tabwidget.tabBar(), 0, QTabBar.RightSide, None)

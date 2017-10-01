@@ -69,7 +69,7 @@ class MainWindow_Ui(object):
         self.ex_right_content_allex_tab.setObjectName("tab3")
         # define the tabwidget add the first page
         self.ex_right_content_tabwidget = QtWidgets.QTabWidget()
-        self.ex_right_content_tabwidget.addTab(self.ex_right_content_allex_tab, "All Execution")
+        self.ex_right_content_tabwidget.addTab(self.ex_right_content_allex_tab, "All Executions")
         self.ex_right_content_tabwidget.setAutoFillBackground(True)
         self.ex_right_content_tabwidget.setTabsClosable(True)
         # set the index 0 page hasn't colse button
@@ -86,5 +86,14 @@ class MainWindow_Ui(object):
         self.ex_tab_layout.addWidget(self.ex_left_menu_groupbox, 0, 0)
         self.ex_tab_layout.addWidget(self.ex_right_content_groupbox, 0, 1)
 
+        # add first page for each listdata
+        self.ex_right_content_allts_tab = QtWidgets.QWidget()
+        self.ex_right_content_allts_tab.setObjectName("tab4")
+
+        self.ex_right_content_allva_tab = QtWidgets.QWidget()
+        self.ex_right_content_allva_tab.setObjectName("tab5")
+
+        self.ex_right_content_allma_tab = QtWidgets.QWidget()
+        self.ex_right_content_allma_tab.setObjectName("tab6")
 
 
