@@ -56,6 +56,8 @@ class MainWindow_Ui(object):
         # define the right groupbox
         # 0.define the save toolbar
         self.ex_right_content_toolbar=QtWidgets.QToolBar()
+        self.ex_right_content_toolbar.addAction("new")
+        self.ex_right_content_toolbar.addSeparator()
         self.ex_right_content_toolbar.addAction("save")
         self.ex_right_content_toolbar.addSeparator()
         self.ex_right_content_toolbar.setAutoFillBackground(True)
@@ -124,6 +126,8 @@ class MainWindow_Ui(object):
         # define the right groupbox
         # 0.define the save toolbar
         self.tc_right_content_toolbar=QtWidgets.QToolBar()
+        self.tc_right_content_toolbar.addAction("new")
+        self.tc_right_content_toolbar.addSeparator()
         self.tc_right_content_toolbar.addAction("save")
         self.tc_right_content_toolbar.addSeparator()
         self.tc_right_content_toolbar.setAutoFillBackground(True)
@@ -182,6 +186,8 @@ class MainWindow_Ui(object):
         # define the right groupbox
         # 0.define the save toolbar
         self.ac_right_content_toolbar=QtWidgets.QToolBar()
+        self.ac_right_content_toolbar.addAction("new")
+        self.ac_right_content_toolbar.addSeparator()
         self.ac_right_content_toolbar.addAction("save")
         self.ac_right_content_toolbar.addSeparator()
         self.ac_right_content_toolbar.setAutoFillBackground(True)
