@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QCoreApplication, QModelIndex
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QGridLayout, QToolBox, QLabel, QGroupBox
+from PyQt5.QtWidgets import QGridLayout, QToolBox, QLabel, QGroupBox, QTabBar
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 
 class MainWindow_Ui(object):
@@ -34,8 +34,9 @@ class MainWindow_Ui(object):
         self.ex_tab_layout = QGridLayout()
         self.ex_tab_layout.setContentsMargins(5, 5, 5, 5)
         self.ex_tab.setLayout(self.ex_tab_layout)
+
         # define the left groupbox
-        # 1. definea groupbox
+        # 1. define a groupbox
         self.ex_left_menu_groupbox = QGroupBox()
         self.ex_left_menu_groupbox.setFixedWidth(185)
         # 2.define a gridlayout
@@ -45,34 +46,41 @@ class MainWindow_Ui(object):
         self.ex_left_menu_listview = QtWidgets.QListView()
         self.ex_left_menu_toolbox = QToolBox()
         self.ex_left_menu_toolbox.addItem(self.ex_left_menu_listview, "Execution")
-
+        # add the toolbox into gridlayout
         self.ex_left_menu_gridlayout.addWidget(self.ex_left_menu_toolbox)
+        # add the gridlaout into the groupbox
         self.ex_left_menu_groupbox.setLayout(self.ex_left_menu_gridlayout)
 
         # define the right groupbox
-        self.ex_right_content_groupbox = QGroupBox()
-        self.ex_right_content_groupbox.setContentsMargins(0, 0, 0, 0)
-        # 2.define a gridlayout
-        self.ex_right_content_tabwidget = QtWidgets.QTabWidget()
-        self.ex_right_content_allex_tab = QtWidgets.QWidget()
-        self.ex_right_content_allex_tab.setObjectName("tab422")
-        self.ex_right_content_tabwidget.addTab(self.ex_right_content_allex_tab, "All Execution")
-        self.ex_right_content_tabwidget.setAutoFillBackground(True)
-
-        self.ex_right_content_gridlayout = QGridLayout()
-        self.ex_right_content_gridlayout.setContentsMargins(3, 2,1, 3)
+        # 0.define the save toolbar
         self.ex_right_content_toolbar=QtWidgets.QToolBar()
         self.ex_right_content_toolbar.addAction("save")
         self.ex_right_content_toolbar.addSeparator()
         self.ex_right_content_toolbar.setAutoFillBackground(True)
+        # 1.define a groupbox
+        self.ex_right_content_groupbox = QGroupBox()
+        self.ex_right_content_groupbox.setContentsMargins(0, 0, 0, 0)
+        # 2.define a gridlayout
+        self.ex_right_content_gridlayout = QGridLayout()
+        self.ex_right_content_gridlayout.setContentsMargins(3, 2,1, 3)
+        # 3.define a tabwidget
+        # first page of the tabwidget
+        self.ex_right_content_allex_tab = QtWidgets.QWidget()
+        self.ex_right_content_allex_tab.setObjectName("tab3")
+        # define the tabwidget add the first page
+        self.ex_right_content_tabwidget = QtWidgets.QTabWidget()
+        self.ex_right_content_tabwidget.addTab(self.ex_right_content_allex_tab, "All Execution")
+        self.ex_right_content_tabwidget.setAutoFillBackground(True)
+        self.ex_right_content_tabwidget.setTabsClosable(True)
+        # set the index 0 page hasn't colse button
+        QTabBar.setTabButton(self.ex_right_content_tabwidget.tabBar(), 0, QTabBar.RightSide, None)
+        #self.ex_right_content_tabwidget.removeTab(0)
 
+        # add the ex_right_content_toolbar and  ex_right_content_tabwidget into gridlayout
         self.ex_right_content_gridlayout.addWidget(self.ex_right_content_toolbar,0,0)
         self.ex_right_content_gridlayout.addWidget(self.ex_right_content_tabwidget, 1, 0)
-
-
+        # add the gridlaout into the groupbox
         self.ex_right_content_groupbox.setLayout(self.ex_right_content_gridlayout)
-
-
 
         # add the left groupbox and  right groupbox into execution_tab_layout
         self.ex_tab_layout.addWidget(self.ex_left_menu_groupbox, 0, 0)
