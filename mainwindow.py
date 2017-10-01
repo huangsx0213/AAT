@@ -29,12 +29,12 @@ class MainWindow(QtWidgets.QTabWidget, MainWindow_Ui):
         # List view data and action
         self.ex_list_view_model = QStandardItemModel()
         # Load the data to the model
-        self.ex_list_view_model = self.loadModelData(self.ex_list_view_model)
+        self.ex_list_view_model = self.ex_leftmenu_listview_loadModelData(self.ex_list_view_model)
         # SConnect the model to the listView
         self.ex_left_menu_listview.setModel(self.ex_list_view_model)
-        self.ex_left_menu_listview.clicked.connect(self.on_clicked)
+        self.ex_left_menu_listview.clicked.connect(self.ex_left_listview_on_clicked)
 
-    def loadModelData(self, model):
+    def ex_leftmenu_listview_loadModelData(self, model):
         # Demo data
         # now a simple list, later database with index field
         self.listdata = ['Executions', 'Test Sets', 'Variables', 'Machines']
@@ -44,7 +44,7 @@ class MainWindow(QtWidgets.QTabWidget, MainWindow_Ui):
             #item.setTextAlignment(QtCore.Qt.AlignCenter)
             model.appendRow(item)
         return model
-    def on_clicked(self,index):
+    def ex_left_listview_on_clicked(self, index):
         a=index.row()
         b=self.listdata[a]
         print("You are selecting row "+str(a))
