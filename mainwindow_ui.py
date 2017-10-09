@@ -113,6 +113,8 @@ class MainWindow_Ui(object):
         self.ex_right_ts_gridlayout.setContentsMargins(0, 0, 0, 0)
         self.ex_right_content_allts_tab.setLayout(self.ex_right_ts_gridlayout)
         self.ex_right_ts_gridlayout.addWidget(self.ex_right_ts_tableview)
+
+    # define a QWidget and add View button, Delete button in it
     def setup_ex_right_ex_actions_column(self):
         self.ex_right_ex_widget = QtWidgets.QWidget()
         self.ex_right_ex_widget.setContentsMargins(0, 0, 0, 0)
@@ -131,6 +133,7 @@ class MainWindow_Ui(object):
         self.ex_right_ex_delete_button.setToolTip("Delete")
         self.ex_right_ex_gridlayout.addWidget(self.ex_right_ex_view_button, 0, 0)
         self.ex_right_ex_gridlayout.addWidget(self.ex_right_ex_delete_button, 0, 1)
+
     def setup_tc_tab(self):
         # define the QGridLayout testcases_tab_layout into the testcases_tab.
         self.tc_tab_layout = QGridLayout()
@@ -191,6 +194,7 @@ class MainWindow_Ui(object):
         # add the left groupbox and  right groupbox into tcecution_tab_layout
         self.tc_tab_layout.addWidget(self.tc_left_menu_groupbox, 0, 0)
         self.tc_tab_layout.addWidget(self.tc_right_content_groupbox, 0, 1)
+
     def setup_ac_tab(self):
         # define the QGridLayout action_tab_layout into the action_tab.
         self.ac_tab_layout = QGridLayout()
