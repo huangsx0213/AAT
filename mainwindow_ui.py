@@ -99,6 +99,21 @@ class MainWindow_Ui(object):
 
         self.ex_right_content_allma_tab = QtWidgets.QWidget()
         self.ex_right_content_allma_tab.setObjectName("tab6")
+
+        #add tableview into execution
+        self.ex_right_ex_tableview=QtWidgets.QTableView()
+        self.ex_right_ex_gridlayout=QGridLayout()
+        self.ex_right_ex_gridlayout.setContentsMargins(0, 0, 0, 0)
+        self.ex_right_content_allex_tab.setLayout(self.ex_right_ex_gridlayout)
+        self.ex_right_ex_gridlayout.addWidget(self.ex_right_ex_tableview)
+
+        # add tableview into execution
+        self.ex_right_ts_tableview = QtWidgets.QTableView()
+        self.ex_right_ts_gridlayout = QGridLayout()
+        self.ex_right_ts_gridlayout.setContentsMargins(0, 0, 0, 0)
+        self.ex_right_content_allts_tab.setLayout(self.ex_right_ts_gridlayout)
+        self.ex_right_ts_gridlayout.addWidget(self.ex_right_ts_tableview)
+
     def setup_tc_tab(self):
         # define the QGridLayout testcases_tab_layout into the testcases_tab.
         self.tc_tab_layout = QGridLayout()
