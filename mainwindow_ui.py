@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QCoreApplication, QModelIndex
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QGridLayout, QToolBox, QLabel, QGroupBox, QTabBar
+from PyQt5.QtCore import QCoreApplication, QModelIndex, Qt
+from PyQt5.QtGui import QIcon, QCursor
+from PyQt5.QtWidgets import QGridLayout, QToolBox, QLabel, QGroupBox, QTabBar, QPushButton
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 
 class MainWindow_Ui(object):
@@ -113,7 +113,24 @@ class MainWindow_Ui(object):
         self.ex_right_ts_gridlayout.setContentsMargins(0, 0, 0, 0)
         self.ex_right_content_allts_tab.setLayout(self.ex_right_ts_gridlayout)
         self.ex_right_ts_gridlayout.addWidget(self.ex_right_ts_tableview)
-
+    def setup_ex_right_ex_actions_column(self):
+        self.ex_right_ex_widget = QtWidgets.QWidget()
+        self.ex_right_ex_widget.setContentsMargins(0, 0, 0, 0)
+        self.ex_right_ex_gridlayout = QGridLayout()
+        self.ex_right_ex_gridlayout.setContentsMargins(3, 3, 3, 3)
+        self.ex_right_ex_widget.setLayout(self.ex_right_ex_gridlayout)
+        self.ex_right_ex_view_button = QPushButton()
+        self.ex_right_ex_view_button.setIcon(QIcon("./images/edit.png"))
+        self.ex_right_ex_view_button.setFlat(True)
+        self.ex_right_ex_view_button.setCursor(QCursor(Qt.PointingHandCursor))
+        self.ex_right_ex_view_button.setToolTip("View")
+        self.ex_right_ex_delete_button = QPushButton()
+        self.ex_right_ex_delete_button.setIcon(QIcon("./images/delete.png"))
+        self.ex_right_ex_delete_button.setFlat(True)
+        self.ex_right_ex_delete_button.setCursor(QCursor(Qt.PointingHandCursor))
+        self.ex_right_ex_delete_button.setToolTip("Delete")
+        self.ex_right_ex_gridlayout.addWidget(self.ex_right_ex_view_button, 0, 0)
+        self.ex_right_ex_gridlayout.addWidget(self.ex_right_ex_delete_button, 0, 1)
     def setup_tc_tab(self):
         # define the QGridLayout testcases_tab_layout into the testcases_tab.
         self.tc_tab_layout = QGridLayout()

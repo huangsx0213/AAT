@@ -38,26 +38,12 @@ class MainWindow(QtWidgets.QTabWidget, MainWindow_Ui):
         self.ex_right_ex_tableview.verticalHeader().setVisible(False)
         #self.ex_right_ex_tableview_model.insertRow(4)
         #self.add_execution()
+
+        # add a column into the ex table for actions
         self.ex_right_ex_tableview_model.insertColumn(5)
         self.ex_right_ex_tableview_model.setHeaderData(5, Qt.Horizontal, "Actions")
         for row in range(self.ex_right_ex_tableview_model.rowCount()):
-            self.ex_right_ex_widget = QtWidgets.QWidget()
-            self.ex_right_ex_widget.setContentsMargins(0, 0, 0, 0)
-            self.ex_right_ex_gridlayout=QGridLayout()
-            self.ex_right_ex_gridlayout.setContentsMargins(3, 3, 3, 3)
-            self.ex_right_ex_widget.setLayout(self.ex_right_ex_gridlayout)
-            self.ex_right_ex_view_button = QPushButton()
-            self.ex_right_ex_view_button.setIcon(QIcon("./images/edit.png"))
-            self.ex_right_ex_view_button.setFlat(True)
-            self.ex_right_ex_view_button.setCursor(QCursor(Qt.PointingHandCursor))
-            self.ex_right_ex_view_button.setToolTip("View")
-            self.ex_right_ex_delete_button = QPushButton()
-            self.ex_right_ex_delete_button.setIcon(QIcon("./images/delete.png"))
-            self.ex_right_ex_delete_button.setFlat(True)
-            self.ex_right_ex_delete_button.setCursor(QCursor(Qt.PointingHandCursor))
-            self.ex_right_ex_delete_button.setToolTip("Delete")
-            self.ex_right_ex_gridlayout.addWidget(self.ex_right_ex_view_button, 0, 0)
-            self.ex_right_ex_gridlayout.addWidget(self.ex_right_ex_delete_button, 0, 1)
+            self.setup_ex_right_ex_actions_column()
             self.ex_right_ex_index = self.ex_right_ex_tableview.model().index(row, 5)
             self.ex_right_ex_tableview.setIndexWidget(self.ex_right_ex_index, self.ex_right_ex_widget)
 
@@ -67,6 +53,8 @@ class MainWindow(QtWidgets.QTabWidget, MainWindow_Ui):
         self.ex_right_ts_tableview_model.select()
         self.ex_right_ts_tableview.setModel(self.ex_right_ts_tableview_model)
         self.ex_right_ts_tableview.verticalHeader().setVisible(False)
+
+
 
     def add_execution(self):
         record = self.ex_right_ex_tableview_model.record()
