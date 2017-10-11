@@ -1,9 +1,27 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QCoreApplication, QModelIndex, Qt
 from PyQt5.QtGui import QIcon, QCursor
-from PyQt5.QtWidgets import QGridLayout, QToolBox, QLabel, QGroupBox, QTabBar, QPushButton
+from PyQt5.QtWidgets import QGridLayout, QToolBox, QLabel, QGroupBox, QTabBar, QPushButton, QLayout, QVBoxLayout
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
-
+class CustomGroupBox(QGroupBox):
+    def __init__(self,str=None):
+        super().__init__(str)
+        #self.setFixedHeight(self.sizeHint().height())
+        self.setCheckable(True)
+        self.setStyleSheet("QGroupBox::indicator { width: 13px; height: 13px;}"
+                         "QGroupBox::indicator:unchecked { image: url(./images/toggle_group.png);}"
+                         "QGroupBox::indicator:checked { image: url(./images/toggle_group.png);}")
+        self.toggled.connect(
+            lambda: self.toggleGroup(self))
+    def toggleGroup(self, ctrl):
+        state = ctrl.isChecked()
+        if state:
+            ctrl.setFixedHeight(self.h)
+            ctrl.setFlat(False)
+        else:
+            self.h=ctrl.height()
+            ctrl.setFixedHeight(15)
+            ctrl.setFlat(True)
 class MainWindow_Ui(object):
     def setupUi(self, MainWindow):
 
@@ -76,9 +94,12 @@ class MainWindow_Ui(object):
         self.ex_right_content_tabwidget.addTab(self.ex_right_content_allex_tab, "All Executions")
         self.ex_right_content_tabwidget.setAutoFillBackground(True)
         self.ex_right_content_tabwidget.setTabsClosable(True)
+
+        # add the new/edit page for execution
+        self.setup_excution_tab()
+
         # set the index 0 page hasn't colse button
         QTabBar.setTabButton(self.ex_right_content_tabwidget.tabBar(), 0, QTabBar.RightSide, None)
-        #self.ex_right_content_tabwidget.removeTab(0)
 
         # add the ex_right_content_toolbar and  ex_right_content_tabwidget into gridlayout
         self.ex_right_content_gridlayout.addWidget(self.ex_right_content_toolbar,0,0)
@@ -113,6 +134,43 @@ class MainWindow_Ui(object):
         self.ex_right_ts_gridlayout.setContentsMargins(0, 0, 0, 0)
         self.ex_right_content_allts_tab.setLayout(self.ex_right_ts_gridlayout)
         self.ex_right_ts_gridlayout.addWidget(self.ex_right_ts_tableview)
+
+
+
+
+    def setup_excution_tab(self):
+        # 1. define a page
+        self.ex_right_content_one_ex_tab = QtWidgets.QWidget()
+        # 2. define a layout
+        self.ex_right_content_one_ex_layout = QVBoxLayout()
+        # self.ex_right_content_one_ex_layout.setSizeConstraint(QLayout.SetNoConstraint)
+        # 3. define a Groupbox
+        self.ex_right_content_ex_details_groupbox = CustomGroupBox("Details")
+        self.ex_right_content_ex_email_groupbox = CustomGroupBox("Email Notification")
+        self.ex_right_content_ex_settings_groupbox = CustomGroupBox("Settings")
+        self.ex_right_content_ex_Variables_groupbox = CustomGroupBox("Set Variables")
+        self.ex_right_content_ex_Testcases_groupbox = CustomGroupBox("Test Cases")
+        # 4. add the page to the tabwidet
+        self.ex_right_content_tabwidget.addTab(self.ex_right_content_one_ex_tab, "one executions")
+        # 5.set layout to the page tab
+        self.ex_right_content_one_ex_tab.setLayout(self.ex_right_content_one_ex_layout)
+        # 6. add all groupbox into page tab layout
+        self.ex_right_content_one_ex_layout.addWidget(self.ex_right_content_ex_details_groupbox)
+        self.ex_right_content_one_ex_layout.addWidget(self.ex_right_content_ex_email_groupbox)
+        self.ex_right_content_one_ex_layout.addWidget(self.ex_right_content_ex_settings_groupbox)
+        self.ex_right_content_one_ex_layout.addWidget(self.ex_right_content_ex_Variables_groupbox)
+        self.ex_right_content_one_ex_layout.addWidget(self.ex_right_content_ex_Testcases_groupbox)
+        self.ex_right_content_one_ex_layout.addStretch()
+        self.g1 = QGridLayout()
+        self.ex_right_content_ex_details_groupbox.setLayout(self.g1)
+        self.g2 = QGridLayout()
+        self.ex_right_content_ex_email_groupbox.setLayout(self.g2)
+        self.g3 = QGridLayout()
+        self.ex_right_content_ex_settings_groupbox.setLayout(self.g3)
+        self.g4 = QGridLayout()
+        self.ex_right_content_ex_Variables_groupbox.setLayout(self.g4)
+        self.g5 = QGridLayout()
+        self.ex_right_content_ex_Testcases_groupbox.setLayout(self.g5)
 
     # define a QWidget and add View button, Delete button in it
     def setup_ex_right_ex_actions_column(self):

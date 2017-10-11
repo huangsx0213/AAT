@@ -51,6 +51,15 @@ class MainWindow(QtWidgets.QTabWidget, MainWindow_Ui):
         self.ex_right_ts_tableview.setModel(self.ex_right_ts_tableview_model)
         self.ex_right_ts_tableview.verticalHeader().setVisible(False)
 
+    def toggleGroup(self, ctrl):
+        state = ctrl.isChecked()
+        if state:
+            ctrl.setFixedHeight(ctrl.sizeHint().height())
+            ctrl.setFlat(False)
+        else:
+            ctrl.setFixedHeight(15)
+            ctrl.setFlat(True)
+
     def ex_right_ex_tableview_add_actions_column(self):
         # add a column into the ex table for actions
         self.ex_right_ex_tableview_model.select()
