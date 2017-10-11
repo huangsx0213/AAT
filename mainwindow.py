@@ -12,6 +12,8 @@ class MainWindow2(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super(MainWindow2, self).__init__(parent)
         self.setupUi(self)
+
+
 class MainWindow(QtWidgets.QTabWidget, MainWindow_Ui):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
@@ -28,17 +30,17 @@ class MainWindow(QtWidgets.QTabWidget, MainWindow_Ui):
         self.ex_left_menu_listview.clicked.connect(self.ex_left_listview_on_clicked)
 
         # execution table logic
-        self.ex_right_ex_tableview_model=QSqlRelationalTableModel()
+        self.ex_right_ex_tableview_model = QSqlRelationalTableModel()
         self.ex_right_ex_tableview_model.setTable("Execution")
         self.ex_right_ex_tableview_model.setEditStrategy(QSqlTableModel.OnRowChange)
-        self.ex_right_ex_tableview_model.setRelation(3,QSqlRelation("TestSet","Id","Name"))
+        self.ex_right_ex_tableview_model.setRelation(3, QSqlRelation("TestSet", "Id", "Name"))
         self.ex_right_ex_tableview_model.setHeaderData(3, Qt.Horizontal, "TestSet")
         self.ex_right_ex_tableview_model.select()
         self.ex_right_ex_tableview.setModel(self.ex_right_ex_tableview_model)
         self.ex_right_ex_tableview.setItemDelegate(QSqlRelationalDelegate(self.ex_right_ex_tableview))
         self.ex_right_ex_tableview.verticalHeader().setVisible(False)
-        #self.ex_right_ex_tableview_model.insertRow(4)
-        self.add_execution()
+        # self.ex_right_ex_tableview_model.insertRow(4)
+        # self.add_execution()
 
         # add the actions column into the tableview
         self.ex_right_ex_tableview_add_actions_column()
@@ -51,15 +53,6 @@ class MainWindow(QtWidgets.QTabWidget, MainWindow_Ui):
         self.ex_right_ts_tableview.setModel(self.ex_right_ts_tableview_model)
         self.ex_right_ts_tableview.verticalHeader().setVisible(False)
 
-    def toggleGroup(self, ctrl):
-        state = ctrl.isChecked()
-        if state:
-            ctrl.setFixedHeight(ctrl.sizeHint().height())
-            ctrl.setFlat(False)
-        else:
-            ctrl.setFixedHeight(15)
-            ctrl.setFlat(True)
-
     def ex_right_ex_tableview_add_actions_column(self):
         # add a column into the ex table for actions
         self.ex_right_ex_tableview_model.select()
@@ -68,18 +61,51 @@ class MainWindow(QtWidgets.QTabWidget, MainWindow_Ui):
 
         for row in range(self.ex_right_ex_tableview_model.rowCount()):
             self.setup_ex_right_ex_actions_column()
+            self.ex_right_ex_view_button.clicked.connect(self.edit_execution)
             self.ex_right_ex_delete_button.clicked.connect(self.delete_execution)
             self.ex_right_ex_index = self.ex_right_ex_tableview.model().index(row, 5)
             self.ex_right_ex_tableview.setIndexWidget(self.ex_right_ex_index, self.ex_right_ex_widget)
 
-    def delete_execution(self):
+    def edit_execution(self):
         # get the selected  QPushButton's parent : the QWidget
-        ex_right_ex_widget_selected=self.sender().parent()
-        #print(type(ex_right_ex_widget_selected))
+        ex_right_ex_widget_selected = self.sender().parent()
+        # print(type(ex_right_ex_widget_selected))
         # get the index of the QWidget in the tableview and it's row
         ex_right_ex_widget_index = self.ex_right_ex_tableview.indexAt(ex_right_ex_widget_selected.pos())
-        ex_right_ex_widget_row=ex_right_ex_widget_index.row()
-        #print(ex_right_ex_widget_row)
+        ex_right_ex_widget_row = ex_right_ex_widget_index.row()
+        # print(ex_right_ex_widget_row)
+        # remove the row from the model
+        data_row = self.ex_right_ex_tableview_model.record(ex_right_ex_widget_row)
+        name = data_row.value("Name")
+        tags = data_row.value("Tags")
+        test_set = data_row.value("TestSet_Name_2")
+        state = data_row.value("State")
+        # create new tab,but if exist , do not create the new tab
+        create = True
+        if self.ex_right_content_tabwidget.count() > 1:
+            count = self.ex_right_content_tabwidget.count()
+            for i in range(count):
+                if self.ex_right_content_tabwidget.tabText(i) == name:
+                    create = False
+                    break
+        if create == True:
+            self.setup_excution_tab(name)
+            self.ex_right_content_ex_details_name_lineedit.setText(name)
+            self.ex_right_content_ex_details_tags_lineedit.setText(tags)
+            self.ex_right_content_ex_details_ts_lineedit.setText(test_set)
+            self.ex_right_content_ex_details_state_lineedit.setText(state)
+            # print(data_row.value("TestSet_Name_2"))
+        # regenerate the actions_column
+        self.ex_right_ex_tableview_add_actions_column()
+
+    def delete_execution(self):
+        # get the selected  QPushButton's parent : the QWidget
+        ex_right_ex_widget_selected = self.sender().parent()
+        # print(type(ex_right_ex_widget_selected))
+        # get the index of the QWidget in the tableview and it's row
+        ex_right_ex_widget_index = self.ex_right_ex_tableview.indexAt(ex_right_ex_widget_selected.pos())
+        ex_right_ex_widget_row = ex_right_ex_widget_index.row()
+        # print(ex_right_ex_widget_row)
         # remove the row from the model
         self.ex_right_ex_tableview_model.removeRow(ex_right_ex_widget_row)
         # regenerate the actions_column
@@ -100,19 +126,19 @@ class MainWindow(QtWidgets.QTabWidget, MainWindow_Ui):
         self.listdata = ['Executions', 'Test Sets', 'Variables', 'Machines']
         for row in self.listdata:
             item = QStandardItem(row)
-            #Set item AlignCenter
-            #item.setTextAlignment(QtCore.Qt.AlignCenter)
+            # Set item AlignCenter
+            # item.setTextAlignment(QtCore.Qt.AlignCenter)
             model.appendRow(item)
         return model
 
     def ex_left_listview_on_clicked(self, index):
-        current_row=index.row()
-        current_listdata=self.listdata[current_row]
-        print("You are selecting row "+str(current_row))
+        current_row = index.row()
+        current_listdata = self.listdata[current_row]
+        print("You are selecting row " + str(current_row))
         self.ex_right_content_tabwidget.removeTab(0)
-        if current_listdata=="Executions":
+        if current_listdata == "Executions":
             self.ex_right_content_tabwidget.addTab(self.ex_right_content_allex_tab, "All Executions")
-        elif current_listdata=="Test Sets":
+        elif current_listdata == "Test Sets":
             self.ex_right_content_tabwidget.addTab(self.ex_right_content_allts_tab, "All Test Sets")
         elif current_listdata == "Variables":
             self.ex_right_content_tabwidget.addTab(self.ex_right_content_allva_tab, "Variables")

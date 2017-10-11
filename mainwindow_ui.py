@@ -1,31 +1,36 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QCoreApplication, QModelIndex, Qt
 from PyQt5.QtGui import QIcon, QCursor
-from PyQt5.QtWidgets import QGridLayout, QToolBox, QLabel, QGroupBox, QTabBar, QPushButton, QLayout, QVBoxLayout
+from PyQt5.QtWidgets import QGridLayout, QToolBox, QLabel, QGroupBox, QTabBar, QPushButton, QLayout, QVBoxLayout, \
+    QLineEdit
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
+
+
 class CustomGroupBox(QGroupBox):
-    def __init__(self,str=None):
+    def __init__(self, str=None):
         super().__init__(str)
-        #self.setFixedHeight(self.sizeHint().height())
+        # self.setFixedHeight(self.sizeHint().height())
         self.setCheckable(True)
         self.setStyleSheet("QGroupBox::indicator { width: 13px; height: 13px;}"
-                         "QGroupBox::indicator:unchecked { image: url(./images/toggle_group.png);}"
-                         "QGroupBox::indicator:checked { image: url(./images/toggle_group.png);}")
+                           "QGroupBox::indicator:unchecked { image: url(./images/toggle_group.png);}"
+                           "QGroupBox::indicator:checked { image: url(./images/toggle_group.png);}")
         self.toggled.connect(
             lambda: self.toggleGroup(self))
+
     def toggleGroup(self, ctrl):
         state = ctrl.isChecked()
         if state:
             ctrl.setFixedHeight(self.h)
             ctrl.setFlat(False)
         else:
-            self.h=ctrl.height()
+            self.h = ctrl.height()
             ctrl.setFixedHeight(15)
             ctrl.setFlat(True)
+
+
 class MainWindow_Ui(object):
     def setupUi(self, MainWindow):
-
-        #settings of MainWindow,the QTabWidget.
+        # settings of MainWindow,the QTabWidget.
         self.setWindowIcon(QIcon('.\images\logo.png'))
         self.resize(1020, 600)
         self.setWindowTitle('AAT 2.0')
@@ -73,7 +78,7 @@ class MainWindow_Ui(object):
 
         # define the right groupbox
         # 0.define the save toolbar
-        self.ex_right_content_toolbar=QtWidgets.QToolBar()
+        self.ex_right_content_toolbar = QtWidgets.QToolBar()
         self.ex_right_content_toolbar.addAction("new")
         self.ex_right_content_toolbar.addSeparator()
         self.ex_right_content_toolbar.addAction("save")
@@ -84,7 +89,7 @@ class MainWindow_Ui(object):
         self.ex_right_content_groupbox.setContentsMargins(0, 0, 0, 0)
         # 2.define a gridlayout
         self.ex_right_content_gridlayout = QGridLayout()
-        self.ex_right_content_gridlayout.setContentsMargins(3, 2,1, 3)
+        self.ex_right_content_gridlayout.setContentsMargins(3, 2, 1, 3)
         # 3.define a tabwidget
         # first page of the tabwidget
         self.ex_right_content_allex_tab = QtWidgets.QWidget()
@@ -94,15 +99,17 @@ class MainWindow_Ui(object):
         self.ex_right_content_tabwidget.addTab(self.ex_right_content_allex_tab, "All Executions")
         self.ex_right_content_tabwidget.setAutoFillBackground(True)
         self.ex_right_content_tabwidget.setTabsClosable(True)
-
+        self.ex_right_content_tabwidget.setMovable(True)
+        # close the tab
+        self.ex_right_content_tabwidget.tabCloseRequested.connect(self.ex_right_content_tabwidget.removeTab)
         # add the new/edit page for execution
-        self.setup_excution_tab()
+        # self.setup_excution_tab()
 
         # set the index 0 page hasn't colse button
         QTabBar.setTabButton(self.ex_right_content_tabwidget.tabBar(), 0, QTabBar.RightSide, None)
 
         # add the ex_right_content_toolbar and  ex_right_content_tabwidget into gridlayout
-        self.ex_right_content_gridlayout.addWidget(self.ex_right_content_toolbar,0,0)
+        self.ex_right_content_gridlayout.addWidget(self.ex_right_content_toolbar, 0, 0)
         self.ex_right_content_gridlayout.addWidget(self.ex_right_content_tabwidget, 1, 0)
         # add the gridlaout into the groupbox
         self.ex_right_content_groupbox.setLayout(self.ex_right_content_gridlayout)
@@ -121,9 +128,9 @@ class MainWindow_Ui(object):
         self.ex_right_content_allma_tab = QtWidgets.QWidget()
         self.ex_right_content_allma_tab.setObjectName("tab6")
 
-        #add tableview into execution
-        self.ex_right_ex_tableview=QtWidgets.QTableView()
-        self.ex_right_ex_gridlayout=QGridLayout()
+        # add tableview into execution
+        self.ex_right_ex_tableview = QtWidgets.QTableView()
+        self.ex_right_ex_gridlayout = QGridLayout()
         self.ex_right_ex_gridlayout.setContentsMargins(0, 0, 0, 0)
         self.ex_right_content_allex_tab.setLayout(self.ex_right_ex_gridlayout)
         self.ex_right_ex_gridlayout.addWidget(self.ex_right_ex_tableview)
@@ -135,12 +142,10 @@ class MainWindow_Ui(object):
         self.ex_right_content_allts_tab.setLayout(self.ex_right_ts_gridlayout)
         self.ex_right_ts_gridlayout.addWidget(self.ex_right_ts_tableview)
 
-
-
-
-    def setup_excution_tab(self):
+    def setup_excution_tab(self, name=None):
         # 1. define a page
         self.ex_right_content_one_ex_tab = QtWidgets.QWidget()
+        self.ex_right_content_one_ex_tab.setObjectName(name)
         # 2. define a layout
         self.ex_right_content_one_ex_layout = QVBoxLayout()
         # self.ex_right_content_one_ex_layout.setSizeConstraint(QLayout.SetNoConstraint)
@@ -151,7 +156,8 @@ class MainWindow_Ui(object):
         self.ex_right_content_ex_Variables_groupbox = CustomGroupBox("Set Variables")
         self.ex_right_content_ex_Testcases_groupbox = CustomGroupBox("Test Cases")
         # 4. add the page to the tabwidet
-        self.ex_right_content_tabwidget.addTab(self.ex_right_content_one_ex_tab, "one executions")
+        self.ex_right_content_tabwidget.addTab(self.ex_right_content_one_ex_tab, name)
+        self.ex_right_content_tabwidget.setCurrentWidget(self.ex_right_content_one_ex_tab)
         # 5.set layout to the page tab
         self.ex_right_content_one_ex_tab.setLayout(self.ex_right_content_one_ex_layout)
         # 6. add all groupbox into page tab layout
@@ -171,6 +177,24 @@ class MainWindow_Ui(object):
         self.ex_right_content_ex_Variables_groupbox.setLayout(self.g4)
         self.g5 = QGridLayout()
         self.ex_right_content_ex_Testcases_groupbox.setLayout(self.g5)
+
+        # Details groupbox
+        self.ex_right_content_ex_details_name_lable = QLabel("Name:")
+        self.ex_right_content_ex_details_name_lineedit = QLineEdit()
+        self.ex_right_content_ex_details_tags_lable = QLabel("Tags:")
+        self.ex_right_content_ex_details_tags_lineedit = QLineEdit()
+        self.ex_right_content_ex_details_ts_lable = QLabel("Test Set:")
+        self.ex_right_content_ex_details_ts_lineedit = QLineEdit()
+        self.ex_right_content_ex_details_state_lable = QLabel("State:")
+        self.ex_right_content_ex_details_state_lineedit = QLineEdit()
+        self.g1.addWidget(self.ex_right_content_ex_details_name_lable, 0, 0)
+        self.g1.addWidget(self.ex_right_content_ex_details_name_lineedit, 0, 1)
+        self.g1.addWidget(self.ex_right_content_ex_details_tags_lable, 1, 0)
+        self.g1.addWidget(self.ex_right_content_ex_details_tags_lineedit, 1, 1)
+        self.g1.addWidget(self.ex_right_content_ex_details_ts_lable, 2, 0)
+        self.g1.addWidget(self.ex_right_content_ex_details_ts_lineedit, 2, 1)
+        self.g1.addWidget(self.ex_right_content_ex_details_state_lable, 3, 0)
+        self.g1.addWidget(self.ex_right_content_ex_details_state_lineedit, 3, 1)
 
     # define a QWidget and add View button, Delete button in it
     def setup_ex_right_ex_actions_column(self):
@@ -218,7 +242,7 @@ class MainWindow_Ui(object):
 
         # define the right groupbox
         # 0.define the save toolbar
-        self.tc_right_content_toolbar=QtWidgets.QToolBar()
+        self.tc_right_content_toolbar = QtWidgets.QToolBar()
         self.tc_right_content_toolbar.addAction("new")
         self.tc_right_content_toolbar.addSeparator()
         self.tc_right_content_toolbar.addAction("save")
@@ -229,7 +253,7 @@ class MainWindow_Ui(object):
         self.tc_right_content_groupbox.setContentsMargins(0, 0, 0, 0)
         # 2.define a gridlayout
         self.tc_right_content_gridlayout = QGridLayout()
-        self.tc_right_content_gridlayout.setContentsMargins(3, 2,1, 3)
+        self.tc_right_content_gridlayout.setContentsMargins(3, 2, 1, 3)
         # 3.define a tabwidget
         # first page of the tabwidget
         self.tc_right_content_alltc_tab = QtWidgets.QWidget()
@@ -241,10 +265,10 @@ class MainWindow_Ui(object):
         self.tc_right_content_tabwidget.setTabsClosable(True)
         # set the indtc 0 page hasn't colse button
         QTabBar.setTabButton(self.tc_right_content_tabwidget.tabBar(), 0, QTabBar.RightSide, None)
-        #self.tc_right_content_tabwidget.removeTab(0)
+        # self.tc_right_content_tabwidget.removeTab(0)
 
         # add the tc_right_content_toolbar and  tc_right_content_tabwidget into gridlayout
-        self.tc_right_content_gridlayout.addWidget(self.tc_right_content_toolbar,0,0)
+        self.tc_right_content_gridlayout.addWidget(self.tc_right_content_toolbar, 0, 0)
         self.tc_right_content_gridlayout.addWidget(self.tc_right_content_tabwidget, 1, 0)
         # add the gridlaout into the groupbox
         self.tc_right_content_groupbox.setLayout(self.tc_right_content_gridlayout)
@@ -279,7 +303,7 @@ class MainWindow_Ui(object):
 
         # define the right groupbox
         # 0.define the save toolbar
-        self.ac_right_content_toolbar=QtWidgets.QToolBar()
+        self.ac_right_content_toolbar = QtWidgets.QToolBar()
         self.ac_right_content_toolbar.addAction("new")
         self.ac_right_content_toolbar.addSeparator()
         self.ac_right_content_toolbar.addAction("save")
@@ -290,7 +314,7 @@ class MainWindow_Ui(object):
         self.ac_right_content_groupbox.setContentsMargins(0, 0, 0, 0)
         # 2.define a gridlayout
         self.ac_right_content_gridlayout = QGridLayout()
-        self.ac_right_content_gridlayout.setContentsMargins(3, 2,1, 3)
+        self.ac_right_content_gridlayout.setContentsMargins(3, 2, 1, 3)
         # 3.define a tabwidget
         # first page of the tabwidget
         self.ac_right_content_allac_tab = QtWidgets.QWidget()
@@ -302,10 +326,10 @@ class MainWindow_Ui(object):
         self.ac_right_content_tabwidget.setTabsClosable(True)
         # set the indac 0 page hasn't colse button
         QTabBar.setTabButton(self.ac_right_content_tabwidget.tabBar(), 0, QTabBar.RightSide, None)
-        #self.ac_right_content_tabwidget.removeTab(0)
+        # self.ac_right_content_tabwidget.removeTab(0)
 
         # add the ac_right_content_toolbar and  ac_right_content_tabwidget into gridlayout
-        self.ac_right_content_gridlayout.addWidget(self.ac_right_content_toolbar,0,0)
+        self.ac_right_content_gridlayout.addWidget(self.ac_right_content_toolbar, 0, 0)
         self.ac_right_content_gridlayout.addWidget(self.ac_right_content_tabwidget, 1, 0)
         # add the gridlaout into the groupbox
         self.ac_right_content_groupbox.setLayout(self.ac_right_content_gridlayout)
@@ -313,6 +337,3 @@ class MainWindow_Ui(object):
         # add the left groupbox and  right groupbox into acecution_tab_layout
         self.ac_tab_layout.addWidget(self.ac_left_menu_groupbox, 0, 0)
         self.ac_tab_layout.addWidget(self.ac_right_content_groupbox, 0, 1)
-
-
-
