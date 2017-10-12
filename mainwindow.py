@@ -135,7 +135,10 @@ class MainWindow(QtWidgets.QTabWidget, MainWindow_Ui):
         current_row = index.row()
         current_listdata = self.listdata[current_row]
         print("You are selecting row " + str(current_row))
-        self.ex_right_content_tabwidget.removeTab(0)
+        count = self.ex_right_content_tabwidget.count()
+        for i in range(count,0,-1):
+            print(i)
+            self.ex_right_content_tabwidget.removeTab(i-1)
         if current_listdata == "Executions":
             self.ex_right_content_tabwidget.addTab(self.ex_right_content_allex_tab, "All Executions")
         elif current_listdata == "Test Sets":
