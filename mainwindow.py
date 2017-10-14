@@ -74,8 +74,7 @@ class MainWindow(QtWidgets.QTabWidget, MainWindow_Ui):
     def add_execution_tab_ui(self):
         # get the selected  QPushButton's parent : the QWidget
         ex_right_ex_widget_selected = self.sender().parent()
-        #print(type(ex_right_ex_widget_selected))
-        print(self.sender().objectName())
+        #print(self.sender().objectName())
         if self.sender().objectName()=="edit" or self.sender().objectName()=="delete":
             # get the index of the QWidget in the tableview and it's row
             ex_right_ex_widget_index = self.ex_right_ex_tableview.indexAt(ex_right_ex_widget_selected.pos())
@@ -104,7 +103,10 @@ class MainWindow(QtWidgets.QTabWidget, MainWindow_Ui):
                     break
         if create == True:
             #self.ex_right_content_tabwidget.removeTab(1)
-            self.setup_excution_tab(name)
+            if row !=-1:
+                self.setup_excution_tab(name)
+            else:
+                self.setup_excution_tab("New Execution")
             #self.excution_tab_dic[self.ex_right_ex_widget_row ]=self.ex_right_content_one_ex_tab
             #l=self.excution_tab_dic[self.ex_right_ex_widget_row ].findChild(QLineEdit,name="lname",options=Qt.FindChildrenRecursively)
             #print(l.objectName())
@@ -133,19 +135,21 @@ class MainWindow(QtWidgets.QTabWidget, MainWindow_Ui):
 
     def tool_btn_clicked(self,action):
         if action.text()=="save":
-            self.save_execution_record()
+            if self.current_listdata == "Executions":
+                self.save_execution_record()
         elif action.text()=="new":
-            self.add_execution_tab_ui()
+            if self.current_listdata == "Executions":
+                self.add_execution_tab_ui()
     # save a execution to db
     def save_execution_record(self):
         row_edit=self.ex_right_content_tabwidget.currentWidget().findChild(QLineEdit,name="row",options=Qt.FindChildrenRecursively)
         if row_edit is not None:
-            row=int(row_edit.text())
+            row = int(row_edit.text())
             name = self.ex_right_content_tabwidget.currentWidget().findChild(QLineEdit, name="name",options=Qt.FindChildrenRecursively).text()
             tags = self.ex_right_content_tabwidget.currentWidget().findChild(QLineEdit, name="tags",options=Qt.FindChildrenRecursively).text()
             testset = self.ex_right_content_tabwidget.currentWidget().findChild(QLineEdit, name="testset",options=Qt.FindChildrenRecursively).text()
             state = self.ex_right_content_tabwidget.currentWidget().findChild(QLineEdit, name="state",options=Qt.FindChildrenRecursively).text()
-            if self.current_listdata=="Executions":
+            if row !=-1:
                 record = self.ex_right_ex_tableview_model.record(row)
                 print("editing row: "+str(row) )
                 record.setValue("Name", name)
@@ -154,8 +158,18 @@ class MainWindow(QtWidgets.QTabWidget, MainWindow_Ui):
                 record.setValue("State", state)
                 self.ex_right_ex_tableview_model.setRecord(row,record)
                 self.ex_right_ex_tableview_add_actions_column()
+            else:
+                record = self.ex_right_ex_tableview_model.record()
+                print("editing row: " + str(row))
+                record.setValue("Name", name)
+                record.setValue("Tags", tags)
+                record.setValue("TestSet_Name_2", testset)
+                record.setValue("State", state)
+                self.ex_right_ex_tableview_model.insertRecord(0, record)
+                self.ex_right_content_tabwidget.removeTab( self.ex_right_content_tabwidget.currentIndex())
+                self.ex_right_ex_tableview_add_actions_column()
         else:
-            print("No need to save execution.")
+            print("No need saving.")
 
     # add a execution to db
     def add_execution_record(self):
@@ -181,10 +195,9 @@ class MainWindow(QtWidgets.QTabWidget, MainWindow_Ui):
     def ex_left_listview_on_clicked(self, index):
         current_row = index.row()
         self.current_listdata = self.listdata[current_row]
-        print("You are selecting row " + str(current_row))
+        print("You are selecting left menu " + str(self.current_listdata))
         count = self.ex_right_content_tabwidget.count()
         for i in range(count,0,-1):
-            print(i)
             self.ex_right_content_tabwidget.removeTab(i-1)
         if self.current_listdata == "Executions":
             self.ex_right_content_tabwidget.addTab(self.ex_right_content_allex_tab, "All Executions")
