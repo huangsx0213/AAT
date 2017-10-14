@@ -2,7 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QCoreApplication, QModelIndex, Qt
 from PyQt5.QtGui import QIcon, QCursor
 from PyQt5.QtWidgets import QGridLayout, QToolBox, QLabel, QGroupBox, QTabBar, QPushButton, QLayout, QVBoxLayout, \
-    QLineEdit
+    QLineEdit, QAction
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 
 
@@ -79,9 +79,12 @@ class MainWindow_Ui(object):
         # define the right groupbox
         # 0.define the save toolbar
         self.ex_right_content_toolbar = QtWidgets.QToolBar()
-        self.ex_right_content_toolbar.addAction("new")
-        self.ex_right_content_toolbar.addSeparator()
-        self.ex_right_content_toolbar.addAction("save")
+        self.ex_right_content_toolbar.setObjectName("new_same_tb")
+        new=QAction(QIcon("./images/add.png"),"new",self)
+        self.ex_right_content_toolbar.addAction(new)
+        save=QAction(QIcon("./images/save.png"),"save",self)
+        #self.ex_right_content_toolbar.addSeparator()
+        self.ex_right_content_toolbar.addAction(save)
         self.ex_right_content_toolbar.addSeparator()
         self.ex_right_content_toolbar.setAutoFillBackground(True)
         # 1.define a groupbox
@@ -181,12 +184,19 @@ class MainWindow_Ui(object):
         # Details groupbox
         self.ex_right_content_ex_details_name_lable = QLabel("Name:")
         self.ex_right_content_ex_details_name_lineedit = QLineEdit()
+        self.ex_right_content_ex_details_name_lineedit.setObjectName("name")
         self.ex_right_content_ex_details_tags_lable = QLabel("Tags:")
         self.ex_right_content_ex_details_tags_lineedit = QLineEdit()
+        self.ex_right_content_ex_details_tags_lineedit.setObjectName("tags")
         self.ex_right_content_ex_details_ts_lable = QLabel("Test Set:")
         self.ex_right_content_ex_details_ts_lineedit = QLineEdit()
+        self.ex_right_content_ex_details_ts_lineedit.setObjectName("testset")
         self.ex_right_content_ex_details_state_lable = QLabel("State:")
         self.ex_right_content_ex_details_state_lineedit = QLineEdit()
+        self.ex_right_content_ex_details_state_lineedit.setObjectName("state")
+        self.ex_right_content_ex_details_row_lineedit=QLineEdit()
+        self.ex_right_content_ex_details_row_lineedit.setObjectName("row")
+        self.ex_right_content_ex_details_row_lineedit.hide()
         self.g1.addWidget(self.ex_right_content_ex_details_name_lable, 0, 0)
         self.g1.addWidget(self.ex_right_content_ex_details_name_lineedit, 0, 1)
         self.g1.addWidget(self.ex_right_content_ex_details_tags_lable, 1, 0)
@@ -195,6 +205,7 @@ class MainWindow_Ui(object):
         self.g1.addWidget(self.ex_right_content_ex_details_ts_lineedit, 2, 1)
         self.g1.addWidget(self.ex_right_content_ex_details_state_lable, 3, 0)
         self.g1.addWidget(self.ex_right_content_ex_details_state_lineedit, 3, 1)
+        self.g1.addWidget(self.ex_right_content_ex_details_row_lineedit, 4, 0)
 
     # define a QWidget and add View button, Delete button in it
     def setup_ex_right_ex_actions_column(self):
@@ -204,11 +215,13 @@ class MainWindow_Ui(object):
         self.ex_right_ex_gridlayout.setContentsMargins(3, 3, 3, 3)
         self.ex_right_ex_widget.setLayout(self.ex_right_ex_gridlayout)
         self.ex_right_ex_view_button = QPushButton()
+        self.ex_right_ex_view_button.setObjectName("edit")
         self.ex_right_ex_view_button.setIcon(QIcon("./images/edit.png"))
         self.ex_right_ex_view_button.setFlat(True)
         self.ex_right_ex_view_button.setCursor(QCursor(Qt.PointingHandCursor))
         self.ex_right_ex_view_button.setToolTip("View")
         self.ex_right_ex_delete_button = QPushButton()
+        self.ex_right_ex_delete_button.setObjectName("delete")
         self.ex_right_ex_delete_button.setIcon(QIcon("./images/delete.png"))
         self.ex_right_ex_delete_button.setFlat(True)
         self.ex_right_ex_delete_button.setCursor(QCursor(Qt.PointingHandCursor))
