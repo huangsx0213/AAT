@@ -184,7 +184,8 @@ class MainWindow(QtWidgets.QTabWidget, MainWindow_Ui):
     def ex_leftmenu_listview_loadModelData(self, model):
         # Demo data
         # now a simple list, later database with index field
-        self.listdata = ['Executions', 'Test Sets', 'Variables', 'Machines']
+        self.listdata = [QStandardItem(QIcon("./images/execution.png")," Executions"),QStandardItem(QIcon("./images/testset.png")," Test Sets"),
+                         QStandardItem(QIcon("./images/variables.png"),' Variables'), QStandardItem(QIcon("./images/mac.png"),' Machines')]
         for row in self.listdata:
             item = QStandardItem(row)
             # Set item AlignCenter
