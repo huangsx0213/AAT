@@ -9,11 +9,10 @@ from PyQt5.QtGui import QStandardItemModel, QStandardItem
 class CustomGroupBox(QGroupBox):
     def __init__(self, str=None):
         super().__init__(str)
-        # self.setFixedHeight(self.sizeHint().height())
         self.setCheckable(True)
-        self.setStyleSheet("QGroupBox::indicator { width: 13px; height: 13px;}"
-                           "QGroupBox::indicator:unchecked { image: url(./images/toggle_group.png);}"
-                           "QGroupBox::indicator:checked { image: url(./images/toggle_group.png);}")
+        self.setStyleSheet("QGroupBox::indicator { width: 22px; height:22px;}"
+                           "QGroupBox::indicator:unchecked { image: url(./images/expand.png);}"
+                           "QGroupBox::indicator:checked { image: url(./images/collapse.png);}")
         self.toggled.connect(
             lambda: self.toggleGroup(self))
 
@@ -24,6 +23,7 @@ class CustomGroupBox(QGroupBox):
             ctrl.setFlat(False)
         else:
             self.h = ctrl.height()
+            #print(self.h)
             ctrl.setFixedHeight(15)
             ctrl.setFlat(True)
 
@@ -154,6 +154,7 @@ class MainWindow_Ui(object):
         # self.ex_right_content_one_ex_layout.setSizeConstraint(QLayout.SetNoConstraint)
         # 3. define a Groupbox
         self.ex_right_content_ex_details_groupbox = CustomGroupBox("Details")
+        #self.ex_right_content_ex_details_groupbox.setChecked(False)
         self.ex_right_content_ex_email_groupbox = CustomGroupBox("Email Notification")
         self.ex_right_content_ex_settings_groupbox = CustomGroupBox("Settings")
         self.ex_right_content_ex_Variables_groupbox = CustomGroupBox("Set Variables")
@@ -214,19 +215,19 @@ class MainWindow_Ui(object):
         self.ex_right_ex_gridlayout = QGridLayout()
         self.ex_right_ex_gridlayout.setContentsMargins(3, 3, 3, 3)
         self.ex_right_ex_widget.setLayout(self.ex_right_ex_gridlayout)
-        self.ex_right_ex_view_button = QPushButton()
-        self.ex_right_ex_view_button.setObjectName("edit")
-        self.ex_right_ex_view_button.setIcon(QIcon("./images/edit.png"))
-        self.ex_right_ex_view_button.setFlat(True)
-        self.ex_right_ex_view_button.setCursor(QCursor(Qt.PointingHandCursor))
-        self.ex_right_ex_view_button.setToolTip("View")
+        self.ex_right_ex_edit_button = QPushButton()
+        self.ex_right_ex_edit_button.setObjectName("edit")
+        self.ex_right_ex_edit_button.setIcon(QIcon("./images/edit.png"))
+        self.ex_right_ex_edit_button.setFlat(True)
+        self.ex_right_ex_edit_button.setCursor(QCursor(Qt.PointingHandCursor))
+        self.ex_right_ex_edit_button.setToolTip("Edit")
         self.ex_right_ex_delete_button = QPushButton()
         self.ex_right_ex_delete_button.setObjectName("delete")
         self.ex_right_ex_delete_button.setIcon(QIcon("./images/delete.png"))
         self.ex_right_ex_delete_button.setFlat(True)
         self.ex_right_ex_delete_button.setCursor(QCursor(Qt.PointingHandCursor))
         self.ex_right_ex_delete_button.setToolTip("Delete")
-        self.ex_right_ex_gridlayout.addWidget(self.ex_right_ex_view_button, 0, 0)
+        self.ex_right_ex_gridlayout.addWidget(self.ex_right_ex_edit_button, 0, 0)
         self.ex_right_ex_gridlayout.addWidget(self.ex_right_ex_delete_button, 0, 1)
 
     def setup_tc_tab(self):

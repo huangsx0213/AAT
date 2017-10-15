@@ -65,7 +65,7 @@ class MainWindow(QtWidgets.QTabWidget, MainWindow_Ui):
 
         for row in range(self.ex_right_ex_tableview_model.rowCount()):
             self.setup_ex_right_ex_actions_column()
-            self.ex_right_ex_view_button.clicked.connect(self.add_execution_tab_ui)
+            self.ex_right_ex_edit_button.clicked.connect(self.add_execution_tab_ui)
             self.ex_right_ex_delete_button.clicked.connect(self.delete_execution_record)
             self.ex_right_ex_index = self.ex_right_ex_tableview.model().index(row, 5)
             self.ex_right_ex_tableview.setIndexWidget(self.ex_right_ex_index, self.ex_right_ex_widget)
