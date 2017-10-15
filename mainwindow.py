@@ -54,7 +54,7 @@ class MainWindow(QtWidgets.QTabWidget, MainWindow_Ui):
         self.ex_right_ts_tableview.setModel(self.ex_right_ts_tableview_model)
         self.ex_right_ts_tableview.verticalHeader().setVisible(False)
 
-        self.current_listdata = "Executions"
+        self.current_listdata=QStandardItem(QIcon("./images/execution.png")," Executions")
         self.ex_right_content_toolbar.actionTriggered[QAction].connect(self.tool_btn_clicked)
 
     def ex_right_ex_tableview_add_actions_column(self):
@@ -135,10 +135,10 @@ class MainWindow(QtWidgets.QTabWidget, MainWindow_Ui):
 
     def tool_btn_clicked(self,action):
         if action.text()=="save":
-            if self.current_listdata == "Executions":
+            if self.current_listdata.text() == "Executions":
                 self.save_execution_record()
         elif action.text()=="new":
-            if self.current_listdata == "Executions":
+            if self.current_listdata.text() == "Executions":
                 self.add_execution_tab_ui()
     # save a execution to db
     def save_execution_record(self):
@@ -184,8 +184,8 @@ class MainWindow(QtWidgets.QTabWidget, MainWindow_Ui):
     def ex_leftmenu_listview_loadModelData(self, model):
         # Demo data
         # now a simple list, later database with index field
-        self.listdata = [QStandardItem(QIcon("./images/execution.png")," Executions"),QStandardItem(QIcon("./images/testset.png")," Test Sets"),
-                         QStandardItem(QIcon("./images/variables.png"),' Variables'), QStandardItem(QIcon("./images/mac.png"),' Machines')]
+        self.listdata = [QStandardItem(QIcon("./images/execution.png"),"Executions"),QStandardItem(QIcon("./images/testset.png"),"Test Sets"),
+                         QStandardItem(QIcon("./images/variables.png"),'Variables'), QStandardItem(QIcon("./images/mac.png"),'Machines')]
         for row in self.listdata:
             item = QStandardItem(row)
             # Set item AlignCenter
@@ -196,16 +196,16 @@ class MainWindow(QtWidgets.QTabWidget, MainWindow_Ui):
     def ex_left_listview_on_clicked(self, index):
         current_row = index.row()
         self.current_listdata = self.listdata[current_row]
-        print("You are selecting left menu " + str(self.current_listdata))
+        print("You are selecting left menu " + str(self.current_listdata.text()))
         count = self.ex_right_content_tabwidget.count()
         for i in range(count,0,-1):
             self.ex_right_content_tabwidget.removeTab(i-1)
-        if self.current_listdata == "Executions":
+        if self.current_listdata.text() == "Executions":
             self.ex_right_content_tabwidget.addTab(self.ex_right_content_allex_tab, "All Executions")
-        elif self.current_listdata == "Test Sets":
+        elif self.current_listdata.text() == "Test Sets":
             self.ex_right_content_tabwidget.addTab(self.ex_right_content_allts_tab, "All Test Sets")
-        elif self.current_listdata == "Variables":
+        elif self.current_listdata.text() == "Variables":
             self.ex_right_content_tabwidget.addTab(self.ex_right_content_allva_tab, "Variables")
-        elif self.current_listdata == "Machines":
+        elif self.current_listdata.text() == "Machines":
             self.ex_right_content_tabwidget.addTab(self.ex_right_content_allma_tab, "Machines")
         QTabBar.setTabButton(self.ex_right_content_tabwidget.tabBar(), 0, QTabBar.RightSide, None)
