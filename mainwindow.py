@@ -54,7 +54,7 @@ class MainWindow(QtWidgets.QTabWidget, MainWindow_Ui):
         self.ex_right_ts_tableview.setModel(self.ex_right_ts_tableview_model)
         self.ex_right_ts_tableview.verticalHeader().setVisible(False)
 
-        self.current_listdata=QStandardItem(QIcon("./images/execution.png")," Executions")
+        self.current_listdata=QStandardItem(QIcon("./images/execution.png"),"Executions")
         self.ex_right_content_toolbar.actionTriggered[QAction].connect(self.tool_btn_clicked)
 
     def ex_right_ex_tableview_add_actions_column(self):
