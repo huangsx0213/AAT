@@ -4,7 +4,7 @@ from PyQt5.QtGui import QStandardItem, QStandardItemModel, QIcon
 from PyQt5.QtSql import QSqlTableModel, QSqlRelationalTableModel, QSqlRelation, QSqlRelationalDelegate
 from PyQt5.QtWidgets import QTabBar, QAction, QLineEdit
 
-from UserInterface.MainWindow_UI import MainWindow_Ui
+from UserInterface.MainWindow_UI import MainWindow_UI
 from ui_mainwindow import Ui_MainWindow
 
 
@@ -14,7 +14,7 @@ class MainWindow2(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
 
-class MainWindow(QtWidgets.QTabWidget, MainWindow_Ui):
+class MainWindow(QtWidgets.QTabWidget, MainWindow_UI):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
         self.setupUi(self)

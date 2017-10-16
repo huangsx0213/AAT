@@ -1,34 +1,12 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QCoreApplication, QModelIndex, Qt
+from PyQt5 import QtWidgets
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon, QCursor
-from PyQt5.QtWidgets import QGridLayout, QToolBox, QLabel, QGroupBox, QTabBar, QPushButton, QLayout, QVBoxLayout, \
+from PyQt5.QtWidgets import QGridLayout, QToolBox, QLabel, QGroupBox, QTabBar, QPushButton, QVBoxLayout, \
     QLineEdit, QAction
-from PyQt5.QtGui import QStandardItemModel, QStandardItem
+from UserInterface.CustomGroupBox import CustomGroupBox
 
 
-class CustomGroupBox(QGroupBox):
-    def __init__(self, str=None):
-        super().__init__(str)
-        self.setCheckable(True)
-        self.setStyleSheet("QGroupBox::indicator { width: 22px; height:22px;}"
-                           "QGroupBox::indicator:unchecked { image: url(./images/expand.png);}"
-                           "QGroupBox::indicator:checked { image: url(./images/collapse.png);}")
-        self.toggled.connect(
-            lambda: self.toggleGroup(self))
-
-    def toggleGroup(self, ctrl):
-        state = ctrl.isChecked()
-        if state:
-            ctrl.setFixedHeight(self.h)
-            ctrl.setFlat(False)
-        else:
-            self.h = ctrl.height()
-            #print(self.h)
-            ctrl.setFixedHeight(15)
-            ctrl.setFlat(True)
-
-
-class MainWindow_Ui(object):
+class MainWindow_UI(object):
     def setupUi(self, MainWindow):
         # settings of MainWindow,the QTabWidget.
         self.setWindowIcon(QIcon('.\images\logo.png'))
