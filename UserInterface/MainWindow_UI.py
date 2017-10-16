@@ -14,29 +14,29 @@ class MainWindow_UI(object):
         self.setWindowTitle('AAT 2.0')
 
         # define the first tab and add it into the QTabWidget.
-        self.ex_tab = QtWidgets.QWidget()
-        self.ex_tab.setObjectName("tab")
-        self.addTab(self.ex_tab, "Execution")
+        self.execution_main_tab = QtWidgets.QWidget()
+        self.execution_main_tab.setObjectName("execution_main_tab")
+        self.addTab(self.execution_main_tab, "Execution")
 
         # define the second tab and add it into the QTabWidget.
-        self.tc_tab = QtWidgets.QWidget()
-        self.tc_tab.setObjectName("tab1")
-        self.addTab(self.tc_tab, "TestCase")
+        self.testcase_main_tab = QtWidgets.QWidget()
+        self.testcase_main_tab.setObjectName("testcase_main_tab")
+        self.addTab(self.testcase_main_tab, "TestCase")
 
         # define the third tab and add it into the QTabWidget.
-        self.ac_tab = QtWidgets.QWidget()
-        self.ac_tab.setObjectName("tab2")
-        self.addTab(self.ac_tab, "Action")
+        self.action_main_tab = QtWidgets.QWidget()
+        self.action_main_tab.setObjectName("action_main_tab")
+        self.addTab(self.action_main_tab, "Action")
 
-        self.setup_ex_tab()
-        self.setup_tc_tab()
-        self.setup_ac_tab()
+        self.setup_execution_main_tab()
+        self.setup_testcase_main_tab()
+        self.setup_action_main_tab()
 
-    def setup_ex_tab(self):
+    def setup_execution_main_tab(self):
         # define the QGridLayout execution_tab_layout into the execution_tab.
         self.ex_tab_layout = QGridLayout()
         self.ex_tab_layout.setContentsMargins(5, 5, 5, 5)
-        self.ex_tab.setLayout(self.ex_tab_layout)
+        self.execution_main_tab.setLayout(self.ex_tab_layout)
 
         # define the left groupbox
         # 1. define a groupbox
@@ -208,11 +208,11 @@ class MainWindow_UI(object):
         self.ex_right_ex_gridlayout.addWidget(self.ex_right_ex_edit_button, 0, 0)
         self.ex_right_ex_gridlayout.addWidget(self.ex_right_ex_delete_button, 0, 1)
 
-    def setup_tc_tab(self):
+    def setup_testcase_main_tab(self):
         # define the QGridLayout testcases_tab_layout into the testcases_tab.
         self.tc_tab_layout = QGridLayout()
         self.tc_tab_layout.setContentsMargins(5, 5, 5, 5)
-        self.tc_tab.setLayout(self.tc_tab_layout)
+        self.testcase_main_tab.setLayout(self.tc_tab_layout)
 
         # define the left groupbox
         # 1. define a groupbox
@@ -269,11 +269,11 @@ class MainWindow_UI(object):
         self.tc_tab_layout.addWidget(self.tc_left_menu_groupbox, 0, 0)
         self.tc_tab_layout.addWidget(self.tc_right_content_groupbox, 0, 1)
 
-    def setup_ac_tab(self):
+    def setup_action_main_tab(self):
         # define the QGridLayout action_tab_layout into the action_tab.
         self.ac_tab_layout = QGridLayout()
         self.ac_tab_layout.setContentsMargins(5, 5, 5, 5)
-        self.ac_tab.setLayout(self.ac_tab_layout)
+        self.action_main_tab.setLayout(self.ac_tab_layout)
 
         # define the left groupbox
         # 1. define a groupbox
