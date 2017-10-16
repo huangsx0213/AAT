@@ -1,6 +1,6 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
-from mainwindow import *
 import sys
+
+from BusinessLogic.MainWindow import *
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)

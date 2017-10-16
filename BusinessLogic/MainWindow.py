@@ -1,10 +1,10 @@
 from PyQt5 import QtWidgets, QtSql
-from PyQt5.QtCore import Qt, QModelIndex, QVariant
-from PyQt5.QtGui import QStandardItem, QStandardItemModel, QIcon, QCursor
-from PyQt5.QtSql import QSqlTableModel, QSqlRelationalTableModel, QSqlRelation, QSqlRelationalDelegate, QSqlRecord
-from PyQt5.QtWidgets import QTabBar, QPushButton, QComboBox, QGridLayout, qApp, QAction, QLineEdit
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QStandardItem, QStandardItemModel, QIcon
+from PyQt5.QtSql import QSqlTableModel, QSqlRelationalTableModel, QSqlRelation, QSqlRelationalDelegate
+from PyQt5.QtWidgets import QTabBar, QAction, QLineEdit
 
-from mainwindow_ui import MainWindow_Ui
+from UserInterface.MainWindow_UI import MainWindow_Ui
 from ui_mainwindow import Ui_MainWindow
 
 
