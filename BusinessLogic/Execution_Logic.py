@@ -1,27 +1,12 @@
-from PyQt5 import QtWidgets, QtSql
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QStandardItem, QStandardItemModel, QIcon
-from PyQt5.QtSql import QSqlTableModel, QSqlRelationalTableModel, QSqlRelation, QSqlRelationalDelegate
-from PyQt5.QtWidgets import QTabBar, QAction, QLineEdit
-
-from UserInterface.MainWindow_UI import MainWindow_UI
-from ui_mainwindow import Ui_MainWindow
+from PyQt5.QtGui import QStandardItem, QIcon, QStandardItemModel
+from PyQt5.QtSql import QSqlRelationalTableModel, QSqlTableModel, QSqlRelation, QSqlRelationalDelegate
+from PyQt5.QtWidgets import QLineEdit, QTabBar, QAction
 
 
-class MainWindow2(QtWidgets.QMainWindow, Ui_MainWindow):
-    def __init__(self, parent=None):
-        super(MainWindow2, self).__init__(parent)
-        self.setupUi(self)
+class Execution_Logic:
 
-
-class MainWindow(QtWidgets.QTabWidget, MainWindow_UI):
-    def __init__(self, parent=None):
-        super(MainWindow, self).__init__(parent)
-        self.setupUi(self)
-        self.excution_tab_dic={}
-        db = QtSql.QSqlDatabase.addDatabase('QSQLITE')
-        db.setDatabaseName('.\study\qaat.db')
-        db.open()
+    def execution_logic(self):
         # List view data and action
         self.ex_list_view_model = QStandardItemModel()
         # Load the data to the model
@@ -29,7 +14,6 @@ class MainWindow(QtWidgets.QTabWidget, MainWindow_UI):
         # SConnect the model to the listView
         self.ex_left_menu_listview.setModel(self.ex_list_view_model)
         self.ex_left_menu_listview.clicked.connect(self.ex_left_listview_on_clicked)
-
         # execution table logic
         self.ex_right_ex_tableview_model = QSqlRelationalTableModel()
         self.ex_right_ex_tableview_model.setTable("Execution")
@@ -42,10 +26,8 @@ class MainWindow(QtWidgets.QTabWidget, MainWindow_UI):
         self.ex_right_ex_tableview.verticalHeader().setVisible(False)
         # self.ex_right_ex_tableview_model.insertRow(4)
         # self.add_execution()
-
         # add the actions column into the tableview
         self.ex_right_ex_tableview_add_actions_column()
-
         # testset table logic
         self.ex_right_ts_tableview_model = QSqlTableModel()
         self.ex_right_ts_tableview_model.setTable("TestSet")
@@ -53,24 +35,23 @@ class MainWindow(QtWidgets.QTabWidget, MainWindow_UI):
         self.ex_right_ts_tableview_model.select()
         self.ex_right_ts_tableview.setModel(self.ex_right_ts_tableview_model)
         self.ex_right_ts_tableview.verticalHeader().setVisible(False)
-
-        self.current_listdata=QStandardItem(QIcon("./images/execution.png"),"Executions")
+        self.current_listdata = QStandardItem(QIcon("./images/execution.png"), "Executions")
         self.ex_right_content_toolbar.actionTriggered[QAction].connect(self.tool_btn_clicked)
 
     def ex_right_ex_tableview_add_actions_column(self):
         # add a column into the ex table for actions
         self.ex_right_ex_tableview_model.select()
-        self.ex_right_ex_tableview_model.insertColumn(5)
-        self.ex_right_ex_tableview_model.setHeaderData(5, Qt.Horizontal, "Actions")
+        tem_column_count=self.ex_right_ex_tableview_model.columnCount()
+        self.ex_right_ex_tableview_model.insertColumn(tem_column_count)
+        self.ex_right_ex_tableview_model.setHeaderData(tem_column_count, Qt.Horizontal, "Actions")
 
         for row in range(self.ex_right_ex_tableview_model.rowCount()):
             self.setup_execution_actions_column()
             self.ex_right_ex_edit_button.clicked.connect(self.add_execution_tab_ui)
             self.ex_right_ex_delete_button.clicked.connect(self.delete_execution_record)
-            self.ex_right_ex_index = self.ex_right_ex_tableview.model().index(row, 5)
+            self.ex_right_ex_index = self.ex_right_ex_tableview.model().index(row, tem_column_count)
             self.ex_right_ex_tableview.setIndexWidget(self.ex_right_ex_index, self.ex_right_ex_widget)
 
-    # add the execution tab ui for new an execution or edit an execution
     def add_execution_tab_ui(self):
         # get the selected  QPushButton's parent : the QWidget
         ex_right_ex_widget_selected = self.sender().parent()
@@ -119,7 +100,6 @@ class MainWindow(QtWidgets.QTabWidget, MainWindow_UI):
         # regenerate the actions_column
         self.ex_right_ex_tableview_add_actions_column()
 
-    # delete a execution from db
     def delete_execution_record(self):
         # get the selected  QPushButton's parent : the QWidget
         ex_right_ex_widget_selected = self.sender().parent()
@@ -133,14 +113,6 @@ class MainWindow(QtWidgets.QTabWidget, MainWindow_UI):
         # regenerate the actions_column
         self.ex_right_ex_tableview_add_actions_column()
 
-    def tool_btn_clicked(self,action):
-        if action.text()=="save":
-            if self.current_listdata.text() == "Executions":
-                self.save_execution_record()
-        elif action.text()=="new":
-            if self.current_listdata.text() == "Executions":
-                self.add_execution_tab_ui()
-    # save a execution to db
     def save_execution_record(self):
         row_edit=self.ex_right_content_tabwidget.currentWidget().findChild(QLineEdit,name="row",options=Qt.FindChildrenRecursively)
         if row_edit is not None:
@@ -171,7 +143,14 @@ class MainWindow(QtWidgets.QTabWidget, MainWindow_UI):
         else:
             print("No need saving.")
 
-    # add a execution to db
+    def tool_btn_clicked(self, action):
+        if action.text()=="save":
+            if self.current_listdata.text() == "Executions":
+                self.save_execution_record()
+        elif action.text()=="new":
+            if self.current_listdata.text() == "Executions":
+                self.add_execution_tab_ui()
+
     def add_execution_record(self):
         record = self.ex_right_ex_tableview_model.record()
         record.setValue("Name", "ex1")
