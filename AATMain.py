@@ -1,6 +1,6 @@
 import sys
 
-from BusinessLogic.MainWindow import *
+from BusinessLogic.MainWindow_Logic import *
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
