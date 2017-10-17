@@ -64,7 +64,7 @@ class MainWindow(QtWidgets.QTabWidget, MainWindow_UI):
         self.ex_right_ex_tableview_model.setHeaderData(5, Qt.Horizontal, "Actions")
 
         for row in range(self.ex_right_ex_tableview_model.rowCount()):
-            self.setup_ex_right_ex_actions_column()
+            self.setup_execution_actions_column()
             self.ex_right_ex_edit_button.clicked.connect(self.add_execution_tab_ui)
             self.ex_right_ex_delete_button.clicked.connect(self.delete_execution_record)
             self.ex_right_ex_index = self.ex_right_ex_tableview.model().index(row, 5)
@@ -104,9 +104,9 @@ class MainWindow(QtWidgets.QTabWidget, MainWindow_UI):
         if create == True:
             #self.ex_right_content_tabwidget.removeTab(1)
             if row !=-1:
-                self.setup_excution_tab(name)
+                self.setup_dynamic_excution_tab(name)
             else:
-                self.setup_excution_tab("New Execution")
+                self.setup_dynamic_excution_tab("New Execution")
             #self.excution_tab_dic[self.ex_right_ex_widget_row ]=self.ex_right_content_one_ex_tab
             #l=self.excution_tab_dic[self.ex_right_ex_widget_row ].findChild(QLineEdit,name="lname",options=Qt.FindChildrenRecursively)
             #print(l.objectName())
