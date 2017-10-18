@@ -7,7 +7,9 @@ from UserInterface.Testcase_UI import Testcase_UI
 
 
 class MainWindow_UI(Execution_UI, Testcase_UI, Action_UI):
-    def setupUi(self, MainWindow):
+    def __init__(self):
+        pass
+    def setupUi(self):
         # settings of MainWindow,the QTabWidget.
         self.setWindowIcon(QIcon('.\images\logo.png'))
         self.resize(1020, 600)
