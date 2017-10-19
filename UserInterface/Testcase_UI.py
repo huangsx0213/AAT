@@ -1,8 +1,18 @@
 from PyQt5 import QtWidgets
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QGridLayout, QGroupBox, QToolBox, QTabBar
 
 
 class Testcase_UI:
+    def setup_testcase_ui(self):
+        # define the second tab and add it into the QTabWidget.
+        self.testcase_main_tab = QtWidgets.QWidget()
+        self.testcase_main_tab.setObjectName("testcase_main_tab")
+        self.addTab(self.testcase_main_tab, "TestCase")
+
+
+        self.setup_testcase_main_tab()
+
     def setup_testcase_main_tab(self):
         # define the QGridLayout testcases_tab_layout into the testcases_tab.
         self.tc_tab_layout = QGridLayout()

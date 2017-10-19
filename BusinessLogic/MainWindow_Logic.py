@@ -9,8 +9,7 @@ from PyQt5.QtWidgets import QLineEdit, QTabBar, QAction
 class MainWindow(QtWidgets.QTabWidget, MainWindow_UI):
     def __init__(self):
         super().__init__()
-        self.setupUi()
-        self.excution_tab_dic={}
+
         db = QtSql.QSqlDatabase.addDatabase('QSQLITE')
         db.setDatabaseName('.\study\qaat.db')
         db.open()

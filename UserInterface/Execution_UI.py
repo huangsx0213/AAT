@@ -8,6 +8,13 @@ from UserInterface.CustomGroupBox import CustomGroupBox
 
 
 class Execution_UI(object):
+    def setup_execution_ui(self):
+        # define the first tab and add it into the QTabWidget.
+        self.execution_main_tab = QtWidgets.QWidget()
+        self.execution_main_tab.setObjectName("execution_main_tab")
+        self.addTab(self.execution_main_tab, "Execution")
+
+        self.setup_execution_main_tab()
 
     def setup_execution_main_tab(self):
         # define the QGridLayout execution_tab_layout into the execution_tab.

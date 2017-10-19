@@ -1,8 +1,16 @@
 from PyQt5 import QtWidgets
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QGridLayout, QGroupBox, QToolBox, QTabBar
 
 
 class Action_UI:
+    def setup_action_ui(self):
+        # define the third tab and add it into the QTabWidget.
+        self.action_main_tab = QtWidgets.QWidget()
+        self.action_main_tab.setObjectName("action_main_tab")
+        self.addTab(self.action_main_tab, "Action")
+
+        self.setup_action_main_tab()
     def setup_action_main_tab(self):
         # define the QGridLayout action_tab_layout into the action_tab.
         self.ac_tab_layout = QGridLayout()
