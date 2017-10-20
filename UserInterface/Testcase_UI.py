@@ -14,17 +14,17 @@ class Testcase_UI:
 
     def setup_testcase_main_tab(self):
         # define the QGridLayout testcases_tab_layout into the testcases_tab.
-        self.tc_tab_layout = QGridLayout()
-        self.tc_tab_layout.setContentsMargins(5, 5, 5, 5)
-        self.testcase_main_tab.setLayout(self.tc_tab_layout)
+        self.testcase_tab_layout = QGridLayout()
+        self.testcase_tab_layout.setContentsMargins(5, 5, 5, 5)
+        self.testcase_main_tab.setLayout(self.testcase_tab_layout)
 
         # define the left groupbox
         # 1. define a groupbox
-        self.tc_left_menu_groupbox = QGroupBox()
-        self.tc_left_menu_groupbox.setFixedWidth(185)
+        self.testcase_menu_groupbox = QGroupBox()
+        self.testcase_menu_groupbox.setFixedWidth(185)
         # 2.define a gridlayout
-        self.tc_left_menu_gridlayout = QGridLayout()
-        self.tc_left_menu_gridlayout.setContentsMargins(2, 2, 2, 2)
+        self.testcase_menu_gridlayout = QGridLayout()
+        self.testcase_menu_gridlayout.setContentsMargins(2, 2, 2, 2)
         # 3.define a toolbox
         self.tc_left_menu_listview = QtWidgets.QListView()
         self.tctree_left_menu_listview = QtWidgets.QListView()
@@ -32,9 +32,9 @@ class Testcase_UI:
         self.tc_left_menu_toolbox.addItem(self.tc_left_menu_listview, "Test Cases")
         self.tc_left_menu_toolbox.addItem(self.tctree_left_menu_listview, "Test Cases Tree")
         # add the toolbox into gridlayout
-        self.tc_left_menu_gridlayout.addWidget(self.tc_left_menu_toolbox)
+        self.testcase_menu_gridlayout.addWidget(self.tc_left_menu_toolbox)
         # add the gridlaout into the groupbox
-        self.tc_left_menu_groupbox.setLayout(self.tc_left_menu_gridlayout)
+        self.testcase_menu_groupbox.setLayout(self.testcase_menu_gridlayout)
 
         # define the right groupbox
         # 0.define the save toolbar
@@ -70,5 +70,5 @@ class Testcase_UI:
         self.tc_right_content_groupbox.setLayout(self.tc_right_content_gridlayout)
 
         # add the left groupbox and  right groupbox into tcecution_tab_layout
-        self.tc_tab_layout.addWidget(self.tc_left_menu_groupbox, 0, 0)
-        self.tc_tab_layout.addWidget(self.tc_right_content_groupbox, 0, 1)
+        self.testcase_tab_layout.addWidget(self.testcase_menu_groupbox, 0, 0)
+        self.testcase_tab_layout.addWidget(self.tc_right_content_groupbox, 0, 1)
