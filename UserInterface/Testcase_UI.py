@@ -10,7 +10,6 @@ class Testcase_UI:
         self.testcase_main_tab.setObjectName("testcase_main_tab")
         self.addTab(self.testcase_main_tab, "TestCase")
 
-
         self.setup_testcase_main_tab()
 
     def setup_testcase_main_tab(self):

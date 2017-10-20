@@ -11,6 +11,7 @@ class Action_UI:
         self.addTab(self.action_main_tab, "Action")
 
         self.setup_action_main_tab()
+
     def setup_action_main_tab(self):
         # define the QGridLayout action_tab_layout into the action_tab.
         self.ac_tab_layout = QGridLayout()

@@ -1,4 +1,5 @@
 import sys
+from PyQt5 import QtWidgets
 
 from BusinessLogic.MainWindow_Logic import *
 
