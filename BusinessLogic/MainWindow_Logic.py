@@ -12,6 +12,8 @@ class MainWindow(QTabWidget, Execution_Logic, TestSet_Logic, Execution_Menu_Logi
         db = QtSql.QSqlDatabase.addDatabase('QSQLITE')
         db.setDatabaseName('.\study\qaat.db')
         db.open()
+        db.exec('pragma foreign_keys=ON')
+
 
         self.execution_menu_logic()
         self.execution_logic()
