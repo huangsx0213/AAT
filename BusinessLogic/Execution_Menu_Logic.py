@@ -23,9 +23,13 @@ class Execution_Menu_Logic(MainWindow_UI):
         if action.text() == "save":
             if self.current_listdata.text() == "Executions":
                 self.save_execution_record()
+            if self.current_listdata.text() == "Test Sets":
+                self.save_testset_record()
         elif action.text() == "new":
             if self.current_listdata.text() == "Executions":
                 self.add_execution_tab_ui()
+            if self.current_listdata.text()=="Test Sets":
+                self.add_testset_tab_ui()
 
     def load_execution_menu_model(self, model):
         # Demo data

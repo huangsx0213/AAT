@@ -133,6 +133,7 @@ class Execution_Logic(MainWindow_UI):
         else:
             print("No need saving.")
 
+    # testing
     def add_execution_record(self):
         record = self.execution_tableview_model.record()
         record.setValue("Name", "ex1")
