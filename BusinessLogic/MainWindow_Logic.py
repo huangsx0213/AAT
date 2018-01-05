@@ -10,7 +10,7 @@ class MainWindow(QTabWidget, Execution_Logic, TestSet_Logic, Execution_Menu_Logi
         super().__init__()
 
         db = QtSql.QSqlDatabase.addDatabase('QSQLITE')
-        db.setDatabaseName('.\study\qaat.db')
+        db.setDatabaseName('.\DataBase\QAAT.db')
         db.open()
         db.exec('pragma foreign_keys=ON')
 

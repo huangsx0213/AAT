@@ -1,1 +1,0 @@
-msiexec /i c:\vix\ArchiveManagerInstaller.msi /q  LICENSEACCEPTED=1
