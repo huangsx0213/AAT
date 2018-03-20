@@ -2,7 +2,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon, QCursor
 from PyQt5.QtWidgets import QGridLayout, QGroupBox, QToolBox, QAction, QTabBar, QVBoxLayout, QLabel, QLineEdit, \
-    QPushButton, QSplitter
+    QPushButton, QSplitter, QTreeView
 
 from UserInterface.CustomGroupBox import CustomGroupBox
 
@@ -203,12 +203,18 @@ class Execution_UI(object):
         self.testset_details_name_lineedit = QLineEdit()
         self.testset_details_name_lineedit.setObjectName("testset_name")
 
+        self.testset_details_testcases_lable = QLabel("TestCases:")
+        self.testset_details_testcases_treeview=QTreeView()
+
+
         self.testset_details_row_lineedit = QLineEdit()
         self.testset_details_row_lineedit.setObjectName("row")
         self.testset_details_row_lineedit.hide()
         self.testset_details_gridlayout.addWidget(self.testset_details_name_lable, 0, 0)
         self.testset_details_gridlayout.addWidget(self.testset_details_name_lineedit, 0, 1)
         self.testset_details_gridlayout.addWidget(self.testset_details_row_lineedit, 1, 0)
+        self.testset_details_gridlayout.addWidget(self.testset_details_testcases_lable, 1, 0)
+        self.testset_details_gridlayout.addWidget(self.testset_details_testcases_treeview, 1, 1)
         
     def setup_execution_actions_column(self):
         self.execution_action_widget = QtWidgets.QWidget()

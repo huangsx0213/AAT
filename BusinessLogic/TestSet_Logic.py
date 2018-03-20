@@ -1,9 +1,226 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtSql import QSqlTableModel, QSqlRelationalTableModel, QSqlRelation, QSqlRelationalDelegate
+from PyQt5.QtCore import Qt, QAbstractItemModel, QModelIndex
+from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtSql import QSqlTableModel, QSqlRelationalTableModel, QSqlRelation, QSqlRelationalDelegate, QSqlQuery
 from PyQt5.QtWidgets import QLineEdit
 
 from UserInterface.MainWindow_UI import MainWindow_UI
 
+
+class Node(object):
+
+    def __init__(self, name,parent=None,checkStatus=False):
+
+        self._name = name
+        self._children = []
+        self._parent = parent
+        self._checkStatus=checkStatus
+
+        if parent is not None:
+            parent.addChild(self)
+
+    def typeInfo(self):
+        return "TestCase"
+
+    def addChild(self, child):
+        self._children.append(child)
+
+    def insertChild(self, position, child):
+
+        if position < 0 or position > len(self._children):
+            return False
+
+        self._children.insert(position, child)
+        child._parent = self
+        return True
+
+    def removeChild(self, position):
+
+        if position < 0 or position > len(self._children):
+            return False
+
+        child = self._children.pop(position)
+        child._parent = None
+
+        return True
+
+    def name(self):
+        return self._name
+
+    def setName(self, name):
+        self._name = name
+    def checkStatus(self):
+        return self._checkStatus
+
+    def setCheckStatus(self, checkStatus):
+        self._checkStatus = checkStatus
+    def child(self, row):
+        return self._children[row]
+
+    def childCount(self):
+        return len(self._children)
+
+    def parent(self):
+        return self._parent
+
+    def row(self):
+        if self._parent is not None:
+            return self._parent._children.index(self)
+
+    def log(self, tabLevel=-1):
+
+        output = ""
+        tabLevel += 1
+
+        for i in range(tabLevel):
+            output += "\t\t"
+
+        output += "@------" + self._name + "\n"
+
+        for child in self._children:
+            output += child.log(tabLevel)
+
+        tabLevel -= 1
+
+        return output
+
+    def __repr__(self):
+        return self.log()
+
+
+class FolderNode(Node):
+
+    def __init__(self, name, parent=None):
+        super(FolderNode, self).__init__(name, parent)
+
+    def typeInfo(self):
+        return "FolderNode"
+class TestCaseTreeModel(QAbstractItemModel):
+    """INPUTS: Node, QObject"""
+
+    def __init__(self, root, parent=None):
+        super(TestCaseTreeModel, self).__init__(parent)
+        self._rootNode = root
+
+    """INPUTS: QModelIndex"""
+    """OUTPUT: int"""
+
+    def rowCount(self, parent):
+        if not parent.isValid():
+            parentNode = self._rootNode
+        else:
+            parentNode = parent.internalPointer()
+
+        return parentNode.childCount()
+
+    """INPUTS: QModelIndex"""
+    """OUTPUT: int"""
+
+    def columnCount(self, parent):
+        return 1
+
+    """INPUTS: QModelIndex, int"""
+    """OUTPUT: QVariant, strings are cast to QString which is a QVariant"""
+
+    def data(self, index, role):
+
+        if not index.isValid():
+            return None
+
+        node = index.internalPointer()
+
+        if role == Qt.DisplayRole or role == Qt.EditRole:
+            if index.column() == 0:
+                return node.name()
+        if role == Qt.CheckStateRole:
+            if index.column() == 0:
+                if node.checkStatus():
+                    return Qt.Checked
+                else:
+                    return Qt.Unchecked
+
+        """if role == Qt.DecorationRole:
+            if index.column() == 0:
+                typeInfo = node.typeInfo()
+
+                if typeInfo == "LIGHT":
+                    return QIcon(QPixmap(":/Light.png"))
+
+                if typeInfo == "TRANSFORM":
+                    return QIcon(QPixmap(":/Transform.png"))
+
+                if typeInfo == "CAMERA":
+                    return QIcon(QPixmap(":/Camera.png"))"""
+
+    """INPUTS: QModelIndex, QVariant, int (flag)"""
+
+    def setData(self, index, value, role=Qt.EditRole):
+
+        if index.isValid():
+            node = index.internalPointer()
+            if role == Qt.EditRole:
+                node.setName(value)
+                return True
+            if role ==Qt.CheckStateRole:
+                if node.checkStatus():
+                    node.setCheckStatus(True)
+                else:
+                    node.setCheckStatus(False)
+                self.dataChanged.emit(index, index)
+                return True
+
+        return False
+
+    def flags(self, index):
+        return Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsEditable|Qt.ItemIsUserCheckable
+
+    """INPUTS: QModelIndex"""
+    """OUTPUT: QModelIndex"""
+    """Should return the parent of the node with the given QModelIndex"""
+
+    def parent(self, index):
+
+        node = self.getNode(index)
+        parentNode = node.parent()
+
+        if parentNode == self._rootNode:
+            return QModelIndex()
+
+        return self.createIndex(parentNode.row(), 0, parentNode)
+
+    """INPUTS: int, int, QModelIndex"""
+    """OUTPUT: QModelIndex"""
+    """Should return a QModelIndex that corresponds to the given row, column and parent node"""
+
+    def index(self, row, column, parent):
+
+        parentNode = self.getNode(parent)
+
+        childItem = parentNode.child(row)
+
+        if childItem:
+            return self.createIndex(row, column, childItem)
+        else:
+            return QModelIndex()
+
+    """CUSTOM"""
+    """INPUTS: QModelIndex"""
+
+    def getNode(self, index):
+        if index.isValid():
+            node = index.internalPointer()
+            if node:
+                return node
+
+        return self._rootNode
+
+    """INPUTS: int, Qt::Orientation, int"""
+    """OUTPUT: QVariant, strings are cast to QString which is a QVariant"""
+    def headerData(self, section, orientation, role):
+        if role == Qt.DisplayRole:
+            if section == 0:
+                return "Choose the testcase:"
+            else:
+                return "Typeinfo"
 
 class TestSet_Logic(MainWindow_UI):
     def testset_logic(self):
@@ -19,19 +236,18 @@ class TestSet_Logic(MainWindow_UI):
         self.testset_testcase_tableview_model=QSqlRelationalTableModel()
         self.testset_testcase_tableview_model.setTable("TestsetTestcase")
         self.testset_testcase_tableview_model.setRelation(1, QSqlRelation("TestCase", "Id", "Name"))
-        self.testset_testcase_tableview_model.setRelation(2, QSqlRelation("TestCase", "Id", "Description"))
+        #self.testset_testcase_tableview_model.setRelation(2, QSqlRelation("TestCase", "Id", "Description"))
         self.testset_testcase_tableview_model.setHeaderData(1, Qt.Horizontal, "CaseName")
-        self.testset_testcase_tableview_model.setHeaderData(2, Qt.Horizontal, "CaseDescription")
+        #self.testset_testcase_tableview_model.setHeaderData(2, Qt.Horizontal, "CaseDescription")
         self.testset_testcase_tableview_model.setFilter("testsetId=1")
         #Qt.AscendingOrder or Qt.DescendingOrder
-        self.testset_testcase_tableview_model.setSort(2,Qt.AscendingOrder)
+        self.testset_testcase_tableview_model.setSort(1,Qt.AscendingOrder)
 
         self.testset_testcase_tableview_model.select()
         self.testset_testcase_tableview.setModel(self.testset_testcase_tableview_model)
         self.testset_testcase_tableview.setItemDelegate(QSqlRelationalDelegate(self.testset_testcase_tableview))
         self.testset_testcase_tableview.verticalHeader().setVisible(False)
         self.testset_testcase_tableview.setColumnHidden(0, True)
-        self.testset_testcase_tableview.setColumnHidden(3, True)
 
         #self.setup_dynamic_testset_tab("test")
 
@@ -101,6 +317,7 @@ class TestSet_Logic(MainWindow_UI):
             data_row = self.testset_tableview_model.record(self.testset_action_widget_row)
             row = self.testset_action_widget_row
             name = data_row.value("Name")
+            testset_id=data_row.value("Id")
         else:
             row = -1
             name = ""
@@ -123,6 +340,34 @@ class TestSet_Logic(MainWindow_UI):
             # print(l.objectName())
             self.testset_details_name_lineedit.setText(name)
             self.testset_details_row_lineedit.setText(str(row))
+            query = QSqlQuery("SELECT distinct Tags FROM TestCase where Tags is not Null")
+            rootNode = Node("TestCases")
+            while query.next():
+                childNode0 = Node(query.value(0), rootNode)
+                sql="SELECT Id,Name FROM TestCase where Tags='"+query.value(0)+"'"
+                print(sql)
+                query1 = QSqlQuery(sql)
+                while query1.next():
+                    #print(query1.value(0))
+                    #print(query1.value(1))
+                    sql="SELECT TestcaseId FROM TestsetTestcase where TestsetId = '"+str(testset_id)+"' and TestcaseId = '"+str(query1.value(0))+"'"
+                    print(sql)
+                    query3 = QSqlQuery(sql)
+                    print(str(query3.size()) )
+                    if query3.size()>0:
+                        checked=True
+                    else:
+                        checked=False
+                    childNode1 = Node(query1.value(1), childNode0,checked)
+            sql2 = "SELECT Name FROM TestCase where Tags is Null"
+            query2 = QSqlQuery(sql2)
+            while query2.next():
+                childNode2 = Node(query2.value(0), rootNode)
+            print(rootNode)
+            model = TestCaseTreeModel(rootNode)
+
+            self.testset_details_testcases_treeview.setModel(model)
+
             # print(data_row.value("TestSet_Name_2"))
         # regenerate the actions_column
         self.testset_tableview_add_actions_column()
