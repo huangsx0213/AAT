@@ -161,7 +161,7 @@ class TestCaseTreeModel(QAbstractItemModel):
                 node.setName(value)
                 return True
             if role ==Qt.CheckStateRole:
-                if node.checkStatus():
+                if value==Qt.Checked:
                     node.setCheckStatus(True)
                 else:
                     node.setCheckStatus(False)
@@ -353,16 +353,30 @@ class TestSet_Logic(MainWindow_UI):
                     sql="SELECT TestcaseId FROM TestsetTestcase where TestsetId = '"+str(testset_id)+"' and TestcaseId = '"+str(query1.value(0))+"'"
                     print(sql)
                     query3 = QSqlQuery(sql)
-                    print(str(query3.size()) )
-                    if query3.size()>0:
-                        checked=True
+                    query3.last()
+                    row_count = query3.at() + 1
+                    print(row_count)
+                    if row_count ==1:
+                        checked = True
                     else:
-                        checked=False
+                        checked = False
+
                     childNode1 = Node(query1.value(1), childNode0,checked)
-            sql2 = "SELECT Name FROM TestCase where Tags is Null"
+            sql2 = "SELECT Id,Name FROM TestCase where Tags is Null"
             query2 = QSqlQuery(sql2)
             while query2.next():
-                childNode2 = Node(query2.value(0), rootNode)
+                sql = "SELECT TestcaseId FROM TestsetTestcase where TestsetId = '" + str(
+                    testset_id) + "' and TestcaseId = '" + str(query2.value(0)) + "'"
+                print(sql)
+                query3 = QSqlQuery(sql)
+                query3.last()
+                row_count = query3.at() + 1
+                print(row_count)
+                if row_count == 1:
+                    checked = True
+                else:
+                    checked = False
+                childNode2 = Node(query2.value(1), rootNode,checked)
             print(rootNode)
             model = TestCaseTreeModel(rootNode)
 
