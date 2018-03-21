@@ -8,7 +8,7 @@ from UserInterface.MainWindow_UI import MainWindow_UI
 
 class Node(object):
 
-    def __init__(self, name,parent=None,checkStatus=False):
+    def __init__(self, name,parent=None,checkStatus=Qt.Unchecked):
 
         self._name = name
         self._children = []
@@ -89,8 +89,8 @@ class Node(object):
 
 class FolderNode(Node):
 
-    def __init__(self, name, parent=None):
-        super(FolderNode, self).__init__(name, parent)
+    def __init__(self, name, parent=None,checkStatus=Qt.Unchecked):
+        super(FolderNode, self).__init__(name, parent,checkStatus)
 
     def typeInfo(self):
         return "FolderNode"
@@ -133,23 +133,22 @@ class TestCaseTreeModel(QAbstractItemModel):
                 return node.name()
         if role == Qt.CheckStateRole:
             if index.column() == 0:
-                if node.checkStatus():
+                if node.checkStatus()==Qt.Checked:
                     return Qt.Checked
-                else:
+                elif node.checkStatus()==Qt.Unchecked:
                     return Qt.Unchecked
+                else:
+                    return Qt.PartiallyChecked
 
-        """if role == Qt.DecorationRole:
+        if role == Qt.DecorationRole:
             if index.column() == 0:
                 typeInfo = node.typeInfo()
 
-                if typeInfo == "LIGHT":
-                    return QIcon(QPixmap(":/Light.png"))
+                if typeInfo == "FolderNode":
+                    return QIcon(QPixmap("./Images/folder.png"))
 
-                if typeInfo == "TRANSFORM":
-                    return QIcon(QPixmap(":/Transform.png"))
-
-                if typeInfo == "CAMERA":
-                    return QIcon(QPixmap(":/Camera.png"))"""
+                if typeInfo == "TestCase":
+                    return QIcon(QPixmap("./Images/item.png"))
 
     """INPUTS: QModelIndex, QVariant, int (flag)"""
 
@@ -162,9 +161,9 @@ class TestCaseTreeModel(QAbstractItemModel):
                 return True
             if role ==Qt.CheckStateRole:
                 if value==Qt.Checked:
-                    node.setCheckStatus(True)
+                    node.setCheckStatus(Qt.Checked)
                 else:
-                    node.setCheckStatus(False)
+                    node.setCheckStatus(Qt.Unchecked)
                 self.dataChanged.emit(index, index)
                 return True
 
@@ -343,10 +342,15 @@ class TestSet_Logic(MainWindow_UI):
             query = QSqlQuery("SELECT distinct Tags FROM TestCase where Tags is not Null")
             rootNode = Node("TestCases")
             while query.next():
-                childNode0 = Node(query.value(0), rootNode)
+                childNode0 = FolderNode(query.value(0), rootNode)
                 sql="SELECT Id,Name FROM TestCase where Tags='"+query.value(0)+"'"
                 print(sql)
                 query1 = QSqlQuery(sql)
+                query1.last()
+                item_count = query1.at() + 1
+                query1.first()
+                query1.previous()
+                tem=0
                 while query1.next():
                     #print(query1.value(0))
                     #print(query1.value(1))
@@ -357,11 +361,20 @@ class TestSet_Logic(MainWindow_UI):
                     row_count = query3.at() + 1
                     print(row_count)
                     if row_count ==1:
-                        checked = True
+                        checked = Qt.Checked
+                        tem=tem+1
                     else:
-                        checked = False
+                        checked = Qt.Unchecked
 
                     childNode1 = Node(query1.value(1), childNode0,checked)
+
+                if item_count==tem:
+                    childNode0.setCheckStatus(Qt.Checked)
+                elif tem>0:
+                    childNode0.setCheckStatus(Qt.PartiallyChecked)
+                else:
+                    childNode0.setCheckStatus(Qt.Unchecked)
+
             sql2 = "SELECT Id,Name FROM TestCase where Tags is Null"
             query2 = QSqlQuery(sql2)
             while query2.next():
@@ -373,9 +386,9 @@ class TestSet_Logic(MainWindow_UI):
                 row_count = query3.at() + 1
                 print(row_count)
                 if row_count == 1:
-                    checked = True
+                    checked = Qt.Checked
                 else:
-                    checked = False
+                    checked = Qt.Unchecked
                 childNode2 = Node(query2.value(1), rootNode,checked)
             print(rootNode)
             model = TestCaseTreeModel(rootNode)
