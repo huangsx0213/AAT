@@ -8,12 +8,14 @@ from UserInterface.MainWindow_UI import MainWindow_UI
 
 class Node(object):
 
-    def __init__(self, name,parent=None,checkStatus=Qt.Unchecked):
+    def __init__(self,testcase_id,case_name,testset_id,parent=None,checkStatus=Qt.Unchecked):
 
-        self._name = name
         self._children = []
         self._parent = parent
         self._checkStatus=checkStatus
+        self._case_name=case_name
+        self._testcase_id=testcase_id
+        self._testset_id=testset_id
 
         if parent is not None:
             parent.addChild(self)
@@ -46,11 +48,22 @@ class Node(object):
 
         return True
 
-    def name(self):
-        return self._name
+    def caseName(self):
+        return self._case_name
 
-    def setName(self, name):
-        self._name = name
+    def setCaseName(self, name):
+        self._case_name = name
+    def testcaseId(self):
+        return self._testcase_id
+
+    def setTestCaseId(self, id):
+        self._testcase_id = id
+    def testsetId(self):
+        return self._testset_id
+
+    def testseId(self, id):
+        self._testset_id = id
+
     def checkStatus(self):
         return self._checkStatus
 
@@ -77,7 +90,7 @@ class Node(object):
         for i in range(tabLevel):
             output += "\t\t"
 
-        output += "@------" + self._name + "\n"
+        output += "@------" + self._case_name + "\n"
 
         for child in self._children:
             output += child.log(tabLevel)
@@ -92,8 +105,8 @@ class Node(object):
 
 class FolderNode(Node):
 
-    def __init__(self, name, parent=None,checkStatus=Qt.Unchecked):
-        super(FolderNode, self).__init__(name, parent,checkStatus)
+    def __init__(self, id,name, id2,parent=None,checkStatus=Qt.Unchecked):
+        super(FolderNode, self).__init__(id,name, id2,parent,checkStatus)
 
     def typeInfo(self):
         return "FolderNode"
@@ -133,7 +146,7 @@ class TestCaseTreeModel(QAbstractItemModel):
 
         if role == Qt.DisplayRole or role == Qt.EditRole:
             if index.column() == 0:
-                return node.name()
+                return node.caseName()
         if role == Qt.CheckStateRole:
             if index.column() == 0:
                 if node.checkStatus()==Qt.Checked:
@@ -160,13 +173,39 @@ class TestCaseTreeModel(QAbstractItemModel):
         if index.isValid():
             node = index.internalPointer()
             if role == Qt.EditRole:
-                node.setName(value)
+                node.setCaseName(value)
                 return True
             if role ==Qt.CheckStateRole:
                 if value==Qt.Checked:
                     node.setCheckStatus(Qt.Checked)
+                    sql="select * from testsettestcase where testsetId = '"+str(node.testsetId())+"' and testcaseId = '"+str(node.testcaseId())+"'"
+                    print(sql)
+                    query = QSqlQuery(sql)
+                    query.last()
+                    tem=query.at()
+                    item_count = query.at() + 1
+                    query.first()
+                    query.previous()
+                    if item_count<0:
+                        sql="insert into testsettestcase (testsetId,testcaseId) values("+str(node.testsetId())+","+str(node.testcaseId())+")"
+                        print(sql)
+                        QSqlQuery(sql)
                 else:
                     node.setCheckStatus(Qt.Unchecked)
+                    sql = "select * from testsettestcase where testsetId = '" + str(
+                        node.testsetId()) + "' and testcaseId = '" + str(node.testcaseId()) + "'"
+                    print(sql)
+                    query = QSqlQuery(sql)
+                    query.last()
+                    tem = query.at()
+                    item_count = query.at() + 1
+                    query.first()
+                    query.previous()
+                    if item_count >0:
+                        sql = "delete from testsettestcase where  testsetId = '" + str(
+                        node.testsetId()) + "' and testcaseId = '" + str(node.testcaseId()) + "'"
+                        print(sql)
+                        QSqlQuery(sql)
                 if node.childCount() > 0:
                     for i in range(0, node.childCount()):
                         child = self.index(i, 0, index)
@@ -347,9 +386,9 @@ class TestSet_Logic(MainWindow_UI):
             self.testset_details_name_lineedit.setText(name)
             self.testset_details_row_lineedit.setText(str(row))
             query = QSqlQuery("SELECT distinct Tags FROM TestCase where Tags is not Null")
-            rootNode = Node("TestCases")
+            rootNode = Node(0,"TestCases",0)
             while query.next():
-                childNode0 = FolderNode(query.value(0), rootNode)
+                childNode0 = FolderNode(0,query.value(0),0, rootNode)
                 sql="SELECT Id,Name FROM TestCase where Tags='"+query.value(0)+"'"
                 print(sql)
                 query1 = QSqlQuery(sql)
@@ -373,7 +412,7 @@ class TestSet_Logic(MainWindow_UI):
                     else:
                         checked = Qt.Unchecked
 
-                    childNode1 = Node(query1.value(1), childNode0,checked)
+                    childNode1 = Node(query1.value(0),query1.value(1),testset_id, childNode0,checked)
 
                 if item_count==tem:
                     childNode0.setCheckStatus(Qt.Checked)
@@ -396,7 +435,7 @@ class TestSet_Logic(MainWindow_UI):
                     checked = Qt.Checked
                 else:
                     checked = Qt.Unchecked
-                childNode2 = Node(query2.value(1), rootNode,checked)
+                childNode2 = Node(query2.value(0),query2.value(1),testset_id, rootNode,checked)
             print(rootNode)
             model = TestCaseTreeModel(rootNode)
 
