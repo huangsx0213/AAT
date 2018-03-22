@@ -18,6 +18,9 @@ class Node(object):
         if parent is not None:
             parent.addChild(self)
 
+    def children(self):
+        return self._children
+
     def typeInfo(self):
         return "TestCase"
 
@@ -164,9 +167,13 @@ class TestCaseTreeModel(QAbstractItemModel):
                     node.setCheckStatus(Qt.Checked)
                 else:
                     node.setCheckStatus(Qt.Unchecked)
+                if node.childCount() > 0:
+                    for i in range(0, node.childCount()):
+                        child = self.index(i, 0, index)
+                        self.setData(child, value, role=Qt.CheckStateRole)
+
                 self.dataChanged.emit(index, index)
                 return True
-
         return False
 
     def flags(self, index):
