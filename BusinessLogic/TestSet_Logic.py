@@ -199,10 +199,11 @@ class TestCaseTreeModel(QAbstractItemModel):
                     item_count = query.at() + 1
                     query.first()
                     query.previous()
-                    if item_count<0 and str(node.testsetId())!="0":
+                    if item_count<0 and str(node.testcaseId())!="0":
                         sql="insert into testsettestcase (testsetId,testcaseId) values("+str(node.testsetId())+","+str(node.testcaseId())+")"
                         print(sql)
                         QSqlQuery(sql)
+
                 else:
                     node.setCheckStatus(Qt.Unchecked)
                     sql = "select * from testsettestcase where testsetId = '" + str(
@@ -219,13 +220,14 @@ class TestCaseTreeModel(QAbstractItemModel):
                         node.testsetId()) + "' and testcaseId = '" + str(node.testcaseId()) + "'"
                         print(sql)
                         QSqlQuery(sql)
+
                 if node.childCount() > 0:
                     for i in range(0, node.childCount()):
                         child = self.index(i, 0, index)
                         self.setData(child, value, role=Qt.CheckStateRole)
 
                 self.dataChanged.emit(index, index)
-
+                self.dataChanged.emit(self.parent(index), self.parent(index))
 
                 return True
         return False
