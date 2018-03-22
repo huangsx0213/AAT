@@ -186,7 +186,7 @@ class TestCaseTreeModel(QAbstractItemModel):
                     item_count = query.at() + 1
                     query.first()
                     query.previous()
-                    if item_count<0:
+                    if item_count<0 and str(node.testsetId())!="0":
                         sql="insert into testsettestcase (testsetId,testcaseId) values("+str(node.testsetId())+","+str(node.testcaseId())+")"
                         print(sql)
                         QSqlQuery(sql)
