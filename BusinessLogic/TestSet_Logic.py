@@ -149,12 +149,25 @@ class TestCaseTreeModel(QAbstractItemModel):
                 return node.caseName()
         if role == Qt.CheckStateRole:
             if index.column() == 0:
-                if node.checkStatus()==Qt.Checked:
-                    return Qt.Checked
-                elif node.checkStatus()==Qt.Unchecked:
-                    return Qt.Unchecked
+                if node.childCount()<=0:
+                    if node.checkStatus()==Qt.Checked:
+                        return Qt.Checked
+                    elif node.checkStatus()==Qt.Unchecked:
+                        return Qt.Unchecked
                 else:
-                    return Qt.PartiallyChecked
+                    sql = "SELECT count(TestcaseId) FROM TestsetTestcase where TestsetId = '" + str(
+                        str(node.testsetId())) + "' and TestcaseId in ( select Id from testcase where tags='"+node.caseName()+"')"
+                    print(sql)
+                    query3 = QSqlQuery(sql)
+                    query3.next()
+                    row_count = query3.value(0)
+                    print(row_count)
+                    if row_count == node.childCount():
+                        return Qt.Checked
+                    elif row_count>0 and row_count<node.childCount():
+                        return  Qt.PartiallyChecked
+                    else:
+                        return Qt.Unchecked
 
         if role == Qt.DecorationRole:
             if index.column() == 0:
@@ -212,6 +225,8 @@ class TestCaseTreeModel(QAbstractItemModel):
                         self.setData(child, value, role=Qt.CheckStateRole)
 
                 self.dataChanged.emit(index, index)
+
+
                 return True
         return False
 
@@ -388,7 +403,7 @@ class TestSet_Logic(MainWindow_UI):
             query = QSqlQuery("SELECT distinct Tags FROM TestCase where Tags is not Null")
             rootNode = Node(0,"TestCases",0)
             while query.next():
-                childNode0 = FolderNode(0,query.value(0),0, rootNode)
+                childNode0 = FolderNode(0,query.value(0),str(testset_id), rootNode)
                 sql="SELECT Id,Name FROM TestCase where Tags='"+query.value(0)+"'"
                 print(sql)
                 query1 = QSqlQuery(sql)
