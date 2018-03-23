@@ -157,11 +157,11 @@ class TestCaseTreeModel(QAbstractItemModel):
                 else:
                     sql = "SELECT count(TestcaseId) FROM TestsetTestcase where TestsetId = '" + str(
                         str(node.testsetId())) + "' and TestcaseId in ( select Id from testcase where tags='"+node.caseName()+"')"
-                    print(sql)
+                    #print(sql)
                     query3 = QSqlQuery(sql)
                     query3.next()
                     row_count = query3.value(0)
-                    print(row_count)
+                    #print(row_count)
                     if row_count == node.childCount():
                         return Qt.Checked
                     elif row_count>0 and row_count<node.childCount():
@@ -192,7 +192,7 @@ class TestCaseTreeModel(QAbstractItemModel):
                 if value==Qt.Checked:
                     node.setCheckStatus(Qt.Checked)
                     sql="select * from testsettestcase where testsetId = '"+str(node.testsetId())+"' and testcaseId = '"+str(node.testcaseId())+"'"
-                    print(sql)
+                    #print(sql)
                     query = QSqlQuery(sql)
                     query.last()
                     tem=query.at()
@@ -201,14 +201,14 @@ class TestCaseTreeModel(QAbstractItemModel):
                     query.previous()
                     if item_count<0 and str(node.testcaseId())!="0":
                         sql="insert into testsettestcase (testsetId,testcaseId) values("+str(node.testsetId())+","+str(node.testcaseId())+")"
-                        print(sql)
+                        #print(sql)
                         QSqlQuery(sql)
 
                 else:
                     node.setCheckStatus(Qt.Unchecked)
                     sql = "select * from testsettestcase where testsetId = '" + str(
                         node.testsetId()) + "' and testcaseId = '" + str(node.testcaseId()) + "'"
-                    print(sql)
+                    #print(sql)
                     query = QSqlQuery(sql)
                     query.last()
                     tem = query.at()
@@ -338,6 +338,8 @@ class TestSet_Logic(MainWindow_UI):
         testset_action_widget_row = testset_action_widget_index.row()
         # print(ex_right_ex_widget_row)
         # remove the row from the model
+        testsetId_delete=self.testset_tableview_model.record(testset_action_widget_row).value("Id")
+        QSqlQuery("delete from testsettestcase where testsetId ='"+str(testsetId_delete)+"'")
         self.testset_tableview_model.removeRow(testset_action_widget_row)
         # regenerate the actions_column
         self.testset_tableview_model.submitAll()
@@ -383,6 +385,9 @@ class TestSet_Logic(MainWindow_UI):
         else:
             row = -1
             name = ""
+            query = QSqlQuery("SELECT Id FROM Testset order by Id desc")
+            query.next()
+            testset_id=query.value(0)+1
         # create new tab,but if exist , do not create the new tab
         create = True
         if self.execution_tabwidget.count() > 1:
@@ -407,7 +412,7 @@ class TestSet_Logic(MainWindow_UI):
             while query.next():
                 childNode0 = FolderNode(0,query.value(0),str(testset_id), rootNode)
                 sql="SELECT Id,Name FROM TestCase where Tags='"+query.value(0)+"'"
-                print(sql)
+                #print(sql)
                 query1 = QSqlQuery(sql)
                 query1.last()
                 item_count = query1.at() + 1
@@ -418,11 +423,11 @@ class TestSet_Logic(MainWindow_UI):
                     #print(query1.value(0))
                     #print(query1.value(1))
                     sql="SELECT TestcaseId FROM TestsetTestcase where TestsetId = '"+str(testset_id)+"' and TestcaseId = '"+str(query1.value(0))+"'"
-                    print(sql)
+                    #print(sql)
                     query3 = QSqlQuery(sql)
                     query3.last()
                     row_count = query3.at() + 1
-                    print(row_count)
+                    #print(row_count)
                     if row_count ==1:
                         checked = Qt.Checked
                         tem=tem+1
@@ -443,17 +448,17 @@ class TestSet_Logic(MainWindow_UI):
             while query2.next():
                 sql = "SELECT TestcaseId FROM TestsetTestcase where TestsetId = '" + str(
                     testset_id) + "' and TestcaseId = '" + str(query2.value(0)) + "'"
-                print(sql)
+                #print(sql)
                 query3 = QSqlQuery(sql)
                 query3.last()
                 row_count = query3.at() + 1
-                print(row_count)
+                #print(row_count)
                 if row_count == 1:
                     checked = Qt.Checked
                 else:
                     checked = Qt.Unchecked
                 childNode2 = Node(query2.value(0),query2.value(1),testset_id, rootNode,checked)
-            print(rootNode)
+            #print(rootNode)
             model = TestCaseTreeModel(rootNode)
 
             self.testset_details_testcases_treeview.setModel(model)

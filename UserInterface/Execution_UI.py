@@ -213,8 +213,9 @@ class Execution_UI(object):
         self.testset_details_gridlayout.addWidget(self.testset_details_name_lable, 0, 0)
         self.testset_details_gridlayout.addWidget(self.testset_details_name_lineedit, 0, 1)
         self.testset_details_gridlayout.addWidget(self.testset_details_row_lineedit, 1, 0)
-        self.testset_details_gridlayout.addWidget(self.testset_details_testcases_lable, 1, 0)
-        self.testset_details_gridlayout.addWidget(self.testset_details_testcases_treeview, 1, 1)
+        if name != "New Test Set":
+            self.testset_details_gridlayout.addWidget(self.testset_details_testcases_lable, 1, 0)
+            self.testset_details_gridlayout.addWidget(self.testset_details_testcases_treeview, 1, 1)
         
     def setup_execution_actions_column(self):
         self.execution_action_widget = QtWidgets.QWidget()
