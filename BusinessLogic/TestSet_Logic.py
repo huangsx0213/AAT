@@ -1,7 +1,7 @@
 from PyQt5.QtCore import Qt, QAbstractItemModel, QModelIndex
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtSql import QSqlTableModel, QSqlRelationalTableModel, QSqlRelation, QSqlRelationalDelegate, QSqlQuery
-from PyQt5.QtWidgets import QLineEdit
+from PyQt5.QtWidgets import QLineEdit, QHeaderView
 
 from UserInterface.MainWindow_UI import MainWindow_UI
 
@@ -293,6 +293,7 @@ class TestSet_Logic(MainWindow_UI):
         self.testset_tableview_model.select()
         self.testset_tableview.setModel(self.testset_tableview_model)
         self.testset_tableview.verticalHeader().setVisible(False)
+        self.testset_tableview.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.testset_tableview_add_actions_column()
 
         self.testset_testcase_tableview_model=QSqlRelationalTableModel()
@@ -310,6 +311,7 @@ class TestSet_Logic(MainWindow_UI):
         self.testset_testcase_tableview.setItemDelegate(QSqlRelationalDelegate(self.testset_testcase_tableview))
         self.testset_testcase_tableview.verticalHeader().setVisible(False)
         self.testset_testcase_tableview.setColumnHidden(0, True)
+        self.testset_testcase_tableview.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
 
         #self.setup_dynamic_testset_tab("test")
 

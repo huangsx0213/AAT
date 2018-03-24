@@ -111,8 +111,8 @@ class Execution_UI(object):
         self.testset_gridlayout.addWidget(self.all_testset_splitter)
         self.all_testset_splitter.addWidget(self.testset_tableview)
         self.all_testset_splitter.addWidget(self.testset_testcase_tableview)
-        self.all_testset_splitter.setStretchFactor(0,60)
-        self.all_testset_splitter.setStretchFactor(1,40)
+        self.all_testset_splitter.setStretchFactor(0,80)
+        self.all_testset_splitter.setStretchFactor(1,20)
 
     def setup_dynamic_excution_tab(self, name=None):
         # 1. define a page

@@ -1,7 +1,7 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QStandardItemModel, QStandardItem, QIcon
 from PyQt5.QtSql import QSqlRelationalTableModel, QSqlTableModel, QSqlRelation, QSqlRelationalDelegate
-from PyQt5.QtWidgets import QLineEdit, QTabBar, QAction
+from PyQt5.QtWidgets import QLineEdit, QTabBar, QAction, QHeaderView
 
 from UserInterface.MainWindow_UI import MainWindow_UI
 
@@ -18,6 +18,8 @@ class Execution_Logic(MainWindow_UI):
         self.execution_tableview.setModel(self.execution_tableview_model)
         self.execution_tableview.setItemDelegate(QSqlRelationalDelegate(self.execution_tableview))
         self.execution_tableview.verticalHeader().setVisible(False)
+        self.execution_tableview.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        #self.execution_tableview.resizeColumnsToContents()
         # self.ex_right_ex_tableview_model.insertRow(4)
         # self.add_execution()
         # add the actions column into the tableview

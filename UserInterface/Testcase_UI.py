@@ -31,6 +31,7 @@ class Testcase_UI:
         self.tc_left_menu_toolbox = QToolBox()
         self.tc_left_menu_toolbox.addItem(self.tc_left_menu_listview, "Test Cases")
         self.tc_left_menu_toolbox.addItem(self.tctree_left_menu_listview, "Test Cases Tree")
+        self.tc_left_menu_toolbox.setCurrentIndex(1)
         # add the toolbox into gridlayout
         self.testcase_menu_gridlayout.addWidget(self.tc_left_menu_toolbox)
         # add the gridlaout into the groupbox
