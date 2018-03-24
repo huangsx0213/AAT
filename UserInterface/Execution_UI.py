@@ -111,8 +111,8 @@ class Execution_UI(object):
         self.testset_gridlayout.addWidget(self.all_testset_splitter)
         self.all_testset_splitter.addWidget(self.testset_tableview)
         self.all_testset_splitter.addWidget(self.testset_testcase_tableview)
-        self.all_testset_splitter.setStretchFactor(0,80)
-        self.all_testset_splitter.setStretchFactor(1,20)
+        self.all_testset_splitter.setStretchFactor(0,70)
+        self.all_testset_splitter.setStretchFactor(1,30)
 
     def setup_dynamic_excution_tab(self, name=None):
         # 1. define a page
@@ -244,6 +244,12 @@ class Execution_UI(object):
         self.testset_action_gridlayout = QGridLayout()
         self.testset_action_gridlayout.setContentsMargins(3, 3, 3, 3)
         self.testset_action_widget.setLayout(self.testset_action_gridlayout)
+        self.testset_view_button = QPushButton()
+        self.testset_view_button.setObjectName("testset_view")
+        self.testset_view_button.setIcon(QIcon("./images/view.png"))
+        self.testset_view_button.setFlat(True)
+        self.testset_view_button.setCursor(QCursor(Qt.PointingHandCursor))
+        self.testset_view_button.setToolTip("View")
         self.testset_edit_button = QPushButton()
         self.testset_edit_button.setObjectName("testset_edit")
         self.testset_edit_button.setIcon(QIcon("./images/edit.png"))
@@ -256,5 +262,7 @@ class Execution_UI(object):
         self.testset_delete_button.setFlat(True)
         self.testset_delete_button.setCursor(QCursor(Qt.PointingHandCursor))
         self.testset_delete_button.setToolTip("Delete")
-        self.testset_action_gridlayout.addWidget(self.testset_edit_button, 0, 0)
-        self.testset_action_gridlayout.addWidget(self.testset_delete_button, 0, 1)
+        self.testset_action_gridlayout.addWidget(self.testset_view_button, 0, 0)
+        self.testset_action_gridlayout.addWidget(self.testset_edit_button, 0, 1)
+        self.testset_action_gridlayout.addWidget(self.testset_delete_button, 0, 2)
+

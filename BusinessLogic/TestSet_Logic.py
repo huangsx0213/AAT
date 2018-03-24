@@ -296,21 +296,20 @@ class TestSet_Logic(MainWindow_UI):
         self.testset_tableview.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.testset_tableview_add_actions_column()
 
-        self.testset_testcase_tableview_model=QSqlRelationalTableModel()
-        self.testset_testcase_tableview_model.setTable("TestsetTestcase")
-        self.testset_testcase_tableview_model.setRelation(1, QSqlRelation("TestCase", "Id", "Name"))
-        #self.testset_testcase_tableview_model.setRelation(2, QSqlRelation("TestCase", "Id", "Description"))
-        self.testset_testcase_tableview_model.setHeaderData(1, Qt.Horizontal, "CaseName")
-        #self.testset_testcase_tableview_model.setHeaderData(2, Qt.Horizontal, "CaseDescription")
-        self.testset_testcase_tableview_model.setFilter("testsetId=1")
+        self.testset_testcase_tableview_model=QSqlTableModel()
+        self.testset_testcase_tableview_model.setTable("Testcase")
+        self.testset_testcase_tableview_model.setFilter("Id in (select testcaseId from testsettestcase where testsetId='1')")
+        self.testset_testcase_tableview_model.setHeaderData(1,Qt.Horizontal,"CaseName")
         #Qt.AscendingOrder or Qt.DescendingOrder
-        self.testset_testcase_tableview_model.setSort(1,Qt.AscendingOrder)
-
+        self.testset_testcase_tableview_model.setSort(0,Qt.AscendingOrder)
         self.testset_testcase_tableview_model.select()
         self.testset_testcase_tableview.setModel(self.testset_testcase_tableview_model)
-        self.testset_testcase_tableview.setItemDelegate(QSqlRelationalDelegate(self.testset_testcase_tableview))
+
         self.testset_testcase_tableview.verticalHeader().setVisible(False)
         self.testset_testcase_tableview.setColumnHidden(0, True)
+        self.testset_testcase_tableview.setColumnHidden(3, True)
+        self.testset_testcase_tableview.setColumnHidden(4, True)
+        self.testset_testcase_tableview.setColumnHidden(5, True)
         self.testset_testcase_tableview.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
 
         #self.setup_dynamic_testset_tab("test")
@@ -326,10 +325,27 @@ class TestSet_Logic(MainWindow_UI):
 
         for row in range(self.testset_tableview_model.rowCount()):
             self.setup_testset_actions_column()
+            self.testset_view_button.clicked.connect(self.view_testset_tab_ui)
             self.testset_edit_button.clicked.connect(self.add_testset_tab_ui)
             self.testset_delete_button.clicked.connect(self.delete_testset_record)
             self.testset_index = self.testset_tableview.model().index(row, tem_column_count)
             self.testset_tableview.setIndexWidget(self.testset_index, self.testset_action_widget)
+    def view_testset_tab_ui(self):
+        # get the selected  QPushButton's parent : the QWidget
+        testset_action_widget_selected = self.sender().parent()
+        # print(self.sender().objectName())
+        if self.sender().objectName() == "testset_view":
+            # get the index of the QWidget in the tableview and it's row
+            testset_action_widget_index = self.testset_tableview.indexAt(testset_action_widget_selected.pos())
+            self.testset_action_widget_row = testset_action_widget_index.row()
+            # print(ex_right_ex_widget_row)
+            # remove the row from the model
+            data_row = self.testset_tableview_model.record(self.testset_action_widget_row)
+            testset_id = data_row.value("Id")
+        self.testset_testcase_tableview_model.setFilter("Id in (select testcaseId from testsettestcase where testsetId='"+str(testset_id)+"')")
+        self.testset_testcase_tableview_model.setSort(0, Qt.AscendingOrder)
+        self.testset_testcase_tableview_model.select()
+        self.testset_testcase_tableview.setModel(self.testset_testcase_tableview_model)
 
     def delete_testset_record(self):
         # get the selected  QPushButton's parent : the QWidget
