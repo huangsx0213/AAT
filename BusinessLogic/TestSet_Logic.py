@@ -296,6 +296,7 @@ class TestSet_Logic(MainWindow_UI):
         self.testset_tableview.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.testset_tableview_add_actions_column()
 
+
         self.testset_testcase_tableview_model=QSqlTableModel()
         self.testset_testcase_tableview_model.setTable("Testcase")
         self.testset_testcase_tableview_model.setFilter("Id in (select testcaseId from testsettestcase where testsetId='1')")
@@ -346,6 +347,7 @@ class TestSet_Logic(MainWindow_UI):
         self.testset_testcase_tableview_model.setSort(0, Qt.AscendingOrder)
         self.testset_testcase_tableview_model.select()
         self.testset_testcase_tableview.setModel(self.testset_testcase_tableview_model)
+        self.testset_tableview.selectRow(self.testset_action_widget_row)
 
     def delete_testset_record(self):
         # get the selected  QPushButton's parent : the QWidget
