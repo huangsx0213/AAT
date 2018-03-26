@@ -14,6 +14,8 @@ class Execution_Logic(MainWindow_UI):
         self.execution_tableview_model.setEditStrategy(QSqlTableModel.OnRowChange)
         self.execution_tableview_model.setRelation(3, QSqlRelation("TestSet", "Id", "Name"))
         self.execution_tableview_model.setHeaderData(3, Qt.Horizontal, "TestSet")
+        self.execution_tableview_model.setRelation(4, QSqlRelation("ExecutionStatus", "Id", "Name"))
+        self.execution_tableview_model.setHeaderData(4, Qt.Horizontal, "Status")
         self.execution_tableview_model.select()
         self.execution_tableview.setModel(self.execution_tableview_model)
         self.execution_tableview.setItemDelegate(QSqlRelationalDelegate(self.execution_tableview))
@@ -53,8 +55,8 @@ class Execution_Logic(MainWindow_UI):
             row = self.execution_action_widget_row
             name = data_row.value("Name")
             tags = data_row.value("Tags")
-            test_set = data_row.value("TestSet_Name_2")
-            state = data_row.value("State")
+            test_set = data_row.value("TestSet_Name_3")
+            state = data_row.value("ExecutionStatus_Name_2")
         else:
             row = -1
             name = ""
