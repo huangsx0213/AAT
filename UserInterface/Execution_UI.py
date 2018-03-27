@@ -40,21 +40,20 @@ class Execution_UI(object):
 
         # define the right groupbox
         # 0.define the save toolbar
-        self.execution_main_tab_toolbar = QtWidgets.QToolBar()
-        self.execution_main_tab_toolbar.setObjectName("new_same_tb")
+        self.execution_right_content_toolbar = QtWidgets.QToolBar()
         new = QAction(QIcon("./images/add.png"), "new", self)
-        self.execution_main_tab_toolbar.addAction(new)
-        save = QAction(QIcon("./images/save.png"), "save", self)
+        self.execution_right_content_toolbar.addAction(new)
         # self.ex_right_content_toolbar.addSeparator()
-        self.execution_main_tab_toolbar.addAction(save)
-        self.execution_main_tab_toolbar.addSeparator()
-        self.execution_main_tab_toolbar.setAutoFillBackground(True)
+        save = QAction(QIcon("./images/save.png"), "save", self)
+        self.execution_right_content_toolbar.addAction(save)
+        self.execution_right_content_toolbar.addSeparator()
+        self.execution_right_content_toolbar.setAutoFillBackground(True)
         # 1.define a groupbox
-        self.execution_groupbox = QGroupBox()
-        self.execution_groupbox.setContentsMargins(0, 0, 0, 0)
+        self.execution_right_content_groupbox = QGroupBox()
+        self.execution_right_content_groupbox.setContentsMargins(0, 0, 0, 0)
         # 2.define a gridlayout
-        self.execution_gridlayout = QGridLayout()
-        self.execution_gridlayout.setContentsMargins(3, 2, 1, 3)
+        self.execution_right_content_gridlayout = QGridLayout()
+        self.execution_right_content_gridlayout.setContentsMargins(3, 2, 1, 3)
         # 3.define a tabwidget
         # first page of the tabwidget
         self.all_executions_tab = QtWidgets.QWidget()
@@ -74,14 +73,14 @@ class Execution_UI(object):
         QTabBar.setTabButton(self.execution_tabwidget.tabBar(), 0, QTabBar.RightSide, None)
 
         # add the ex_right_content_toolbar and  ex_right_content_tabwidget into gridlayout
-        self.execution_gridlayout.addWidget(self.execution_main_tab_toolbar, 0, 0)
-        self.execution_gridlayout.addWidget(self.execution_tabwidget, 1, 0)
+        self.execution_right_content_gridlayout.addWidget(self.execution_right_content_toolbar, 0, 0)
+        self.execution_right_content_gridlayout.addWidget(self.execution_tabwidget, 1, 0)
         # add the gridlaout into the groupbox
-        self.execution_groupbox.setLayout(self.execution_gridlayout)
+        self.execution_right_content_groupbox.setLayout(self.execution_right_content_gridlayout)
 
         # add the left groupbox and  right groupbox into execution_tab_layout
         self.execution_main_tab_layout.addWidget(self.execution_menu_groupbox, 0, 0)
-        self.execution_main_tab_layout.addWidget(self.execution_groupbox, 0, 1)
+        self.execution_main_tab_layout.addWidget(self.execution_right_content_groupbox, 0, 1)
 
         # add first page for each listdata
         self.all_testset_tab = QtWidgets.QWidget()
@@ -95,10 +94,10 @@ class Execution_UI(object):
 
         # add tableview into execution
         self.execution_tableview = QtWidgets.QTableView()
-        self.execution_gridlayout = QGridLayout()
-        self.execution_gridlayout.setContentsMargins(0, 0, 0, 0)
-        self.all_executions_tab.setLayout(self.execution_gridlayout)
-        self.execution_gridlayout.addWidget(self.execution_tableview)
+        self.execution_right_content_gridlayout = QGridLayout()
+        self.execution_right_content_gridlayout.setContentsMargins(0, 0, 0, 0)
+        self.all_executions_tab.setLayout(self.execution_right_content_gridlayout)
+        self.execution_right_content_gridlayout.addWidget(self.execution_tableview)
 
         # add tableview into execution
         self.testset_tableview = QtWidgets.QTableView()
@@ -220,9 +219,9 @@ class Execution_UI(object):
     def setup_execution_actions_column(self):
         self.execution_action_widget = QtWidgets.QWidget()
         self.execution_action_widget.setContentsMargins(0, 0, 0, 0)
-        self.execution_gridlayout = QGridLayout()
-        self.execution_gridlayout.setContentsMargins(3, 3, 3, 3)
-        self.execution_action_widget.setLayout(self.execution_gridlayout)
+        self.execution_right_content_gridlayout = QGridLayout()
+        self.execution_right_content_gridlayout.setContentsMargins(3, 3, 3, 3)
+        self.execution_action_widget.setLayout(self.execution_right_content_gridlayout)
         self.execution_edit_button = QPushButton()
         self.execution_edit_button.setObjectName("edit")
         self.execution_edit_button.setIcon(QIcon("./images/edit.png"))
@@ -235,8 +234,8 @@ class Execution_UI(object):
         self.execution_delete_button.setFlat(True)
         self.execution_delete_button.setCursor(QCursor(Qt.PointingHandCursor))
         self.execution_delete_button.setToolTip("Delete")
-        self.execution_gridlayout.addWidget(self.execution_edit_button, 0, 0)
-        self.execution_gridlayout.addWidget(self.execution_delete_button, 0, 1)
+        self.execution_right_content_gridlayout.addWidget(self.execution_edit_button, 0, 0)
+        self.execution_right_content_gridlayout.addWidget(self.execution_delete_button, 0, 1)
         
     def setup_testset_actions_column(self):
         self.testset_action_widget = QtWidgets.QWidget()

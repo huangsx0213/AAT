@@ -17,7 +17,7 @@ class Execution_Menu_Logic(MainWindow_UI):
         self.execution_menu_listview.clicked.connect(self.execution_menu_item_clicked)
         self.current_listdata = QStandardItem(QIcon("./images/execution.png"), "Executions")
 
-        self.execution_main_tab_toolbar.actionTriggered[QAction].connect(self.execution_main_tab_toolbar_clicked)
+        self.execution_right_content_toolbar.actionTriggered[QAction].connect(self.execution_main_tab_toolbar_clicked)
 
     def execution_main_tab_toolbar_clicked(self, action):
         if action.text() == "save":
