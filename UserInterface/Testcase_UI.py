@@ -1,6 +1,8 @@
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QGridLayout, QGroupBox, QToolBox, QTabBar, QAction
+from PyQt5.QtWidgets import QGridLayout, QGroupBox, QToolBox, QTabBar, QAction, QLabel, QLineEdit, QVBoxLayout
+
+from UserInterface.CustomGroupBox import CustomGroupBox
 
 
 class Testcase_UI:
@@ -75,3 +77,66 @@ class Testcase_UI:
         # add the left groupbox and  right groupbox into tcecution_tab_layout
         self.testcase_main_tab_layout.addWidget(self.testcase_menu_groupbox, 0, 0)
         self.testcase_main_tab_layout.addWidget(self.testcase_right_content_groupbox, 0, 1)
+
+    def setup_dynamic_excution_tab(self, name=None):
+        # 1. define a page
+        self.one_dynamic_execution_tab = QtWidgets.QWidget()
+        self.one_dynamic_execution_tab.setObjectName(name)
+        # 2. define a layout
+        self.one_dynamic_execution_layout = QVBoxLayout()
+        # self.ex_right_content_one_ex_layout.setSizeConstraint(QLayout.SetNoConstraint)
+        # 3. define a Groupbox
+        self.execution_details_groupbox = CustomGroupBox("Details")
+        # self.ex_right_content_ex_details_groupbox.setChecked(False)
+        self.execution_email_groupbox = CustomGroupBox("Email Notification")
+        self.execution_settings_groupbox = CustomGroupBox("Settings")
+        self.execution_Variables_groupbox = CustomGroupBox("Set Variables")
+        self.execution_Testcases_groupbox = CustomGroupBox("Test Cases")
+        # 4. add the page to the tabwidet
+        self.execution_tabwidget.addTab(self.one_dynamic_execution_tab, name)
+        self.execution_tabwidget.setCurrentWidget(self.one_dynamic_execution_tab)
+        # 5.set layout to the page tab
+        self.one_dynamic_execution_tab.setLayout(self.one_dynamic_execution_layout)
+        # 6. add all groupbox into page tab layout
+        self.one_dynamic_execution_layout.addWidget(self.execution_details_groupbox)
+        self.one_dynamic_execution_layout.addWidget(self.execution_email_groupbox)
+        self.one_dynamic_execution_layout.addWidget(self.execution_settings_groupbox)
+        self.one_dynamic_execution_layout.addWidget(self.execution_Variables_groupbox)
+        self.one_dynamic_execution_layout.addWidget(self.execution_Testcases_groupbox)
+        self.one_dynamic_execution_layout.addStretch()
+        self.execution_details_gridlayout = QGridLayout()
+        self.execution_details_groupbox.setLayout(self.execution_details_gridlayout)
+        self.g2 = QGridLayout()
+        self.execution_email_groupbox.setLayout(self.g2)
+        self.g3 = QGridLayout()
+        self.execution_settings_groupbox.setLayout(self.g3)
+        self.g4 = QGridLayout()
+        self.execution_Variables_groupbox.setLayout(self.g4)
+        self.g5 = QGridLayout()
+        self.execution_Testcases_groupbox.setLayout(self.g5)
+
+        # Details groupbox
+        self.execution_details_name_lable = QLabel("Name:")
+        self.execution_details_name_lineedit = QLineEdit()
+        self.execution_details_name_lineedit.setObjectName("name")
+        self.execution_details_tags_lable = QLabel("Tags:")
+        self.execution_details_tags_lineedit = QLineEdit()
+        self.execution_details_tags_lineedit.setObjectName("tags")
+        self.execution_details_testset_lable = QLabel("Test Set:")
+        self.execution_details_testset_lineedit = QLineEdit()
+        self.execution_details_testset_lineedit.setObjectName("testset")
+        self.execution_details_state_lable = QLabel("State:")
+        self.execution_details_state_lineedit = QLineEdit()
+        self.execution_details_state_lineedit.setObjectName("state")
+        self.execution_details_row_lineedit = QLineEdit()
+        self.execution_details_row_lineedit.setObjectName("row")
+        self.execution_details_row_lineedit.hide()
+        self.execution_details_gridlayout.addWidget(self.execution_details_name_lable, 0, 0)
+        self.execution_details_gridlayout.addWidget(self.execution_details_name_lineedit, 0, 1)
+        self.execution_details_gridlayout.addWidget(self.execution_details_tags_lable, 1, 0)
+        self.execution_details_gridlayout.addWidget(self.execution_details_tags_lineedit, 1, 1)
+        self.execution_details_gridlayout.addWidget(self.execution_details_testset_lable, 2, 0)
+        self.execution_details_gridlayout.addWidget(self.execution_details_testset_lineedit, 2, 1)
+        self.execution_details_gridlayout.addWidget(self.execution_details_state_lable, 3, 0)
+        self.execution_details_gridlayout.addWidget(self.execution_details_state_lineedit, 3, 1)
+        self.execution_details_gridlayout.addWidget(self.execution_details_row_lineedit, 4, 0)

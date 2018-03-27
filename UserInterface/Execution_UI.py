@@ -99,7 +99,7 @@ class Execution_UI(object):
         self.all_executions_tab.setLayout(self.execution_right_content_gridlayout)
         self.execution_right_content_gridlayout.addWidget(self.execution_tableview)
 
-        # add tableview into execution
+        # add tableview into testset
         self.testset_tableview = QtWidgets.QTableView()
         self.testset_tableview.setBaseSize(303,500)
         self.testset_testcase_tableview = QtWidgets.QTableView()

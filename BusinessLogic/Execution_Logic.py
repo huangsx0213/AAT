@@ -37,12 +37,12 @@ class Execution_Logic(MainWindow_UI):
 
         for row in range(self.execution_tableview_model.rowCount()):
             self.setup_execution_actions_column()
-            self.execution_edit_button.clicked.connect(self.add_execution_tab_ui)
+            self.execution_edit_button.clicked.connect(self.add_dynamic_excution_tab)
             self.execution_delete_button.clicked.connect(self.delete_execution_record)
             self.execution_index = self.execution_tableview.model().index(row, tem_column_count)
             self.execution_tableview.setIndexWidget(self.execution_index, self.execution_action_widget)
 
-    def add_execution_tab_ui(self):
+    def add_dynamic_excution_tab(self):
         # get the selected  QPushButton's parent : the QWidget
         execution_action_widget_selected = self.sender().parent()
         # print(self.sender().objectName())

@@ -19,18 +19,6 @@ class Execution_Menu_Logic(MainWindow_UI):
 
         self.execution_right_content_toolbar.actionTriggered[QAction].connect(self.execution_main_tab_toolbar_clicked)
 
-    def execution_main_tab_toolbar_clicked(self, action):
-        if action.text() == "save":
-            if self.current_listdata.text() == "Executions":
-                self.save_execution_record()
-            if self.current_listdata.text() == "Test Sets":
-                self.save_testset_record()
-        elif action.text() == "new":
-            if self.current_listdata.text() == "Executions":
-                self.add_execution_tab_ui()
-            if self.current_listdata.text()=="Test Sets":
-                self.add_testset_tab_ui()
-
     def load_execution_menu_model(self, model):
         # Demo data
         # now a simple list, later database with index field
@@ -61,3 +49,15 @@ class Execution_Menu_Logic(MainWindow_UI):
         elif self.current_listdata.text() == "Machines":
             self.execution_tabwidget.addTab(self.all_machine_tab, "Machines")
         QTabBar.setTabButton(self.execution_tabwidget.tabBar(), 0, QTabBar.RightSide, None)
+
+    def execution_main_tab_toolbar_clicked(self, action):
+        if action.text() == "save":
+            if self.current_listdata.text() == "Executions":
+                self.save_execution_record()
+            if self.current_listdata.text() == "Test Sets":
+                self.save_testset_record()
+        elif action.text() == "new":
+            if self.current_listdata.text() == "Executions":
+                self.add_dynamic_excution_tab()
+            if self.current_listdata.text()=="Test Sets":
+                self.add_dynamic_testset_tab()
