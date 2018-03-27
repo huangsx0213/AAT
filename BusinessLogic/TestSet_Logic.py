@@ -294,6 +294,7 @@ class TestSet_Logic(MainWindow_UI):
         self.testset_tableview.setModel(self.testset_tableview_model)
         self.testset_tableview.verticalHeader().setVisible(False)
         self.testset_tableview.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.testset_tableview.horizontalHeader().setStyleSheet("::section{Background-color:rgb(220,220,220)}")
         self.testset_tableview_add_actions_column()
 
 
@@ -312,6 +313,7 @@ class TestSet_Logic(MainWindow_UI):
         self.testset_testcase_tableview.setColumnHidden(4, True)
         self.testset_testcase_tableview.setColumnHidden(5, True)
         self.testset_testcase_tableview.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.testset_testcase_tableview.horizontalHeader().setStyleSheet("::section{Background-color:rgb(220,220,220)}")
 
         #self.setup_dynamic_testset_tab("test")
 

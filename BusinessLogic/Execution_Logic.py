@@ -21,6 +21,7 @@ class Execution_Logic(MainWindow_UI):
         self.execution_tableview.setItemDelegate(QSqlRelationalDelegate(self.execution_tableview))
         self.execution_tableview.verticalHeader().setVisible(False)
         self.execution_tableview.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.execution_tableview.horizontalHeader().setStyleSheet("::section{Background-color:rgb(220,220,220)}")
         #self.execution_tableview.resizeColumnsToContents()
         # self.ex_right_ex_tableview_model.insertRow(4)
         # self.add_execution()
