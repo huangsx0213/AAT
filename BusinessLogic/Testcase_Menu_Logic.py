@@ -19,7 +19,7 @@ class Testcase_Menu_Logic(MainWindow_UI):
         #self.testcase_menu_listview.clicked.connect(self.execution_menu_item_clicked)
 
 
-        self.execution_right_content_toolbar.actionTriggered[QAction].connect(self.execution_main_tab_toolbar_clicked)
+        self.testcase_right_content_toolbar.actionTriggered[QAction].connect(self.testcase_main_tab_toolbar_clicked)
 
 
     def testcase_menu_item_clicked(self, index):
@@ -48,5 +48,5 @@ class Testcase_Menu_Logic(MainWindow_UI):
         elif action.text() == "new":
             if self.current_listdata.text() == "Executions":
                 self.add_dynamic_excution_tab()
-            if self.current_listdata.text()=="Test Sets":
+            if self.current_listdata.text()=="Test Sets1":
                 self.add_dynamic_testset_tab()
