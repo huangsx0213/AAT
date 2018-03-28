@@ -256,7 +256,7 @@ class Execution_UI(object):
         self.testset_edit_button.setCursor(QCursor(Qt.PointingHandCursor))
         self.testset_edit_button.setToolTip("Edit")
         self.testset_delete_button = QPushButton()
-        self.testset_delete_button.setObjectName("testset_edit")
+        self.testset_delete_button.setObjectName("testset_delete")
         self.testset_delete_button.setIcon(QIcon("./images/delete.png"))
         self.testset_delete_button.setFlat(True)
         self.testset_delete_button.setCursor(QCursor(Qt.PointingHandCursor))

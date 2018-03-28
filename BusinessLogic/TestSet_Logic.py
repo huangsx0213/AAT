@@ -117,7 +117,7 @@ class TestSet_Logic(MainWindow_UI):
         # get the selected  QPushButton's parent : the QWidget
         testset_action_widget_selected = self.sender().parent()
         # print(self.sender().objectName())
-        if self.sender().objectName() == "testset_edit" or self.sender().objectName() == "testset_edit":
+        if self.sender().objectName() == "testset_edit" or self.sender().objectName() == "testset_delete":
             # get the index of the QWidget in the tableview and it's row
             testset_action_widget_index = self.testset_tableview.indexAt(testset_action_widget_selected.pos())
             self.testset_action_widget_row = testset_action_widget_index.row()
@@ -131,7 +131,7 @@ class TestSet_Logic(MainWindow_UI):
             row = -1
             name = ""
             query = QSqlQuery("SELECT Id FROM Testset order by Id desc")
-            query.next()
+            query.first()
             testset_id = query.value(0) + 1
         # create new tab,but if exist , do not create the new tab
         create = True
