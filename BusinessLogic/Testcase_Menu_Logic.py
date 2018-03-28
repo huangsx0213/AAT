@@ -12,6 +12,7 @@ class Testcase_Menu_Logic(MainWindow_UI):
         # List view data and action
         self.testcase_menu_model = QSqlQueryModel()
         self.testcase_menu_model.setQuery("select Name from testcase")
+        #print("The row count is :"+str(self.testcase_menu_model.rowCount()))
 
         # SConnect the model to the listView
         self.testcase_menu_listview.setModel(self.testcase_menu_model)

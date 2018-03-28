@@ -1,5 +1,5 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtSql import QSqlTableModel, QSqlQuery
+from PyQt5.QtSql import QSqlTableModel, QSqlQuery, QSqlQueryModel
 from PyQt5.QtWidgets import QLineEdit, QHeaderView
 
 from UserInterface.MainWindow_UI import MainWindow_UI
@@ -152,6 +152,17 @@ class TestSet_Logic(MainWindow_UI):
             # print(l.objectName())
             self.testset_details_name_lineedit.setText(name)
             self.testset_details_row_lineedit.setText(str(row))
+            query=QSqlQuery()
+            query.prepare("select * from testcase where name like :name")
+            aaa=QSqlQueryModel()
+            query.bindValue(":name","%Case%")
+            query.exec_()
+            aaa.setQuery(query)
+            print(aaa.rowCount())
+            self.tags_test_model=QSqlQueryModel()
+            self.tags_test_model.setQuery("SELECT distinct Tags FROM TestCase where Tags is not Null")
+            print(self.tags_test_model.rowCount())
+            print(self.tags_test_model.data(self.tags_test_model.index(1,0)))
             query = QSqlQuery("SELECT distinct Tags FROM TestCase where Tags is not Null")
             rootNode = CheckableTestcaseNode(0, "TestCases", 0)
             while query.next():
