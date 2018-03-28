@@ -154,15 +154,15 @@ class TestSet_Logic(MainWindow_UI):
             self.testset_details_row_lineedit.setText(str(row))
             query=QSqlQuery()
             query.prepare("select * from testcase where name like :name")
-            aaa=QSqlQueryModel()
             query.bindValue(":name","%Case%")
             query.exec_()
-            aaa.setQuery(query)
-            print(aaa.rowCount())
+            my_model=QSqlQueryModel()
+            my_model.setQuery(query)
+            #print(aaa.rowCount())
             self.tags_test_model=QSqlQueryModel()
             self.tags_test_model.setQuery("SELECT distinct Tags FROM TestCase where Tags is not Null")
-            print(self.tags_test_model.rowCount())
-            print(self.tags_test_model.data(self.tags_test_model.index(1,0)))
+            #print(self.tags_test_model.rowCount())
+            #print(self.tags_test_model.data(self.tags_test_model.index(1,0)))
             query = QSqlQuery("SELECT distinct Tags FROM TestCase where Tags is not Null")
             rootNode = CheckableTestcaseNode(0, "TestCases", 0)
             while query.next():
@@ -201,26 +201,39 @@ class TestSet_Logic(MainWindow_UI):
                 else:
                     childNode0.setCheckStatus(Qt.Unchecked)
 
-            sql2 = "SELECT Id,Name FROM TestCase where Tags is Null"
-            query2 = QSqlQuery(sql2)
-            while query2.next():
-                sql = "SELECT TestcaseId FROM TestsetTestcase where TestsetId = '" + str(
-                    testset_id) + "' and TestcaseId = '" + str(query2.value(0)) + "'"
-                # print(sql)
-                query3 = QSqlQuery(sql)
-                query3.last()
-                row_count = query3.at() + 1
-                # print(row_count)
-                if row_count == 1:
-                    checked = Qt.Checked
-                else:
-                    checked = Qt.Unchecked
-                childNode2 = CheckableTestcaseNode(query2.value(0), query2.value(1), testset_id, rootNode, checked)
+            self.initialize_non_tags_testcase(rootNode, testset_id)
             # print(rootNode)
             model = CheckableTestCaseTreeModel(rootNode)
-
             self.testset_details_testcases_treeview.setModel(model)
-
-            # print(data_row.value("TestSet_Name_2"))
         # regenerate the actions_column
         self.testset_tableview_add_actions_column()
+
+    def initialize_non_tags_testcase(self, rootNode, testset_id):
+        # query the testcase which has no tags
+        query_non_tags_testcase = QSqlQuery()
+        query_non_tags_testcase.prepare("SELECT Id,Name FROM TestCase where Tags is Null")
+        query_non_tags_testcase.exec_()
+        # set model for the testcase which has no tags
+        non_tags_testcase_Model = QSqlQueryModel()
+        non_tags_testcase_Model.setQuery(query_non_tags_testcase)
+        # print(query_non_tags_Model.rowCount())
+        for i in range(0, non_tags_testcase_Model.rowCount()):
+            tem_testcase_id = non_tags_testcase_Model.data(non_tags_testcase_Model.index(i, 0))
+            tem_testcase_name = non_tags_testcase_Model.data(non_tags_testcase_Model.index(i, 1))
+            # query the checked testcase which has no tags
+            query_non_tags_checked_testcase = QSqlQuery()
+            query_non_tags_checked_testcase.prepare(
+                "SELECT TestcaseId FROM TestsetTestcase where TestsetId =:TestsetId and TestcaseId=:TestcaseId")
+            query_non_tags_checked_testcase.bindValue(":TestsetId", testset_id)
+            query_non_tags_checked_testcase.bindValue(":TestcaseId", tem_testcase_id)
+            query_non_tags_checked_testcase.exec_()
+            # set model for the checked testcase which has no tags
+            non_tags_checked_testcase_model = QSqlQueryModel()
+            non_tags_checked_testcase_model.setQuery(query_non_tags_checked_testcase)
+            non_tags_testcase_count = non_tags_checked_testcase_model.rowCount()
+            # print(non_tags_testcase_count)
+            if non_tags_testcase_count == 1:
+                check_status = Qt.Checked
+            else:
+                check_status = Qt.Unchecked
+            childNode2 = CheckableTestcaseNode(tem_testcase_id, tem_testcase_name, testset_id, rootNode, check_status)
