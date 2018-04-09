@@ -78,7 +78,7 @@ class Testcase_UI:
         self.testcase_main_tab_layout.addWidget(self.testcase_menu_groupbox, 0, 0)
         self.testcase_main_tab_layout.addWidget(self.testcase_right_content_groupbox, 0, 1)
 
-    def setup_dynamic_excution_tab(self, name=None):
+    def setup_dynamic_test_case_tab(self, name=None):
         # 1. define a page
         self.one_dynamic_execution_tab = QtWidgets.QWidget()
         self.one_dynamic_execution_tab.setObjectName(name)
@@ -93,8 +93,8 @@ class Testcase_UI:
         self.execution_Variables_groupbox = CustomGroupBox("Set Variables")
         self.execution_Testcases_groupbox = CustomGroupBox("Test Cases")
         # 4. add the page to the tabwidet
-        self.execution_tabwidget.addTab(self.one_dynamic_execution_tab, name)
-        self.execution_tabwidget.setCurrentWidget(self.one_dynamic_execution_tab)
+        self.testcase_tabwidget.addTab(self.one_dynamic_execution_tab, name)
+        self.testcase_tabwidget.setCurrentWidget(self.one_dynamic_execution_tab)
         # 5.set layout to the page tab
         self.one_dynamic_execution_tab.setLayout(self.one_dynamic_execution_layout)
         # 6. add all groupbox into page tab layout
