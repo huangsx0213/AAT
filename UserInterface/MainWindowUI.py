@@ -1,9 +1,9 @@
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QIcon
 
-from UserInterface.Action_UI import Action_UI
-from UserInterface.Execution_UI import Execution_UI
-from UserInterface.Testcase_UI import Testcase_UI
+from UserInterface.ActionUI import Action_UI
+from UserInterface.ExecutionUI import Execution_UI
+from UserInterface.TestCaseUI import Testcase_UI
 
 
 class MainWindow_UI(Execution_UI, Testcase_UI, Action_UI):

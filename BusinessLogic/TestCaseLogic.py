@@ -1,4 +1,4 @@
-from UserInterface.MainWindow_UI import MainWindow_UI
+from UserInterface.MainWindowUI import MainWindow_UI
 
 class Test_Case_Logic(MainWindow_UI):
     def test_case_logic(self):

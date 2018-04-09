@@ -2,8 +2,8 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtSql import QSqlTableModel, QSqlQuery, QSqlQueryModel
 from PyQt5.QtWidgets import QLineEdit, QHeaderView
 
-from UserInterface.MainWindow_UI import MainWindow_UI
-from UserInterface.CheckableTestcaseTree import CheckableTestcaseNode, CheckalbeTestcaseFolderNode, \
+from UserInterface.MainWindowUI import MainWindow_UI
+from UserInterface.CheckableTestCaseTree import CheckableTestcaseNode, CheckalbeTestcaseFolderNode, \
     CheckableTestCaseTreeModel
 
 

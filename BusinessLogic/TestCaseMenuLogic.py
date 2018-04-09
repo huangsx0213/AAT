@@ -2,7 +2,7 @@ from PyQt5.QtGui import QStandardItemModel, QStandardItem, QIcon
 from PyQt5.QtSql import QSqlQueryModel, QSqlTableModel
 from PyQt5.QtWidgets import QAction, QTabBar
 
-from UserInterface.MainWindow_UI import MainWindow_UI
+from UserInterface.MainWindowUI import MainWindow_UI
 
 
 class Testcase_Menu_Logic(MainWindow_UI):
