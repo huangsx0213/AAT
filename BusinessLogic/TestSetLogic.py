@@ -2,12 +2,12 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtSql import QSqlTableModel, QSqlQuery, QSqlQueryModel
 from PyQt5.QtWidgets import QLineEdit, QHeaderView
 
-from UserInterface.MainWindowUI import MainWindow_UI
+from UserInterface.MainWindowUI import MainWindowUI
 from UserInterface.CheckableTestCaseTree import CheckableTestcaseNode, CheckalbeTestcaseFolderNode, \
     CheckableTestCaseTreeModel
 
 
-class TestSet_Logic(MainWindow_UI):
+class TestSetLogic(MainWindowUI):
     def testset_logic(self):
         # testset table logic
         self.testset_tableview_model = QSqlTableModel()

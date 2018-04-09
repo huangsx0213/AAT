@@ -1,6 +1,6 @@
-from UserInterface.MainWindowUI import MainWindow_UI
+from UserInterface.MainWindowUI import MainWindowUI
 
-class Test_Case_Logic(MainWindow_UI):
+class TestCaseLogic(MainWindowUI):
     def test_case_logic(self):
 
         # test case table logic

@@ -3,9 +3,9 @@ from PyQt5.QtGui import QStandardItemModel, QStandardItem, QIcon
 from PyQt5.QtSql import QSqlRelationalTableModel, QSqlTableModel, QSqlRelation, QSqlRelationalDelegate
 from PyQt5.QtWidgets import QLineEdit, QTabBar, QAction, QHeaderView
 
-from UserInterface.MainWindowUI import MainWindow_UI
+from UserInterface.MainWindowUI import MainWindowUI
 
-class Execution_Logic(MainWindow_UI):
+class ExecutionLogic(MainWindowUI):
     def execution_logic(self):
 
         # execution table logic

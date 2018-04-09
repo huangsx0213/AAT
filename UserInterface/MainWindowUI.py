@@ -1,12 +1,12 @@
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QIcon
 
-from UserInterface.ActionUI import Action_UI
-from UserInterface.ExecutionUI import Execution_UI
-from UserInterface.TestCaseUI import Testcase_UI
+from UserInterface.ActionUI import ActionUI
+from UserInterface.ExecutionUI import ExecutionUI
+from UserInterface.TestCaseUI import TestCaseUI
 
 
-class MainWindow_UI(Execution_UI, Testcase_UI, Action_UI):
+class MainWindowUI(ExecutionUI, TestCaseUI, ActionUI):
     def __init__(self):
         # settings of MainWindow,the QTabWidget.
         self.setWindowIcon(QIcon('.\images\logo.png'))

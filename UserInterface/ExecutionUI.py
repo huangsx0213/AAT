@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QGridLayout, QGroupBox, QToolBox, QAction, QTabBar, 
 from UserInterface.CustomGroupBox import CustomGroupBox
 
 
-class Execution_UI(object):
+class ExecutionUI(object):
     def setup_execution_ui(self):
         # define the first tab and add it into the QTabWidget.
         self.execution_main_tab = QtWidgets.QWidget()

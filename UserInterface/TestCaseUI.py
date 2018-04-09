@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QGridLayout, QGroupBox, QToolBox, QTabBar, QAction, 
 from UserInterface.CustomGroupBox import CustomGroupBox
 
 
-class Testcase_UI:
+class TestCaseUI:
     def setup_testcase_ui(self):
         # define the second tab and add it into the QTabWidget.
         self.testcase_main_tab = QtWidgets.QWidget()
