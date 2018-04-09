@@ -11,16 +11,23 @@ class Testcase_Menu_Logic(MainWindow_UI):
 
         # List view data and action
         self.testcase_menu_model = QSqlQueryModel()
-        self.testcase_menu_model.setQuery("select Name from testcase")
+        self.testcase_menu_model.setQuery("select * from testcase")
         #print("The row count is :"+str(self.testcase_menu_model.rowCount()))
-
+        self.testcase_menu_model2 = QStandardItemModel()
+        self.testcase_menu_model2 = self.load_test_case_menu_model(self.testcase_menu_model2)
         # SConnect the model to the listView
-        self.testcase_menu_listview.setModel(self.testcase_menu_model)
+        self.testcase_menu_listview.setModel(self.testcase_menu_model2)
         #self.testcase_menu_listview.clicked.connect(self.execution_menu_item_clicked)
 
 
         self.testcase_right_content_toolbar.actionTriggered[QAction].connect(self.testcase_main_tab_toolbar_clicked)
 
+    def load_test_case_menu_model(self, model):
+
+        for i in range(0,self.testcase_menu_model.rowCount()):
+            item = QStandardItem(QIcon("./images/item.png"), str(self.testcase_menu_model.record(i).value(1)))
+            model.appendRow(item)
+        return model
 
     def testcase_menu_item_clicked(self, index):
         current_row = index.row()

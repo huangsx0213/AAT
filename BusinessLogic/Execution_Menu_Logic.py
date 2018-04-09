@@ -26,8 +26,8 @@ class Execution_Menu_Logic(MainWindow_UI):
                          QStandardItem(QIcon("./images/testset.png"), "Test Sets"),
                          QStandardItem(QIcon("./images/variables.png"), 'Variables'),
                          QStandardItem(QIcon("./images/mac.png"), 'Machines')]
-        for row in self.listdata:
-            item = QStandardItem(row)
+        for data in self.listdata:
+            item = data
             # Set item AlignCenter
             # item.setTextAlignment(QtCore.Qt.AlignCenter)
             model.appendRow(item)
