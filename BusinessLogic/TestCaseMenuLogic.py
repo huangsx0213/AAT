@@ -16,11 +16,11 @@ class TestcaseMenuLogic(MainWindowUI):
         self.testcase_menu_model2 = QStandardItemModel()
         self.testcase_menu_model2 = self.load_test_case_menu_model(self.testcase_menu_model2)
         # SConnect the model to the listView
-        self.testcase_menu_listview.setModel(self.testcase_menu_model2)
+        self.test_case_menu_listview.setModel(self.testcase_menu_model2)
         #self.testcase_menu_listview.clicked.connect(self.execution_menu_item_clicked)
 
 
-        self.testcase_right_content_toolbar.actionTriggered[QAction].connect(self.testcase_main_tab_toolbar_clicked)
+        self.test_case_right_content_toolbar.actionTriggered[QAction].connect(self.testcase_main_tab_toolbar_clicked)
 
     def load_test_case_menu_model(self, model):
 

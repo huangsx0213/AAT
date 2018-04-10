@@ -14,5 +14,5 @@ class MainWindowUI(ExecutionUI, TestCaseUI, ActionUI):
         self.setWindowTitle('AAT 2.0')
 
         self.setup_execution_ui()
-        self.setup_testcase_ui()
+        self.setup_test_case_ui()
         self.setup_action_ui()
