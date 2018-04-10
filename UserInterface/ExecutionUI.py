@@ -113,7 +113,7 @@ class ExecutionUI(object):
         self.all_testset_splitter.setStretchFactor(0,70)
         self.all_testset_splitter.setStretchFactor(1,30)
 
-    def setup_dynamic_excution_tab(self, name=None):
+    def setup_dynamic_execution_tab(self, name=None):
         # 1. define a page
         self.one_dynamic_execution_tab = QtWidgets.QWidget()
         self.one_dynamic_execution_tab.setObjectName(name)

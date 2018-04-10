@@ -17,7 +17,7 @@ class TestcaseMenuLogic(MainWindowUI):
         self.testcase_menu_model2 = self.load_test_case_menu_model(self.testcase_menu_model2)
         # SConnect the model to the listView
         self.test_case_menu_listview.setModel(self.testcase_menu_model2)
-        #self.testcase_menu_listview.clicked.connect(self.execution_menu_item_clicked)
+        self.test_case_menu_listview.clicked.connect(self.add_dynamic_test_case_tab)
 
 
         self.test_case_right_content_toolbar.actionTriggered[QAction].connect(self.testcase_main_tab_toolbar_clicked)
@@ -25,7 +25,7 @@ class TestcaseMenuLogic(MainWindowUI):
     def load_test_case_menu_model(self, model):
 
         for i in range(0,self.testcase_menu_model.rowCount()):
-            item = QStandardItem(QIcon("./images/item.png"), str(self.testcase_menu_model.record(i).value(1)))
+            item = QStandardItem(QIcon("./images/item.png"), str(self.testcase_menu_model.record(i).value("Name")))
             model.appendRow(item)
         return model
 
