@@ -58,6 +58,6 @@ class ExecutionMenuLogic(MainWindowUI):
                 self.save_testset_record()
         elif action.text() == "new":
             if self.current_listdata.text() == "Executions":
-                self.add_dynamic_excution_tab()
+                self.add_dynamic_execution_tab()
             if self.current_listdata.text()=="Test Sets":
                 self.add_dynamic_testset_tab()

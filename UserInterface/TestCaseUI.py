@@ -57,14 +57,14 @@ class TestCaseUI:
         self.test_case_right_content_gridlayout = QGridLayout()
         self.test_case_right_content_gridlayout.setContentsMargins(3, 2, 1, 3)
         # 3.define a tabwidget
-        # first page of the tabwidget
-        self.all_test_case_tab = QtWidgets.QWidget()
-        self.all_test_case_tab.setObjectName("all_testcase_tab")
+
         # define the tabwidget add the first page
         self.test_case_tabwidget = QtWidgets.QTabWidget()
-        self.test_case_tabwidget.addTab(self.all_test_case_tab, "one test case")
+
         self.test_case_tabwidget.setAutoFillBackground(True)
         self.test_case_tabwidget.setTabsClosable(True)
+        # close the tab
+        self.test_case_tabwidget.tabCloseRequested.connect(self.test_case_tabwidget.removeTab)
         # set the indtc 0 page hasn't colse button
         QTabBar.setTabButton(self.test_case_tabwidget.tabBar(), 0, QTabBar.RightSide, None)
         # self.tc_right_content_tabwidget.removeTab(0)
@@ -115,6 +115,7 @@ class TestCaseUI:
         self.test_case_details_description_lable = QLabel("Description:")
         self.test_case_details_description_lineedit = QTextEdit()
         self.test_case_details_description_lineedit.setObjectName("description")
+        self.test_case_details_description_lineedit.setFixedHeight(52)
         self.test_case_details_tags_lable = QLabel("Tags:")
         self.test_case_details_tags_lineedit = QLineEdit()
         self.test_case_details_tags_lineedit.setObjectName("tags")
